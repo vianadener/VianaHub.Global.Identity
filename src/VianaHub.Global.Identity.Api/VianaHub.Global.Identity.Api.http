@@ -1,0 +1,6 @@
+@VianaHub.Global.Identity.Api_HostAddress = http://localhost:5033
+
+GET {{VianaHub.Global.Identity.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

@@ -1,0 +1,43 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="coverlet.collector" Version="6.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="8.0.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
+    <PackageReference Include="xunit" Version="2.5.3" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.5.3" />
+    <PackageReference Include="Serilog" Version="4.3.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="10.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="10.0.0" />
+    <PackageReference Include="NBuilder" Version="6.1.0" />
+    <PackageReference Include="Moq" Version="4.20.72" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit" />
+  </ItemGroup>
+
+  <ItemGroup> <Folder Include="Infra\Data\Security\" /> <Folder Include="Infra\\Caching\" /> <Folder Include="Infra\\Integration\" /> <Folder Include="Infra\\Messaging\" /> </ItemGroup> 
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\VianaHub.Global.Identity.Api\VianaHub.Global.Identity.Api.csproj" />
+    <ProjectReference Include="..\..\src\VianaHub.Global.Identity.Application\VianaHub.Global.Identity.Application.csproj" />
+    <ProjectReference Include="..\..\src\VianaHub.Global.Identity.Domain\VianaHub.Global.Identity.Domain.csproj" />
+    <ProjectReference Include="..\..\src\VianaHub.Global.Identity.Infra.Data\VianaHub.Global.Identity.Infra.Data.csproj" />
+    <ProjectReference Include="..\..\src\VianaHub.Global.Identity.Infra.Integration\VianaHub.Global.Identity.Infra.Integration.csproj" />
+    <ProjectReference Include="..\..\src\VianaHub.Global.Identity.Infra.IoC\VianaHub.Global.Identity.Infra.IoC.csproj" />
+    <ProjectReference Include="..\..\src\VianaHub.Global.Identity.Infra.Job\VianaHub.Global.Identity.Infra.Job.csproj" />
+  </ItemGroup>
+
+</Project>

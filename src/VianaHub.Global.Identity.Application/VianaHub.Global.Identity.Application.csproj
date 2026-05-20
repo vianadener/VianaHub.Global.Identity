@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="AutoMapper" Version="16.1.1" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Options" Version="10.0.0" />
+		<PackageReference Include="CsvHelper" Version="30.0.1" />
+		<PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="5.0.17" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\VianaHub.Global.Identity.Infra.Data\VianaHub.Global.Identity.Infra.Data.csproj" />
+		<ProjectReference Include="..\VianaHub.Global.Identity.Domain\VianaHub.Global.Identity.Domain.csproj" />
+		<ProjectReference Include="..\VianaHub.Global.Identity.Infra.Integration\VianaHub.Global.Identity.Infra.Integration.csproj" />
+	</ItemGroup>
+</Project>
