@@ -127,7 +127,7 @@ public static class ActionEndpoint
             var success = await appService.BulkUploadAsync(file, ct);
             return notify.CustomResponse(success);
         })
-        .CustomAuthorize("Admin,BackOffice,Manager", "Plans", "BulkUpload")
+        .CustomAuthorize("Admin,BackOffice,Manager", "Actions", "BulkUpload")
         .WithName("BulkUploadAction")
         .WithSummary("Swagger.Endpoint.Action.BulkUpload.Summary")
         .DisableAntiforgery()

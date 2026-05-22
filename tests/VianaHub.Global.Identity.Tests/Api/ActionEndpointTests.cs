@@ -633,7 +633,7 @@ public class ActionEndpointTests : IClassFixture<ActionEndpointTests.ActionWebAp
                 new Claim("permission", "actions:activate"),
                 new Claim("permission", "actions:deactivate"),
                 new Claim("permission", "actions:delete"),
-                new Claim("permission", "plans:bulkupload")
+                new Claim("permission", "actions:bulkupload")
             };
             var identity = new ClaimsIdentity(claims, "Test");
             var principal = new ClaimsPrincipal(identity);

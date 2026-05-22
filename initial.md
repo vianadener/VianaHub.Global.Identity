@@ -1,0 +1,5 @@
+Preciso implementar os Agentes de IA que vão auxiliar no desenvolvimento da aplicação, para isso criei um arquivo AGENTS-README.md de como os agentes devem trabalhar, e preciso que me ajude a terminar o AGENTS-README.md, com o passo a passo de cada agente. 
+
+Tudo vai começar com uma nova feature, ou seja, vai ser enviado um prompt para o PO com a instrução, criar feature que implementa integração de usuário via AD B2B, por exemplo. Então os agentes começam a trabalhar essa feature de forma autônoma entre eles, e quando a implementação já estiver na branch Develop, então é avisado ao usuário que teste a nova funcionalidade, ou é enviado um prompt para o PO valide a implementação da feature Actions, por exemplo, o PO verifica se já existe uma feature/história de usuário criada para este recurso, se não existe então cria a feature e delega para os demais agentes validarem se a implementação está conforme feature especificada, se a feature/história de usuário já existe, então ele apenas delega para os agentes validarem. 
+
+Vai ser utilizado o Codex CLI para rodar os agentes de IA que serão criados, então toda estrutura deve estar de acordo com essa ferramenta.

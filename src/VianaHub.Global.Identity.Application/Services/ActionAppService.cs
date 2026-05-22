@@ -260,7 +260,7 @@ public class ActionAppService : IActionAppService
             }
 
             // Cria a entidade
-            var entity = new ActionEntity(TenantId,item.AppId, item.Name, item.Description, _currentUser.GetUserId());
+            var entity = new ActionEntity(TenantId, AppId, item.Name, item.Description, _currentUser.GetUserId());
 
             // Tenta criar no domínio
             var success = await _domain.CreateAsync(entity, ct);
