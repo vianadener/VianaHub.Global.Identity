@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using CsvHelper;
 using CsvHelper.Configuration;
-using EBL.FIG.Common.Middleware.Lib.Notifications;
 using VianaHub.Global.Identity.Application.Dto.Request.RolePermission;
 using VianaHub.Global.Identity.Application.Dto.Response.RolePermission;
 using VianaHub.Global.Identity.Application.Interfaces;
@@ -11,6 +10,7 @@ using VianaHub.Global.Identity.Domain.Interfaces;
 using VianaHub.Global.Identity.Domain.Interfaces.Base;
 using VianaHub.Global.Identity.Domain.ReadModels;
 using VianaHub.Global.Identity.Domain.Tools.Pagination;
+using VianaHub.Global.Middleware.Lib.Notifications;
 using Microsoft.AspNetCore.Http;
 using System.Globalization;
 
@@ -56,7 +56,7 @@ public class RolePermissionAppService : IRolePermissionAppService
     public async Task<RolePermissionDetailResponse> GetByIdAsync(int id, CancellationToken ct)
     {
         var entity = await _repository.GetByIdAsync(id, ct);
-        if (entity == null)
+        if (entity is null)
         {
             _notify.Add(_localization.GetMessage("Application.Service.RolePermission.GetById.Gone"), 410);
             return null;
@@ -86,7 +86,7 @@ public class RolePermissionAppService : IRolePermissionAppService
     public async Task DeleteAsync(int id, CancellationToken ct)
     {
         var entity = await _repository.GetByIdAsync(id, ct);
-        if (entity == null)
+        if (entity is null)
         {
             _notify.Add(_localization.GetMessage("Application.Service.RolePermission.Delete.ResourceNotFound"), 410);
             return;
@@ -102,7 +102,7 @@ public class RolePermissionAppService : IRolePermissionAppService
 
         // Lê itens do CSV
         var items = ReadCsvFile(file);
-        if (items == null)
+        if (items is null)
             return false;
 
         if (!items.Any())

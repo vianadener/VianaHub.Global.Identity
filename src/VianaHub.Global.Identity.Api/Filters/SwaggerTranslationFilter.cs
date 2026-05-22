@@ -42,7 +42,7 @@ public class SwaggerTranslationFilter : IDocumentFilter
 
             // Carrega as traduções mescladas de todos os arquivos JSON na pasta Localization
             var translations = LoadTranslations(culture);
-            if (translations == null || translations.Count == 0)
+            if (translations is null || translations.Count == 0)
             {
                 Log.Warning("?? [SwaggerTranslation] No translations found for culture: {Culture}", culture);
                 return;
@@ -155,7 +155,7 @@ public class SwaggerTranslationFilter : IDocumentFilter
                         {
                             var json = File.ReadAllText(file);
                             var dict = JsonSerializer.Deserialize<Dictionary<string, string>>(json);
-                            if (dict == null || dict.Count == 0)
+                            if (dict is null || dict.Count == 0)
                             {
                                 Log.Debug("?? [SwaggerTranslation] File {File} is empty or invalid", Path.GetFileName(file));
                                 continue;
@@ -223,7 +223,7 @@ public class SwaggerTranslationFilter : IDocumentFilter
 
     private void TranslateApiInfo(OpenApiInfo info, Dictionary<string, string> translations)
     {
-        if (info == null) return;
+        if (info is null) return;
 
         // Se o Title/Description já é uma chave (ex: "Swagger.Api.Title.Development"), usa diretamente
         // Caso contrário, tenta traduzir normalmente
@@ -250,7 +250,7 @@ public class SwaggerTranslationFilter : IDocumentFilter
 
     private void TranslateOperation(OpenApiOperation operation, Dictionary<string, string> translations)
     {
-        if (operation == null) return;
+        if (operation is null) return;
 
         // Traduz o Summary se começar com "Swagger."
         if (!string.IsNullOrEmpty(operation.Summary) && operation.Summary.StartsWith("Swagger."))
@@ -297,7 +297,7 @@ public class SwaggerTranslationFilter : IDocumentFilter
 
     private void TranslateSchema(OpenApiSchema schema, Dictionary<string, string> translations)
     {
-        if (schema == null) return;
+        if (schema is null) return;
 
         // Tenta usar Title, se não existir usa Reference.Id (quando schemas são referenciados)
         var schemaId = schema.Title ?? schema.Reference?.Id;
@@ -318,7 +318,7 @@ public class SwaggerTranslationFilter : IDocumentFilter
 
     private void TranslateSecurityScheme(OpenApiSecurityScheme securityScheme, Dictionary<string, string> translations)
     {
-        if (securityScheme == null) return;
+        if (securityScheme is null) return;
 
         securityScheme.Description = GetTranslation(translations, "Swagger.Security.Bearer.Description", securityScheme.Description);
     }
@@ -328,7 +328,7 @@ public class SwaggerTranslationFilter : IDocumentFilter
     /// </summary>
     private string GetTranslation(Dictionary<string, string> translations, string key, string? defaultValue)
     {
-        if (string.IsNullOrEmpty(key) || translations == null)
+        if (string.IsNullOrEmpty(key) || translations is null)
         {
             return defaultValue ?? string.Empty;
         }

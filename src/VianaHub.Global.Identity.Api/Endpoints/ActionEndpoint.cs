@@ -1,11 +1,11 @@
-﻿using EBL.FIG.Common.Middleware.Lib.Notifications;
+﻿using VianaHub.Global.Middleware.Lib.Notifications;
 using VianaHub.Global.Identity.Api.Endpoints.Base;
 using VianaHub.Global.Identity.Api.Helpers;
 using VianaHub.Global.Identity.Application.Dto.Base;
 using VianaHub.Global.Identity.Application.Dto.Request.Action;
 using VianaHub.Global.Identity.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using ErrorResponse = EBL.FIG.Common.Middleware.Lib.Notifications.ErrorResponse;
+using ErrorResponse = VianaHub.Global.Middleware.Lib.Notifications.ErrorResponse;
 
 namespace VianaHub.Global.Identity.Api.Endpoints;
 

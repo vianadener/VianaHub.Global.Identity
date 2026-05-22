@@ -22,7 +22,7 @@ public class PasswordResetTokenEntity : Entity
     {
         if (tenantId <= 0) throw new ArgumentException("TenantId inválido", nameof(tenantId));
         if (userId <= 0) throw new ArgumentException("UserId inválido", nameof(userId));
-        if (tokenHash == null || tokenHash.Length == 0) throw new ArgumentException("TokenHash inválido", nameof(tokenHash));
+        if (tokenHash is null || tokenHash.Length == 0) throw new ArgumentException("TokenHash inválido", nameof(tokenHash));
         if (expiresAt <= DateTime.UtcNow) throw new ArgumentException("ExpiresAt deve ser uma data futura", nameof(expiresAt));
 
         TenantId = tenantId;

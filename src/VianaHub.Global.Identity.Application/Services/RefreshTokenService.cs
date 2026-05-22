@@ -1,10 +1,10 @@
-using EBL.FIG.Common.Middleware.Lib.Notifications;
 using VianaHub.Global.Identity.Application.Dto.Base;
 using VianaHub.Global.Identity.Application.Dto.Result;
 using VianaHub.Global.Identity.Application.Interfaces;
 using VianaHub.Global.Identity.Domain.Entities;
 using VianaHub.Global.Identity.Domain.Interfaces;
 using VianaHub.Global.Identity.Domain.Interfaces.Base;
+using VianaHub.Global.Middleware.Lib.Notifications;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Security.Cryptography;
@@ -58,7 +58,7 @@ public class RefreshTokenService : IRefreshTokenService
         var tokenHash = _refreshTokenHasher.Hash(rawRefreshToken);
         var existing = await _refreshRepo.GetByTokenHashAsync(tokenHash, tenantId, ct);
 
-        if (existing == null || !existing.IsActive())
+        if (existing is null || !existing.IsActive())
         {
             _notify.Add(_localization.GetMessage("Application.Service.Auth.Refresh.InvalidRefreshToken"), 401);
             _logger.LogWarning("Refresh token inválido ou expirado para tenant {TenantId}", tenantId);

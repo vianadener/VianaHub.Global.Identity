@@ -19,7 +19,7 @@ public class HangfireJobService : IJobSchedulerService
 
     public async Task RegisterRecurringAsync(JobDefinitionEntity jobDef)
     {
-        if (jobDef == null) throw new ArgumentNullException(nameof(jobDef));
+        if (jobDef is null) throw new ArgumentNullException(nameof(jobDef));
         if (jobDef.ExecuteOnlyOnce) return;
 
         if (string.IsNullOrWhiteSpace(jobDef.CronExpression))
@@ -63,7 +63,7 @@ public class HangfireJobService : IJobSchedulerService
 
     public async Task<string> EnqueueJobAsync(JobDefinitionEntity jobDef)
     {
-        if (jobDef == null) throw new ArgumentNullException(nameof(jobDef));
+        if (jobDef is null) throw new ArgumentNullException(nameof(jobDef));
 
         var jobId = await _jobExecutor.EnqueueJobAsync(jobDef);
         _logger.LogInformation("Enqueued job {JobName} with Hangfire id {JobId}", jobDef.Name, jobId);

@@ -9,10 +9,10 @@
 	<ItemGroup>
 	  <PackageReference Include="Cronos" Version="0.8.0" />
 	  <PackageReference Include="FluentValidation" Version="12.0.0" />
-	  <PackageReference Include="EBL.FIG.Common.Middleware.Lib" Version="1.0.20" />
 	  <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="9.0.8" />
 	  <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.8" />
 	  <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.8" />
 	  <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.8" />
+	  <PackageReference Include="VianaHub.Global.Middleware" Version="1.1.0" />
 	</ItemGroup>
 </Project>

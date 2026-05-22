@@ -119,7 +119,7 @@ public class JobDefinitionUpdateValidator : AbstractValidator<JobDefinitionEntit
         try
         {
             var type = ResolveType(jobType);
-            if (type == null) return false;
+            if (type is null) return false;
             var methodName = string.IsNullOrWhiteSpace(jobMethod) ? "Execute" : jobMethod;
             var method = type.GetMethod(methodName, System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Static);
             return method != null;

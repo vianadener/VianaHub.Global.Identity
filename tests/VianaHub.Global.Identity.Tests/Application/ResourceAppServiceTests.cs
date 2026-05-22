@@ -1,5 +1,5 @@
 using AutoMapper;
-using EBL.FIG.Common.Middleware.Lib.Notifications;
+using VianaHub.Global.Middleware.Lib.Notifications;
 using VianaHub.Global.Identity.Application.Dto.Base;
 using VianaHub.Global.Identity.Application.Dto.Request.Resource;
 using VianaHub.Global.Identity.Application.Dto.Response.Resource;

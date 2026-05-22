@@ -94,7 +94,7 @@ public class HangfireJobExecutor : IJobExecutor
 
             // Validar e carregar o tipo do job via reflexão
             var type = Type.GetType(jobType);
-            if (type == null)
+            if (type is null)
             {
                 logger.LogError("Job type not found: {JobType}", jobType);
                 throw new InvalidOperationException($"Job type not found: {jobType}");
@@ -109,7 +109,7 @@ public class HangfireJobExecutor : IJobExecutor
 
             // Instanciar o job usando o container de DI
             var job = ActivatorUtilities.CreateInstance(scope.ServiceProvider, type) as IJob;
-            if (job == null)
+            if (job is null)
             {
                 logger.LogError("Failed to instantiate job type: {JobType}", jobType);
                 throw new InvalidOperationException($"Failed to instantiate job type: {jobType}");

@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
-using EBL.FIG.Common.Middleware.Lib.Notifications;
 using VianaHub.Global.Identity.Application.Dto.Response.Jwt;
 using VianaHub.Global.Identity.Application.Interfaces;
 using VianaHub.Global.Identity.Domain.Interfaces;
 using VianaHub.Global.Identity.Domain.Interfaces.Base;
+using VianaHub.Global.Middleware.Lib.Notifications;
 
 namespace VianaHub.Global.Identity.Application.Services;
 
@@ -41,7 +41,7 @@ public class JwtKeyAppService : IJwtKeyAppService
     public async Task<JwtKeyResponse> GetActiveKeyAsync(int tenantId, CancellationToken ct)
     {
         var entity = await _repo.GetActiveKeyAsync(tenantId, ct);
-        return entity == null ? null : _mapper.Map<JwtKeyResponse>(entity);
+        return entity is null ? null : _mapper.Map<JwtKeyResponse>(entity);
     }
 
     public async Task<bool> CreateInitialIfNotExistsAsync(int tenantId, CancellationToken ct)
@@ -58,7 +58,7 @@ public class JwtKeyAppService : IJwtKeyAppService
     public async Task<bool> RevokeAsync(int id, string reason, CancellationToken ct)
     {
         var entity = await _repo.GetByIdAsync(id, ct);
-        if (entity == null)
+        if (entity is null)
         {
             _notify.Add(_localization.GetMessage("Application.Service.Jwt.Revoke.ResourceNotFound"), 410);
             return false;

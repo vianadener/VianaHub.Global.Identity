@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using CsvHelper;
 using CsvHelper.Configuration;
-using EBL.FIG.Common.Middleware.Lib.Notifications;
 using VianaHub.Global.Identity.Application.Dto.Base;
 using VianaHub.Global.Identity.Application.Dto.Request.Action;
 using VianaHub.Global.Identity.Application.Dto.Response.Action;
@@ -11,6 +10,7 @@ using VianaHub.Global.Identity.Domain.Helpers;
 using VianaHub.Global.Identity.Domain.Interfaces;
 using VianaHub.Global.Identity.Domain.Interfaces.Base;
 using VianaHub.Global.Identity.Domain.ReadModels;
+using VianaHub.Global.Middleware.Lib.Notifications;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System.Globalization;
@@ -63,7 +63,7 @@ public class ActionAppService : IActionAppService
     public async Task<ActionResponse> GetByIdAsync(int id, CancellationToken ct)
     {
         var entity = await _repo.GetByIdAsync(TenantId, AppId, id, ct);
-        if (entity == null)
+        if (entity is null)
         {
             _notify.Add(_localization.GetMessage("Application.Service.Action.GetById.Gone"), 410);
             return null;
@@ -92,7 +92,7 @@ public class ActionAppService : IActionAppService
     public async Task<bool> UpdateAsync(int id, UpdateActionRequest request, CancellationToken ct)
     {
         var entity = await _repo.GetByIdAsync(TenantId, AppId, id, ct);
-        if (entity == null)
+        if (entity is null)
         {
             _notify.Add(_localization.GetMessage("Application.Service.Action.Update.Gone"), 410);
             return false;
@@ -104,7 +104,7 @@ public class ActionAppService : IActionAppService
     public async Task<bool> ActivateAsync(int id, CancellationToken ct)
     {
         var entity = await _repo.GetByIdAsync(TenantId, AppId, id, ct);
-        if (entity == null)
+        if (entity is null)
         {
             _notify.Add(_localization.GetMessage("Application.Service.Action.Activate.Gone"), 410);
             return false;
@@ -116,7 +116,7 @@ public class ActionAppService : IActionAppService
     public async Task<bool> DeactivateAsync(int id, CancellationToken ct)
     {
         var entity = await _repo.GetByIdAsync(TenantId, AppId, id, ct);
-        if (entity == null)
+        if (entity is null)
         {
             _notify.Add(_localization.GetMessage("Application.Service.Action.Deactivate.Gone"), 410);
             return false;
@@ -128,7 +128,7 @@ public class ActionAppService : IActionAppService
     public async Task<bool> DeleteAsync(int id, CancellationToken ct)
     {
         var entity = await _repo.GetByIdAsync(TenantId, AppId, id, ct);
-        if (entity == null)
+        if (entity is null)
         {
             _notify.Add(_localization.GetMessage("Application.Service.Action.Delete.Gone"), 410);
             return false;
@@ -145,7 +145,7 @@ public class ActionAppService : IActionAppService
 
         // Lê itens do CSV
         var items = ReadCsvFile(file);
-        if (items == null)
+        if (items is null)
             return false;
 
         if (!items.Any())

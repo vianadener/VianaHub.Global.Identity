@@ -1,4 +1,4 @@
-﻿using EBL.FIG.Common.Middleware.Lib.Notifications;
+﻿using VianaHub.Global.Middleware.Lib.Notifications;
 using VianaHub.Global.Identity.Domain.Interfaces.Base;
 using System.Net;
 using System.Security.Claims;
@@ -205,7 +205,7 @@ public class AuthorizationFilter : IEndpointFilter
             {
                 // Desserializar para Dictionary<string,List<string>>
                 var dict = JsonSerializer.Deserialize<Dictionary<string, List<string>>>(permClaim);
-                if (dict == null)
+                if (dict is null)
                 {
                     _logger.LogWarning("Claim 'permissions' presente mas não pôde ser desserializada como JSON");
                     httpContext.Items[cacheKey] = new Dictionary<string, HashSet<string>>();

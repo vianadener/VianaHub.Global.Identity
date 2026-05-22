@@ -123,7 +123,7 @@ public class LocalizationService : ILocalizationService
                 };
                 var messages = JsonSerializer.Deserialize<Dictionary<string, string>>(json, options);
 
-                if (messages == null || messages.Count == 0)
+                if (messages is null || messages.Count == 0)
                 {
                     Log.Warning("⚠️ [LocalizationService] File {File} is empty or invalid", Path.GetFileName(commonFile));
                     _cache[culture] = new Dictionary<string, string>();

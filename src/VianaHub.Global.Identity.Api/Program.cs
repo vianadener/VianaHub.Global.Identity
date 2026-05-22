@@ -1,4 +1,4 @@
-using EBL.FIG.Common.Middleware.Lib.Middleware;
+using VianaHub.Global.Middleware.Lib.Middleware;
 using VianaHub.Global.Identity.Api.Configuration;
 using VianaHub.Global.Identity.Api.Configuration.Swagger;
 using VianaHub.Global.Identity.Api.Filters;

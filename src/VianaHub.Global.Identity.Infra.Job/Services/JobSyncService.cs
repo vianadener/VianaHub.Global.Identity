@@ -63,7 +63,7 @@ public class JobSyncService : IJobSyncService
                 var removed = 0;
                 try
                 {
-                    if (JobStorage.Current == null)
+                    if (JobStorage.Current is null)
                     {
                         _logger.LogWarning("[{Component}] [{TraceId}] Hangfire JobStorage.Current is null - skipping orphan removal", "JobSyncService", traceId);
                     }

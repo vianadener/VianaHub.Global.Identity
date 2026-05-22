@@ -1,9 +1,9 @@
-﻿using EBL.FIG.Common.Middleware.Lib.Notifications;
-using VianaHub.Global.Identity.Domain.Base;
+﻿using VianaHub.Global.Identity.Domain.Base;
 using VianaHub.Global.Identity.Domain.Entities;
 using VianaHub.Global.Identity.Domain.Interfaces;
 using VianaHub.Global.Identity.Domain.Interfaces.Base;
 using VianaHub.Global.Identity.Domain.Tools.Cryptography;
+using VianaHub.Global.Middleware.Lib.Notifications;
 using Microsoft.Extensions.Logging;
 
 namespace VianaHub.Global.Identity.Domain.Services;
@@ -108,7 +108,7 @@ public class JwtKeyDomainService : IJwtKeyDomainService
     public async Task<bool> ActivateAsync(JwtKeyEntity key, CancellationToken ct)
     {
         var existing = await _repo.GetByIdAsync(key.Id, ct);
-        if (existing == null)
+        if (existing is null)
         {
             _notify.Add(_localization.GetMessage("Domain.JwtKey.NotFound"), 404);
             return false;
@@ -148,7 +148,7 @@ public class JwtKeyDomainService : IJwtKeyDomainService
     public async Task<bool> DeactivateAsync(JwtKeyEntity key, CancellationToken ct)
     {
         var existing = await _repo.GetByIdAsync(key.Id, ct);
-        if (existing == null)
+        if (existing is null)
         {
             _notify.Add(_localization.GetMessage("Domain.JwtKey.NotFound"), 404);
             return false;
@@ -176,7 +176,7 @@ public class JwtKeyDomainService : IJwtKeyDomainService
     public async Task<bool> RevokeAsync(int id, string reason, int modifiedBy, CancellationToken ct)
     {
         var existing = await _repo.GetByIdAsync(id, ct);
-        if (existing == null)
+        if (existing is null)
         {
             _notify.Add(_localization.GetMessage("Domain.JwtKey.NotFound"), 404);
             return false;
@@ -238,7 +238,7 @@ public class JwtKeyDomainService : IJwtKeyDomainService
     public async Task<bool> DeleteAsync(JwtKeyEntity key, CancellationToken ct)
     {
         var existing = await _repo.GetByIdAsync(key.Id, ct);
-        if (existing == null)
+        if (existing is null)
         {
             _notify.Add(_localization.GetMessage("Domain.JwtKey.NotFound"), 404);
             return false;
@@ -258,7 +258,7 @@ public class JwtKeyDomainService : IJwtKeyDomainService
     public async Task<bool> UpdateRotationPolicyAsync(int id, int rotationPolicyDays, int overlapPeriodDays, int modifiedBy, CancellationToken ct)
     {
         var existing = await _repo.GetByIdAsync(id, ct);
-        if (existing == null)
+        if (existing is null)
         {
             _notify.Add(_localization.GetMessage("Domain.JwtKey.NotFound"), 404);
             return false;

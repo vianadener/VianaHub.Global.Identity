@@ -765,7 +765,7 @@ public class TelemetryInterceptorTests
 
         var type = typeof(CommandExecutedEventData);
         System.Reflection.FieldInfo? field = null;
-        while (type != null && field == null)
+        while (type != null && field is null)
         {
             field = type.GetField("<Duration>k__BackingField", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
             type = type.BaseType;

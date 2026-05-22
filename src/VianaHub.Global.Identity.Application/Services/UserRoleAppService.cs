@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using CsvHelper;
 using CsvHelper.Configuration;
-using EBL.FIG.Common.Middleware.Lib.Notifications;
 using VianaHub.Global.Identity.Application.Dto.Request.UserRole;
 using VianaHub.Global.Identity.Application.Dto.Response.UserRole;
 using VianaHub.Global.Identity.Application.Interfaces;
@@ -11,6 +10,7 @@ using VianaHub.Global.Identity.Domain.Interfaces;
 using VianaHub.Global.Identity.Domain.Interfaces.Base;
 using VianaHub.Global.Identity.Domain.ReadModels;
 using VianaHub.Global.Identity.Domain.Tools.Pagination;
+using VianaHub.Global.Middleware.Lib.Notifications;
 using Microsoft.AspNetCore.Http;
 using System.Globalization;
 
@@ -58,7 +58,7 @@ public class UserRoleAppService : IUserRoleAppService
     public async Task<UserRoleResponse> GetByIdAsync(int id, CancellationToken ct)
     {
         var entity = await _repository.GetByIdAsync(id, ct);
-        if (entity == null)
+        if (entity is null)
         {
             _notify.Add(_localization.GetMessage("Application.Service.UserRole.GetById.Gone"), 410);
             return null;
@@ -87,7 +87,7 @@ public class UserRoleAppService : IUserRoleAppService
     public async Task DeleteAsync(int id, CancellationToken ct)
     {
         var entity = await _repository.GetByIdAsync(id, ct);
-        if (entity == null)
+        if (entity is null)
         {
             // Not found -> notify with 410 Gone
             _notify.Add(_localization.GetMessage("Application.Service.UserRole.Delete.ResourceNotFound"), 410);
@@ -104,7 +104,7 @@ public class UserRoleAppService : IUserRoleAppService
 
         // Lê itens do CSV
         var items = ReadCsvFile(file);
-        if (items == null)
+        if (items is null)
             return false;
 
         if (!items.Any())

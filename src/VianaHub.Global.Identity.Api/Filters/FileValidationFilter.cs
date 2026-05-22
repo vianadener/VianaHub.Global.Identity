@@ -1,4 +1,4 @@
-﻿using EBL.FIG.Common.Middleware.Lib.Notifications;
+﻿using VianaHub.Global.Middleware.Lib.Notifications;
 using FluentValidation;
 
 namespace VianaHub.Global.Identity.Api.Filters;
@@ -29,7 +29,7 @@ public class FileValidationFilter : IEndpointFilter
     {
         _logger.LogDebug("FileValidationFilter executando");
 
-        if (_validator == null)
+        if (_validator is null)
         {
             _logger.LogWarning("Nenhum validador registrado para ImportActionFileRequest");
             return await next(context);

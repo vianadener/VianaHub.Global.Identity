@@ -1,4 +1,4 @@
-using EBL.FIG.Common.Middleware.Lib.Notifications;
+using VianaHub.Global.Middleware.Lib.Notifications;
 using VianaHub.Global.Identity.Application.Services;
 using VianaHub.Global.Identity.Domain.Interfaces.Base;
 using Microsoft.AspNetCore.Http;

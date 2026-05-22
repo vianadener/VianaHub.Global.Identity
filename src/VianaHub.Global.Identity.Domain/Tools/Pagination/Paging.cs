@@ -9,14 +9,14 @@ public class Paging : Order
 
     public int? PageNumber
     {
-        get { return pageNumber == null || pageNumber <= 0 ? 1 : pageNumber; }
+        get { return pageNumber is null || pageNumber <= 0 ? 1 : pageNumber; }
         set { pageNumber = value; }
     }
     public int? PageSize
     {
         get
         {
-            if (pageSize == null || pageSize <= 0)
+            if (pageSize is null || pageSize <= 0)
                 return _minPageSize;
 
             return pageSize > _maxPageSize ? _maxPageSize : pageSize;

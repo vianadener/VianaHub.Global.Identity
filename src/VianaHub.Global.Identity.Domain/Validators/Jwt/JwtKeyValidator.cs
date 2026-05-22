@@ -22,7 +22,7 @@ public class JwtKeyValidator : IEntityDomainValidator<JwtKeyEntity>
     {
         var vr = new ValidationResult();
 
-        if (entity == null)
+        if (entity is null)
         {
             vr.Errors.Add(new ValidationFailure("JwtKey", _localization.GetMessage("Domain.JwtKey.EntityRequired")));
             return Task.FromResult(vr);
@@ -50,7 +50,7 @@ public class JwtKeyValidator : IEntityDomainValidator<JwtKeyEntity>
     {
         // Atualização básica: não permite alterar TenantId/KeyId/public key via update
         var vr = new ValidationResult();
-        if (entity == null)
+        if (entity is null)
         {
             vr.Errors.Add(new ValidationFailure("JwtKey", _localization.GetMessage("Domain.JwtKey.EntityRequired")));
             return Task.FromResult(vr);
@@ -65,7 +65,7 @@ public class JwtKeyValidator : IEntityDomainValidator<JwtKeyEntity>
     public Task<ValidationResult> ValidateForActivateAsync(JwtKeyEntity entity)
     {
         var vr = new ValidationResult();
-        if (entity == null)
+        if (entity is null)
         {
             vr.Errors.Add(new ValidationFailure("JwtKey", _localization.GetMessage("Domain.JwtKey.EntityRequired")));
             return Task.FromResult(vr);
@@ -86,7 +86,7 @@ public class JwtKeyValidator : IEntityDomainValidator<JwtKeyEntity>
     public Task<ValidationResult> ValidateForDeleteAsync(JwtKeyEntity entity)
     {
         var vr = new ValidationResult();
-        if (entity == null)
+        if (entity is null)
         {
             vr.Errors.Add(new ValidationFailure("JwtKey", _localization.GetMessage("Domain.JwtKey.EntityRequired")));
             return Task.FromResult(vr);
@@ -101,7 +101,7 @@ public class JwtKeyValidator : IEntityDomainValidator<JwtKeyEntity>
     public Task<ValidationResult> ValidateForRevokeAsync(JwtKeyEntity entity)
     {
         var vr = new ValidationResult();
-        if (entity == null)
+        if (entity is null)
         {
             vr.Errors.Add(new ValidationFailure("JwtKey", _localization.GetMessage("Domain.JwtKey.EntityRequired")));
             return Task.FromResult(vr);

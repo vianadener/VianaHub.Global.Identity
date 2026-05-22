@@ -1,4 +1,3 @@
-using EBL.FIG.Common.Middleware.Lib.Notifications;
 using VianaHub.Global.Identity.Application.Dto.Request.Auth;
 using VianaHub.Global.Identity.Application.Dto.Response.Auth;
 using VianaHub.Global.Identity.Application.Interfaces;
@@ -6,6 +5,7 @@ using VianaHub.Global.Identity.Domain.Entities;
 using VianaHub.Global.Identity.Domain.Helpers;
 using VianaHub.Global.Identity.Domain.Interfaces;
 using VianaHub.Global.Identity.Domain.Interfaces.Base;
+using VianaHub.Global.Middleware.Lib.Notifications;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System.Security.Cryptography;
@@ -62,7 +62,7 @@ public class ForgotPasswordAppService : IForgotPasswordAppService
 
         // Resolve o tenant a partir do LoginIdentifier — sem expor TenantId ao cliente
         var tenant = await _tenantRepo.GetByLoginIdentifierAsync(request.LoginIdentifier, ct);
-        if (tenant == null)
+        if (tenant is null)
         {
             _logger.LogInformation("ForgotPassword: nenhum tenant encontrado para loginIdentifier={LoginIdentifier}", request.LoginIdentifier);
             return genericResponse;
@@ -73,7 +73,7 @@ public class ForgotPasswordAppService : IForgotPasswordAppService
         var normalizedLogin = request.LoginIdentifier.Trim().ToUpperInvariant();
 
         var user = await _userRepo.GetByNormalizedLoginAsync(tenant.Id, normalizedLogin, ct);
-        if (user == null || !user.IsActive)
+        if (user is null || !user.IsActive)
         {
             _logger.LogInformation("ForgotPassword: usuário não encontrado ou inativo para tenantId={TenantId}", tenant.Id);
             return genericResponse;
@@ -122,7 +122,7 @@ public class ForgotPasswordAppService : IForgotPasswordAppService
         var tokenHash = SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(request.Token.Trim()));
 
         var entity = await _resetTokenRepo.GetByTokenHashAsync(tokenHash, ct);
-        if (entity == null || !entity.IsValid())
+        if (entity is null || !entity.IsValid())
         {
             _notify.Add(_localization.GetMessage("Application.Service.Auth.ValidateResetToken.InvalidOrExpired"), 400);
             return new ValidateResetTokenResponse { IsValid = false };
@@ -131,7 +131,7 @@ public class ForgotPasswordAppService : IForgotPasswordAppService
         _requestTenantContext.SetTenantId(entity.TenantId);
 
         var user = await _userRepo.GetByIdAsync(entity.TenantId, entity.UserId, ct);
-        if (user == null || !user.IsActive)
+        if (user is null || !user.IsActive)
         {
             _notify.Add(_localization.GetMessage("Application.Service.Auth.ValidateResetToken.InvalidOrExpired"), 400);
             return new ValidateResetTokenResponse { IsValid = false };
@@ -146,7 +146,7 @@ public class ForgotPasswordAppService : IForgotPasswordAppService
 
         var tokenEntity = await _resetTokenRepo.GetByTokenHashAsync(tokenHash, ct);
 
-        if (tokenEntity == null)
+        if (tokenEntity is null)
         {
             _notify.Add(_localization.GetMessage("Application.Service.Auth.ResetPassword.InvalidToken"), 409);
             return new ResetPasswordResponse();
@@ -167,7 +167,7 @@ public class ForgotPasswordAppService : IForgotPasswordAppService
         _requestTenantContext.SetTenantId(tokenEntity.TenantId);
 
         var user = await _userRepo.GetByIdAsync(tokenEntity.TenantId, tokenEntity.UserId, ct);
-        if (user == null || !user.IsActive)
+        if (user is null || !user.IsActive)
         {
             _notify.Add(_localization.GetMessage("Application.Service.Auth.ResetPassword.InvalidToken"), 409);
             return new ResetPasswordResponse();

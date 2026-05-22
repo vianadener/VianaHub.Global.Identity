@@ -1,4 +1,4 @@
-﻿using EBL.FIG.Common.Middleware.Lib.Notifications;
+﻿using VianaHub.Global.Middleware.Lib.Notifications;
 using FluentValidation;
 
 namespace VianaHub.Global.Identity.Api.Filters;
@@ -28,7 +28,7 @@ public class ValidationFilter<TRequest> : IEndpointFilter where TRequest : class
     {
         _logger.LogDebug("ValidationFilter<{RequestType}> executando", typeof(TRequest).Name);
 
-        if (_validator == null)
+        if (_validator is null)
         {
             _logger.LogWarning("Nenhum validador registrado para {RequestType}", typeof(TRequest).Name);
             return await next(context);
@@ -54,7 +54,7 @@ public class ValidationFilter<TRequest> : IEndpointFilter where TRequest : class
             }
         }
 
-        if (request == null)
+        if (request is null)
         {
             _logger.LogWarning("Request do tipo {RequestType} não encontrado nos argumentos", typeof(TRequest).Name);
             return await next(context);

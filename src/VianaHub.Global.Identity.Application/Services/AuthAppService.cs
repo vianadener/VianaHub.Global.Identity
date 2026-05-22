@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using EBL.FIG.Common.Middleware.Lib.Notifications;
 using VianaHub.Global.Identity.Application.Dto.Base;
 using VianaHub.Global.Identity.Application.Dto.Request.Auth;
 using VianaHub.Global.Identity.Application.Dto.Response.Auth;
@@ -12,6 +11,7 @@ using VianaHub.Global.Identity.Infra.Data.Context;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using VianaHub.Global.Middleware.Lib.Notifications;
 
 namespace VianaHub.Global.Identity.Application.Services;
 
@@ -109,7 +109,7 @@ public class AuthAppService : IAuthAppService
     public async Task<AuthDetailResponse> LoginAsync(LoginRequest request, CancellationToken ct)
     {
         var tenant = await _tenantRepo.GetByLoginIdentifierAsync(request.LoginIdentifier, ct);
-        if (tenant == null)
+        if (tenant is null)
         {
             _notify.Add(_localization.GetMessage("Application.Service.Auth.UserNotAssociateInTenant"), 401);
             return null;
@@ -118,7 +118,7 @@ public class AuthAppService : IAuthAppService
         _requestTenantContext.SetTenantId(tenant.Id);
 
         var user = await _userRepo.GetByNormalizedLoginAsync(tenant.Id, request.LoginIdentifier, ct);
-        if (user == null)
+        if (user is null)
         {
             _notify.Add(_localization.GetMessage("Application.Service.Auth.Login.InvalidCredentials"), 401);
             return null;
@@ -132,7 +132,7 @@ public class AuthAppService : IAuthAppService
 
         // Obter AppId das roles do usuário
         var userRole = user.UserRoles?.FirstOrDefault();
-        if (userRole == null)
+        if (userRole is null)
         {
             _notify.Add(_localization.GetMessage("Application.Service.Auth.Login.UserWithoutRole"), 403);
             return null;
@@ -140,7 +140,7 @@ public class AuthAppService : IAuthAppService
 
         // Gera tokens (usa chave RSA do tenant)
         var accessToken = await _jwtTokenService.GenerateAccessTokenAsync(user, ct);
-        if (accessToken.Token == null)
+        if (accessToken.Token is null)
         {
             // Erro já notificado
             return null;
@@ -187,11 +187,11 @@ public class AuthAppService : IAuthAppService
         _requestTenantContext.SetTenantId(request.TenantId);
 
         var rotateResult = await _refreshTokenService.RotateAsync(request.RefreshToken, request.TenantId, ct);
-        if (rotateResult == null)
+        if (rotateResult is null)
             return null;
 
         var user = await _userRepo.GetByIdAsync(request.TenantId, rotateResult.OldEntity.UserId, ct);
-        if (user == null)
+        if (user is null)
         {
             _notify.Add(_localization.GetMessage("Application.Service.Auth.Refresh.UserNotFound"), 410);
             return null;

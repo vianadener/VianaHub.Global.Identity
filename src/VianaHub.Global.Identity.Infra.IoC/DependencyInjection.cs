@@ -1,5 +1,4 @@
-﻿using EBL.FIG.Common.Middleware.Lib.Notifications;
-using VianaHub.Global.Identity.Application.Interfaces;
+﻿using VianaHub.Global.Identity.Application.Interfaces;
 using VianaHub.Global.Identity.Application.Services;
 using VianaHub.Global.Identity.Domain.Base;
 using VianaHub.Global.Identity.Domain.Entities;
@@ -26,6 +25,7 @@ using VianaHub.Global.Identity.Infra.Job.Interfaces;
 using VianaHub.Global.Identity.Infra.Job.Jobs.Maintenance;
 using VianaHub.Global.Identity.Infra.Job.Jobs.Security;
 using VianaHub.Global.Identity.Infra.Job.Services;
+using VianaHub.Global.Middleware.Lib.Notifications;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;

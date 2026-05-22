@@ -19,7 +19,7 @@ public class RequestLocalizationMiddleware
 
         // Handle both null and empty collections
         var list = supportedCultures?.ToList();
-        if (list == null || list.Count == 0)
+        if (list is null || list.Count == 0)
         {
             list = new List<string> { "pt-PT", "en-US", "es-ES" };
         }

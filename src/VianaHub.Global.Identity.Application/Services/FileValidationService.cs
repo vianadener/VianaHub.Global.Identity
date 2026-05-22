@@ -1,8 +1,8 @@
-﻿using EBL.FIG.Common.Middleware.Lib.Notifications;
-using VianaHub.Global.Identity.Application.Interfaces;
+﻿using VianaHub.Global.Identity.Application.Interfaces;
 using VianaHub.Global.Identity.Domain.Helpers;
 using VianaHub.Global.Identity.Domain.Interfaces.Base;
 using Microsoft.AspNetCore.Http;
+using VianaHub.Global.Middleware.Lib.Notifications;
 
 namespace VianaHub.Global.Identity.Application.Services;
 
@@ -24,7 +24,7 @@ public class FileValidationService(INotify notify, ILocalizationService localiza
     public bool ValidateFile(IFormFile file)
     {
         // Valida se o arquivo existe e não está vazio
-        if (file == null || file.Length == 0)
+        if (file is null || file.Length == 0)
         {
             _notify.Add(_localization.GetMessage("Application.Service.File.ValidateFile.InvalidFile"), 400);
             return false;

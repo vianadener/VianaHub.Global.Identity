@@ -1,12 +1,17 @@
 ﻿namespace VianaHub.Global.Identity.Domain.Base;
 
+/// <summary>
+/// Represents a base class for entities with identity, audit information, and value-based equality.
+/// </summary>
+/// <remarks>Equality is determined by the entity's type and identifier. Provides audit properties for tracking
+/// creation and modification metadata.</remarks>
 public class Entity : IEquatable<Entity>
 {
-    public int Id { get; protected set; }
-    public int AddedBy { get; protected set; }
-    public DateTime AddedOn { get; protected set; }
-    public int? ModifiedBy { get; protected set; }
-    public DateTime? ModifiedAt { get; protected set; }
+    public int Id { get; set; }
+    public int AddedBy { get; set; }
+    public DateTime AddedOn { get; set; }
+    public int? ModifiedBy { get; set; }
+    public DateTime? ModifiedAt { get; set; }
 
     protected Entity()
     {
@@ -21,7 +26,7 @@ public class Entity : IEquatable<Entity>
 
 
     // Equality baseada no Id
-    public bool Equals(Entity other)
+    public bool Equals(Entity? other)
     {
         if (other is null) return false;
         if (ReferenceEquals(this, other)) return true;
@@ -30,7 +35,7 @@ public class Entity : IEquatable<Entity>
         return Id == other.Id;
     }
 
-    public override bool Equals(object obj)
+    public override bool Equals(object? obj)
     {
         return Equals(obj as Entity);
     }

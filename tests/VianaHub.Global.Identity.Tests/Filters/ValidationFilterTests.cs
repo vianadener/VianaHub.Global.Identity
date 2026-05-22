@@ -1,4 +1,4 @@
-using EBL.FIG.Common.Middleware.Lib.Notifications;
+using VianaHub.Global.Middleware.Lib.Notifications;
 using VianaHub.Global.Identity.Api.Filters;
 using FluentValidation;
 using FluentValidation.Results;

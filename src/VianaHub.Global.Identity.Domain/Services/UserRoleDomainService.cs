@@ -1,9 +1,9 @@
-﻿using EBL.FIG.Common.Middleware.Lib.Notifications;
-using VianaHub.Global.Identity.Domain.Base;
+﻿using VianaHub.Global.Identity.Domain.Base;
 using VianaHub.Global.Identity.Domain.Entities;
 using VianaHub.Global.Identity.Domain.Interfaces;
 using VianaHub.Global.Identity.Domain.ReadModels;
 using VianaHub.Global.Identity.Domain.Tools.Pagination;
+using VianaHub.Global.Middleware.Lib.Notifications;
 
 
 namespace VianaHub.Global.Identity.Domain.Services;

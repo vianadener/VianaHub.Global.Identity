@@ -1,4 +1,4 @@
-﻿using EBL.FIG.Common.Middleware.Lib.Notifications;
+﻿using VianaHub.Global.Middleware.Lib.Notifications;
 using VianaHub.Global.Identity.Api.Endpoints.Base;
 using VianaHub.Global.Identity.Api.Helpers;
 using VianaHub.Global.Identity.Application.Dto.Request.Auth;
@@ -29,7 +29,7 @@ public static class JwtKeyEndpoint
         groupV1.MapGet("/{tenantId}/active", async ([FromRoute] int tenantId, [FromServices] IJwtKeyAppService service, [FromServices] INotify notify, CancellationToken ct) =>
         {
             var result = await service.GetActiveKeyAsync(tenantId, ct);
-            if (result == null)
+            if (result is null)
             {
                 return notify.CustomResponse(StatusCodes.Status204NoContent);
             }

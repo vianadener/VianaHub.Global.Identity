@@ -1,4 +1,4 @@
-using EBL.FIG.Common.Middleware.Lib.Notifications;
+using VianaHub.Global.Middleware.Lib.Notifications;
 using VianaHub.Global.Identity.Application.Dto.Request.Auth;
 using VianaHub.Global.Identity.Application.Dto.Response.Auth;
 using VianaHub.Global.Identity.Application.Interfaces;

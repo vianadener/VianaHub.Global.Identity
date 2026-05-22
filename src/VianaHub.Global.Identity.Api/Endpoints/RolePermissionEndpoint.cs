@@ -1,4 +1,4 @@
-﻿using EBL.FIG.Common.Middleware.Lib.Notifications;
+﻿using VianaHub.Global.Middleware.Lib.Notifications;
 using VianaHub.Global.Identity.Api.Endpoints.Base;
 using VianaHub.Global.Identity.Api.Helpers;
 using VianaHub.Global.Identity.Application.Dto.Request.RolePermission;

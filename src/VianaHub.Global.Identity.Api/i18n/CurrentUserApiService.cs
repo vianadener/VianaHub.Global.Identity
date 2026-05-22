@@ -29,7 +29,7 @@ public class CurrentUserApiService : ICurrentUserService
     {
         var httpContext = _httpContextAccessor.HttpContext;
 
-        if (httpContext == null)
+        if (httpContext is null)
             throw new Exception("HTTP context is not available.");
 
         // Tenta buscar no token JWT
@@ -64,7 +64,7 @@ public class CurrentUserApiService : ICurrentUserService
     {
         var httpContext = _httpContextAccessor.HttpContext;
 
-        if (httpContext == null)
+        if (httpContext is null)
             throw new Exception("HTTP context is not available.");
 
         // Tenta buscar no token JWT
@@ -107,7 +107,7 @@ public class CurrentUserApiService : ICurrentUserService
     {
         var httpContext = _httpContextAccessor.HttpContext;
 
-        if (httpContext == null)
+        if (httpContext is null)
             throw new Exception("HTTP context is not available.");
 
         // Tenta buscar no token JWT
@@ -143,7 +143,7 @@ public class CurrentUserApiService : ICurrentUserService
     public string GetUserName()
     {
         var httpContext = _httpContextAccessor.HttpContext;
-        if (httpContext == null)
+        if (httpContext is null)
             return string.Empty;
 
         // Tenta buscar no token JWT
@@ -175,7 +175,7 @@ public class CurrentUserApiService : ICurrentUserService
     public string GetUserEmail()
     {
         var httpContext = _httpContextAccessor.HttpContext;
-        if (httpContext == null)
+        if (httpContext is null)
             return string.Empty;
 
         // Tenta buscar no token JWT
@@ -204,7 +204,7 @@ public class CurrentUserApiService : ICurrentUserService
     public bool IsAuthenticated()
     {
         var httpContext = _httpContextAccessor.HttpContext;
-        if (httpContext == null)
+        if (httpContext is null)
             return false;
 
         return httpContext.User?.Identity?.IsAuthenticated == true;
@@ -250,7 +250,7 @@ public class CurrentUserApiService : ICurrentUserService
     public string GetUserIpAddress()
     {
         var httpContext = _httpContextAccessor.HttpContext;
-        if (httpContext == null)
+        if (httpContext is null)
             return "Unknown";
 
         // Verifica se está atrás de um proxy
@@ -269,7 +269,7 @@ public class CurrentUserApiService : ICurrentUserService
     public string GetUserAgent()
     {
         var httpContext = _httpContextAccessor.HttpContext;
-        if (httpContext == null)
+        if (httpContext is null)
             return "Unknown";
 
         return httpContext.Request.Headers["User-Agent"].FirstOrDefault() ?? "Unknown";

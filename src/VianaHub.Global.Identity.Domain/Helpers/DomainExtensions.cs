@@ -1,5 +1,5 @@
-﻿using EBL.FIG.Common.Middleware.Lib.Notifications;
-using VianaHub.Global.Identity.Domain.Tools.Cryptography;
+﻿using VianaHub.Global.Identity.Domain.Tools.Cryptography;
+using VianaHub.Global.Middleware.Lib.Notifications;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using System.ComponentModel;
@@ -158,7 +158,7 @@ public static class DomainExtensions
         if (string.IsNullOrWhiteSpace(fileName))
             return false;
 
-        if (allowedExtensions == null || allowedExtensions.Length == 0)
+        if (allowedExtensions is null || allowedExtensions.Length == 0)
             allowedExtensions = [".csv"];
 
         var extension = Path.GetExtension(fileName).ToLowerInvariant();
@@ -220,7 +220,7 @@ public static class DomainExtensions
     /// <returns>StreamReader configurado com UTF-8</returns>
     public static StreamReader CreateUtf8StreamReader(this Stream stream)
     {
-        if (stream == null)
+        if (stream is null)
             throw new ArgumentNullException(nameof(stream));
 
         var encoding = new UTF8Encoding(
@@ -245,7 +245,7 @@ public static class DomainExtensions
     /// <returns>True se o arquivo está em UTF-8, False caso contrário</returns>
     public static bool IsValidUtf8Encoding(this Stream stream)
     {
-        if (stream == null)
+        if (stream is null)
             return false;
 
         try
@@ -348,7 +348,7 @@ public static class DomainExtensions
     /// <returns>Dicionário com campos sanitizados</returns>
     public static Dictionary<string, string> SanitizeCsvFields(this Dictionary<string, string> fields)
     {
-        if (fields == null || fields.Count == 0)
+        if (fields is null || fields.Count == 0)
             return fields;
 
         var sanitized = new Dictionary<string, string>();
@@ -418,7 +418,7 @@ public static class DomainExtensions
 
     public static string GetDescription(this Enum input)
     {
-        if (input == null)
+        if (input is null)
             return string.Empty;
 
         var type = input.GetType();
@@ -630,7 +630,7 @@ public static class DomainExtensions
 
     public static string ToBase64(this byte[] byteArray)
     {
-        if (byteArray == null || byteArray.Length == 0)
+        if (byteArray is null || byteArray.Length == 0)
         {
             throw new ArgumentException("O array de bytes não pode ser nulo ou vazio.", nameof(byteArray));
         }

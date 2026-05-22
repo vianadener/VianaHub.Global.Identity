@@ -25,7 +25,7 @@ public class RefreshTokenEntity : Entity
         if (tenantId <= 0) throw new ArgumentException("TenantId inválido", nameof(tenantId));
         if (appId <= 0) throw new ArgumentException("AppId inválido", nameof(appId));
         if (userId <= 0) throw new ArgumentException("UserId inválido", nameof(userId));
-        if (tokenHash == null || tokenHash.Length == 0) throw new ArgumentException("TokenHash inválido", nameof(tokenHash));
+        if (tokenHash is null || tokenHash.Length == 0) throw new ArgumentException("TokenHash inválido", nameof(tokenHash));
 
         TenantId = tenantId;
         AppId = appId;
@@ -36,7 +36,7 @@ public class RefreshTokenEntity : Entity
         AddedBy = createdBy;
     }
 
-    public bool IsActive() => RevokedAt == null && DateTime.UtcNow < ExpiresAt;
+    public bool IsActive() => RevokedAt is null && DateTime.UtcNow < ExpiresAt;
 
     public void Revoke(int revokedBy)
     {

@@ -4,7 +4,7 @@ using VianaHub.Global.Identity.Domain.Entities;
 using VianaHub.Global.Identity.Domain.Interfaces;
 using VianaHub.Global.Identity.Domain.Interfaces.Base;
 using VianaHub.Global.Identity.Domain.Tools.Cryptography;
-using EBL.FIG.Common.Middleware.Lib.Notifications;
+using VianaHub.Global.Middleware.Lib.Notifications;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -87,9 +87,9 @@ public class JwtTokenService : IJwtTokenService
 
             foreach (var userRole in userRoles ?? Enumerable.Empty<UserRoleEntity>())
             {
-                if (userRole?.Role == null) continue;
+                if (userRole?.Role is null) continue;
                 var rolePerms = await _rolePermissionRepo.GetByRoleAsync(userRole.Role.Id, user.TenantId, ct);
-                if (rolePerms == null || !rolePerms.Any()) continue;
+                if (rolePerms is null || !rolePerms.Any()) continue;
 
                 foreach (var rp in rolePerms)
                 {
@@ -127,7 +127,7 @@ public class JwtTokenService : IJwtTokenService
         }
 
         var keyEntity = await _jwtKeyRepo.GetActiveKeyAsync(user.TenantId, ct);
-        if (keyEntity == null)
+        if (keyEntity is null)
         {
             _notify.Add(_localization.GetMessage("Application.Service.Auth.Token.NoActiveKey"), 500);
             _logger.LogError("Nenhuma chave JWT ativa encontrada para tenant {TenantId}", user.TenantId);

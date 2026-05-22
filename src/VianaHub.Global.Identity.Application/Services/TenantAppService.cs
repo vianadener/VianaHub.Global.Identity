@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using CsvHelper;
 using CsvHelper.Configuration;
-using EBL.FIG.Common.Middleware.Lib.Notifications;
 using VianaHub.Global.Identity.Application.Dto.Base;
 using VianaHub.Global.Identity.Application.Dto.Request.Tenant;
 using VianaHub.Global.Identity.Application.Dto.Response.Tenant;
@@ -11,6 +10,7 @@ using VianaHub.Global.Identity.Domain.Helpers;
 using VianaHub.Global.Identity.Domain.Interfaces;
 using VianaHub.Global.Identity.Domain.Interfaces.Base;
 using VianaHub.Global.Identity.Domain.ReadModels;
+using VianaHub.Global.Middleware.Lib.Notifications;
 using Microsoft.AspNetCore.Http;
 using System.Globalization;
 
@@ -53,7 +53,7 @@ public class TenantAppService : ITenantAppService
     public async Task<TenantDetailResponse> GetByIdAsync(int id, CancellationToken ct)
     {
         var entity = await _repo.GetByIdAsync(id, ct);
-        if (entity == null)
+        if (entity is null)
         {
             _notify.Add(_localization.GetMessage("Application.Service.Tenant.GetById.Gone"), 410);
             return null;
@@ -84,7 +84,7 @@ public class TenantAppService : ITenantAppService
     public async Task<bool> UpdateAsync(int id, UpdateTenantRequest request, CancellationToken ct)
     {
         var entity = await _repo.GetByIdAsync(id, ct);
-        if (entity == null)
+        if (entity is null)
         {
             _notify.Add(_localization.GetMessage("Application.Service.Tenant.Update.ResourceNotFound"), 410);
             return false;
@@ -97,7 +97,7 @@ public class TenantAppService : ITenantAppService
     public async Task<bool> ActivateAsync(int id, CancellationToken ct)
     {
         var entity = await _repo.GetByIdAsync(id, ct);
-        if (entity == null)
+        if (entity is null)
         {
             _notify.Add(_localization.GetMessage("Application.Service.Tenant.Activate.ResourceNotFound"), 410);
             return false;
@@ -110,7 +110,7 @@ public class TenantAppService : ITenantAppService
     public async Task<bool> DeactivateAsync(int id, CancellationToken ct)
     {
         var entity = await _repo.GetByIdAsync(id, ct);
-        if (entity == null)
+        if (entity is null)
         {
             _notify.Add(_localization.GetMessage("Application.Service.Tenant.Deactivate.ResourceNotFound"), 410);
             return false;
@@ -123,7 +123,7 @@ public class TenantAppService : ITenantAppService
     public async Task<bool> DeleteAsync(int id, CancellationToken ct)
     {
         var entity = await _repo.GetByIdAsync(id, ct);
-        if (entity == null)
+        if (entity is null)
         {
             _notify.Add(_localization.GetMessage("Application.Service.Tenant.Delete.ResourceNotFound"), 410);
             return false;
@@ -141,7 +141,7 @@ public class TenantAppService : ITenantAppService
 
         // Lê itens do CSV
         var items = ReadCsvFile(file);
-        if (items == null)
+        if (items is null)
             return false;
 
         if (!items.Any())

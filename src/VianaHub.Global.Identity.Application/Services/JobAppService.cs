@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using EBL.FIG.Common.Middleware.Lib.Notifications;
 using VianaHub.Global.Identity.Application.Dto.Base;
 using VianaHub.Global.Identity.Application.Dto.Request.Job;
 using VianaHub.Global.Identity.Application.Dto.Response.Job;
@@ -9,6 +8,7 @@ using VianaHub.Global.Identity.Domain.Entities;
 using VianaHub.Global.Identity.Domain.Interfaces;
 using VianaHub.Global.Identity.Domain.Interfaces.Base;
 using VianaHub.Global.Identity.Domain.ReadModels;
+using VianaHub.Global.Middleware.Lib.Notifications;
 
 namespace VianaHub.Global.Identity.Application.Services;
 
@@ -49,7 +49,7 @@ public class JobAppService : IJobAppService
     public async Task<JobDetailResponse> GetByIdAsync(int id, CancellationToken ct)
     {
         var entity = await _repo.GetByIdAsync(id, ct);
-        if (entity == null)
+        if (entity is null)
         {
             _notify.Add(_localization.GetMessage("Application.Service.Job.GetById.Gone"), 410);
             return null;
@@ -108,7 +108,7 @@ public class JobAppService : IJobAppService
     public async Task<bool> UpdateAsync(int id, UpdateJobRequest request, CancellationToken ct)
     {
         var entity = await _repo.GetByIdAsync(id, ct);
-        if (entity == null)
+        if (entity is null)
         {
             _notify.Add(_localization.GetMessage("Application.Service.Job.Update.ResourceNotFound"), 410);
             return false;
@@ -157,7 +157,7 @@ public class JobAppService : IJobAppService
     public async Task<bool> ActivateAsync(int id, CancellationToken ct)
     {
         var entity = await _repo.GetByIdAsync(id, ct);
-        if (entity == null)
+        if (entity is null)
         {
             _notify.Add(_localization.GetMessage("Application.Service.Job.Activate.ResourceNotFound"), 410);
             return false;
@@ -185,7 +185,7 @@ public class JobAppService : IJobAppService
     public async Task<bool> DeactivateAsync(int id, CancellationToken ct)
     {
         var entity = await _repo.GetByIdAsync(id, ct);
-        if (entity == null)
+        if (entity is null)
         {
             _notify.Add(_localization.GetMessage("Application.Service.Job.Deactivate.ResourceNotFound"), 410);
             return false;
@@ -214,7 +214,7 @@ public class JobAppService : IJobAppService
     public async Task<bool> DeleteAsync(int id, CancellationToken ct)
     {
         var entity = await _repo.GetByIdAsync(id, ct);
-        if (entity == null)
+        if (entity is null)
         {
             _notify.Add(_localization.GetMessage("Application.Service.Job.Delete.ResourceNotFound"), 410);
             return false;
@@ -241,7 +241,7 @@ public class JobAppService : IJobAppService
     public async Task<bool> ExecuteAsync(int id, CancellationToken ct)
     {
         var entity = await _repo.GetByIdAsync(id, ct);
-        if (entity == null)
+        if (entity is null)
         {
             _notify.Add(_localization.GetMessage("Application.Service.Job.Execute.ResourceNotFound"), 410);
             return false;
