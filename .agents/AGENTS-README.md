@@ -20,6 +20,7 @@ O orquestrador é o **Codex CLI**, que executa cada agente a partir do prompt de
 ## Automação Entre Agentes
 
 - Cada agente deve produzir sua saída e acionar automaticamente a próxima etapa do fluxo.
+- Cada etapa deve começar com uma mensagem explícita no formato `Agente em execução: <NomeDoAgente>`.
 - O PO, ao concluir, entrega a feature diretamente ao Tech Lead.
 - O Tech Lead, ao concluir, entrega o design técnico ao QA e ao Developer.
 - O QA e o Developer devem avançar de forma encadeada conforme dependências, sem aguardar intervenção humana entre tarefas.

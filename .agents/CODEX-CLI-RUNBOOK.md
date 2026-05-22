@@ -33,6 +33,7 @@ Padronizar a execução de ponta a ponta de uma feature, desde a solicitação i
 
 ## Encadeamento Automático
 
+- Antes de executar qualquer etapa, o sistema deve anunciar `Agente em execução: <NomeDoAgente>`.
 - Ao finalizar, o PO deve disparar o Tech Lead sem aguardar confirmação humana.
 - Ao finalizar, o Tech Lead deve disparar QA e Developer.
 - Ao finalizar, o QA deve registrar a cobertura e liberar a continuação imediata do Developer quando aplicável.
