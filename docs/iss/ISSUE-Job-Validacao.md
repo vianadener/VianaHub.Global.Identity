@@ -1,0 +1,59 @@
+# ISSUE: Validação da implementação do recurso Job
+
+Resumo
+------
+Validar a implementação do recurso `Job` para confirmar consistência entre endpoints, serviço de aplicação, autorização, persistência, execução em background e testes automatizados antes de considerar a entrega pronta para produção.
+
+Objetivo
+--------
+- Verificar o comportamento funcional do recurso `Job`.
+- Confirmar que a autorização está aplicada corretamente por operação.
+- Garantir que a documentação e a implementação estejam consistentes.
+- Validar que os códigos HTTP expostos seguem o padrão permitido pelo projeto.
+- Identificar regressões nos fluxos de criação, consulta, paginação, atualização, ativação, desativação e exclusão.
+- Validar o comportamento de sincronização/agendamento relacionado ao recurso.
+
+Arquivos principais para validação
+----------------------------------
+- `src/VianaHub.Global.Identity.Api/Endpoints/JobEndpoint.cs`
+- `src/VianaHub.Global.Identity.Application/Services/JobAppService.cs`
+- `src/VianaHub.Global.Identity.Domain/Entities/JobDefinitionEntity.cs`
+- `src/VianaHub.Global.Identity.Domain/Jobs/` ou camada equivalente de jobs/background
+- `tests/VianaHub.Global.Identity.Tests/Api/JobEndpointTests.cs`
+- `tests/VianaHub.Global.Identity.Tests/Application/JobAppServiceTests.cs`
+
+Escopo funcional
+----------------
+1. Listagem de jobs
+2. Consulta por id
+3. Paginação
+4. Criação
+5. Atualização
+6. Ativação
+7. Desativação
+8. Exclusão
+9. Sincronização de definições/agendamentos
+
+Pontos de validação
+-------------------
+- Os endpoints devem manter compatibilidade com o contrato existente.
+- A autorização por papel, recurso e ação deve permanecer coerente com o restante da API.
+- O serviço de aplicação deve respeitar o contexto de tenant e usuário autenticado.
+- A camada de API não deve concentrar regra de domínio.
+- Os testes devem cobrir sucesso, falha, ausência de recurso e cenários de execução/agendamento.
+
+Critérios de aceite
+-------------------
+- Todos os fluxos principais do recurso `Job` passam em testes.
+- Não há divergência entre códigos HTTP documentados e os retornados pela aplicação.
+- Não há uso de códigos HTTP fora do padrão permitido pelo projeto.
+- Não há regressões de autorização, isolamento por tenant ou agendamento.
+- A feature está validada e pronta para revisão final.
+
+Observações
+-----------
+- A validação deve preservar backward compatibility.
+- Se houver divergência entre metadata do endpoint e comportamento real, o problema deve ser tratado como falha de implementação.
+- A feature aqui descrita deve ser usada como base para a execução dos agentes de PO, Tech Lead, QA, Developer e Security.
+
+Fim do relatório.
