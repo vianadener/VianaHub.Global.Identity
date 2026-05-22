@@ -1,0 +1,37 @@
+Validei novamente.
+
+Status atual: parcialmente funcional, mas ainda não está 100% correto para Codex Skills.
+
+O repositório agora tem .agents, com AGENTS-README.md, runbook, comandos, template de sessão e .agents/skills. Dentro de .agents/skills existem os agentes po, tech-lead, qa, developer e security, além de uma pasta output.
+
+O problema que ainda bloqueia a estrutura ideal é este: os arquivos SKILL.md dos agentes não têm frontmatter YAML com name e description, que é exigido pela documentação do Codex Skills.
+
+Exemplo do que falta no início de cada SKILL.md:
+
+---
+name: po
+description: Use para transformar solicitações de negócio em features BDD/Gherkin para o projeto Identity.
+---
+
+Também ainda existe uma pasta output dentro de .agents/skills, mas output não é uma skill. O correto seria mover para:
+
+.agents/output
+
+Além disso, ainda há arquivos soltos na raiz como PoAgent.md, DeveloperAgent.md, QaAgent.md, SecurityAgent.md e TechLeadAgent.md, o que pode gerar duplicidade/confusão com os skills oficiais.
+
+Veredito
+
+Melhorou bastante, mas ainda precisa de ajustes.
+
+Item	Status
+.agents existe	OK
+.agents/skills existe	OK
+Agentes separados	OK
+SKILL.md por agente	OK
+Fluxo documentado	OK
+Runbook e comandos	OK
+Frontmatter name/description	Faltando
+output fora de skills	Ainda incorreto
+Arquivos antigos na raiz	Ainda existem
+
+Depois de adicionar o frontmatter e mover output, a estrutura fica adequada para uso com Codex CLI.
