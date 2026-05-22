@@ -14,22 +14,27 @@ Use este template para organizar uma execução completa de feature com o Codex 
 ### 1. PO
 - entrada: solicitação inicial
 - saída: `{{FeatureName}}.feature`
+- aciona automaticamente: Tech Lead
 
 ### 2. Tech Lead
 - entrada: feature do PO
 - saída: `{{FeatureName}}-Design.md`
+- aciona automaticamente: QA e Developer
 
 ### 3. QA
 - entrada: feature + design
 - saída: cenários e cobertura
+- aciona automaticamente: continuidade do Developer quando aplicável
 
 ### 4. Developer
 - entrada: feature + design + QA
 - saída: implementação e testes
+- aciona automaticamente: commit, push e Security
 
 ### 5. Security
 - entrada: implementação completa
 - saída: findings e status
+- aciona automaticamente: review final e PR quando aprovado
 
 ## Artefatos
 

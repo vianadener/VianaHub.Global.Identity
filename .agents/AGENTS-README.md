@@ -17,6 +17,16 @@ O orquestrador é o **Codex CLI**, que executa cada agente a partir do prompt de
 
 `Solicitação inicial -> PO -> Tech Lead -> QA + Developer -> Security -> Review final -> Merge para develop`
 
+## Automação Entre Agentes
+
+- Cada agente deve produzir sua saída e acionar automaticamente a próxima etapa do fluxo.
+- O PO, ao concluir, entrega a feature diretamente ao Tech Lead.
+- O Tech Lead, ao concluir, entrega o design técnico ao QA e ao Developer.
+- O QA e o Developer devem avançar de forma encadeada conforme dependências, sem aguardar intervenção humana entre tarefas.
+- O Developer, ao concluir implementação e testes, faz commit e push e aciona o Security.
+- O Security, ao concluir, aciona a revisão final e a etapa de PR/merge.
+- A intervenção humana só deve ocorrer em bloqueios, aprovações explícitas ou mudança de escopo.
+
 ## Papéis dos Agentes
 
 ### 1. PO - Product Owner
@@ -160,6 +170,7 @@ Para comandos por agente e template de sessão, consulte [CODEX-CLI-COMMANDS.md]
 - O QA valida conformidade com a feature e o design.
 - O Security valida riscos e exposição.
 - Nenhum agente deve assumir o papel de outro sem necessidade explícita.
+- Cada agente é responsável por acionar o próximo agente imediatamente após concluir sua etapa.
 
 ## Critério de Conclusão
 
