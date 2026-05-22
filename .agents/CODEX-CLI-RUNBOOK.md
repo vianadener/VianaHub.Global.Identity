@@ -27,8 +27,25 @@ Padronizar a execução de ponta a ponta de uma feature, desde a solicitação i
 4. Developer
 5. Security
 6. Review final
-7. PR para `develop`
-8. Merge
+7. Commit e push da branch
+8. PR para `develop`
+9. Merge
+
+## Encadeamento Automático
+
+- Ao finalizar, o PO deve disparar o Tech Lead sem aguardar confirmação humana.
+- Ao finalizar, o Tech Lead deve disparar QA e Developer.
+- Ao finalizar, o QA deve registrar a cobertura e liberar a continuação imediata do Developer quando aplicável.
+- Ao finalizar, o Developer deve executar commit, push e disparar o Security.
+- Ao finalizar, o Security deve disparar a revisão final e a abertura do PR quando não houver bloqueios.
+- O fluxo só deve parar para interação humana em caso de impedimento, decisão de escopo ou aprovação externa.
+
+## Intervenções Humanas Permitidas
+
+- Aprovar ou rejeitar uma mudança quando a política do repositório exigir revisão humana.
+- Interromper o fluxo para corrigir bloqueios de segurança.
+- Ajustar escopo quando o requisito original mudar.
+- Confirmar merge somente quando a automação do repositório não puder concluir sozinha.
 
 ## Entradas e Saídas por Agente
 
@@ -69,9 +86,15 @@ Exemplo de fluxo:
 8. Executar QA e implementação conforme dependências
 9. Carregar o prompt de Security
 10. Executar a revisão de segurança
-11. Consolidar review final e abrir PR
-12. Fazer merge em develop após aprovação
+11. Consolidar review final
+12. Fazer commit e push da branch
+13. Abrir PR
+14. Fazer merge em develop após aprovação
 ```
+
+## Regra de Orquestração
+
+O Codex CLI deve tratar a saída de cada agente como entrada automática do próximo agente, preservando os artefatos intermediários e reduzindo a intervenção humana ao mínimo necessário.
 
 ## Convenção de Artefatos
 

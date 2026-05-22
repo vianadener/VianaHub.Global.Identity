@@ -17,6 +17,23 @@ O orquestrador é o **Codex CLI**, que executa cada agente a partir do prompt de
 
 `Solicitação inicial -> PO -> Tech Lead -> QA + Developer -> Security -> Review final -> Merge para develop`
 
+## Automação Entre Agentes
+
+- Cada agente deve produzir sua saída e acionar automaticamente a próxima etapa do fluxo.
+- O PO, ao concluir, entrega a feature diretamente ao Tech Lead.
+- O Tech Lead, ao concluir, entrega o design técnico ao QA e ao Developer.
+- O QA e o Developer devem avançar de forma encadeada conforme dependências, sem aguardar intervenção humana entre tarefas.
+- O Developer, ao concluir implementação e testes, faz commit e push e aciona o Security.
+- O Security, ao concluir, aciona a revisão final e a etapa de PR/merge.
+- A intervenção humana só deve ocorrer em bloqueios, aprovações explícitas ou mudança de escopo.
+
+## Pontos Manuais Remanescentes
+
+- Aprovação de política do repositório, quando exigida para merge.
+- Aprovação explícita em bloqueios de segurança ou inconsistências de arquitetura.
+- Mudança de escopo solicitada pelo usuário durante a execução.
+- Decisão final em caso de conflito entre requisitos, segurança e compatibilidade.
+
 ## Papéis dos Agentes
 
 ### 1. PO - Product Owner
@@ -143,10 +160,11 @@ Ordem recomendada:
 4. Persistir o documento de design técnico.
 5. Executar QA e Developer em paralelo quando as dependências permitirem.
 6. Consolidar a implementação no branch da feature.
-7. Executar Security após a implementação.
-8. Fazer review final cruzado entre Tech Lead, QA, Developer e Security.
-9. Abrir PR para `develop`.
-10. Após aprovação, fazer merge para `develop`.
+7. Fazer commit das alterações e push da branch para o remoto.
+8. Executar Security após a implementação.
+9. Fazer review final cruzado entre Tech Lead, QA, Developer e Security.
+10. Abrir PR para `develop`.
+11. Após aprovação, fazer merge para `develop`.
 
 Para o passo a passo operacional de execução, consulte [CODEX-CLI-RUNBOOK.md](./CODEX-CLI-RUNBOOK.md).
 Para comandos por agente e template de sessão, consulte [CODEX-CLI-COMMANDS.md](./CODEX-CLI-COMMANDS.md) e [FEATURE-SESSION-TEMPLATE.md](./FEATURE-SESSION-TEMPLATE.md).
@@ -159,6 +177,7 @@ Para comandos por agente e template de sessão, consulte [CODEX-CLI-COMMANDS.md]
 - O QA valida conformidade com a feature e o design.
 - O Security valida riscos e exposição.
 - Nenhum agente deve assumir o papel de outro sem necessidade explícita.
+- Cada agente é responsável por acionar o próximo agente imediatamente após concluir sua etapa.
 
 ## Critério de Conclusão
 
