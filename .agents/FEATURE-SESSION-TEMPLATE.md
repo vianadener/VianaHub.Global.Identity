@@ -53,3 +53,7 @@ Use este template para organizar uma execução completa de feature com o Codex 
 - [ ] Security concluído
 - [ ] PR aberto
 - [ ] Merge em `develop`
+
+## Ponto de Intervenção Humana
+
+- Apenas em bloqueio, mudança de escopo ou política explícita de aprovação do repositório.

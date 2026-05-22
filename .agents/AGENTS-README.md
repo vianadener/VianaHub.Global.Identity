@@ -27,6 +27,13 @@ O orquestrador é o **Codex CLI**, que executa cada agente a partir do prompt de
 - O Security, ao concluir, aciona a revisão final e a etapa de PR/merge.
 - A intervenção humana só deve ocorrer em bloqueios, aprovações explícitas ou mudança de escopo.
 
+## Pontos Manuais Remanescentes
+
+- Aprovação de política do repositório, quando exigida para merge.
+- Aprovação explícita em bloqueios de segurança ou inconsistências de arquitetura.
+- Mudança de escopo solicitada pelo usuário durante a execução.
+- Decisão final em caso de conflito entre requisitos, segurança e compatibilidade.
+
 ## Papéis dos Agentes
 
 ### 1. PO - Product Owner

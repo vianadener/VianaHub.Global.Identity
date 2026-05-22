@@ -40,6 +40,13 @@ Padronizar a execução de ponta a ponta de uma feature, desde a solicitação i
 - Ao finalizar, o Security deve disparar a revisão final e a abertura do PR quando não houver bloqueios.
 - O fluxo só deve parar para interação humana em caso de impedimento, decisão de escopo ou aprovação externa.
 
+## Intervenções Humanas Permitidas
+
+- Aprovar ou rejeitar uma mudança quando a política do repositório exigir revisão humana.
+- Interromper o fluxo para corrigir bloqueios de segurança.
+- Ajustar escopo quando o requisito original mudar.
+- Confirmar merge somente quando a automação do repositório não puder concluir sozinha.
+
 ## Entradas e Saídas por Agente
 
 ### PO
