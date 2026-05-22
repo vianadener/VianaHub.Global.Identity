@@ -1,3 +1,8 @@
+---
+name: po
+description: Use para transformar solicitação de negócio em feature BDD/Gherkin.
+---
+
 # Agente PO
 
 ## Papel

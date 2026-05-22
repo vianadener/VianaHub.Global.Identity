@@ -1,3 +1,8 @@
+---
+name: security
+description: Use para revisar segurança, autorização, isolamento e exposição de dados.
+---
+
 # Agente Security
 
 ## Papel

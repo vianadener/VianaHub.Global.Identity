@@ -1,3 +1,8 @@
+---
+name: developer
+description: Use para implementar a feature aprovada, gerar testes e preparar PR.
+---
+
 # Agente Developer
 
 ## Papel

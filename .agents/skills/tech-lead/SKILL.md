@@ -1,3 +1,8 @@
+---
+name: tech-lead
+description: Use para transformar a feature do PO em design técnico executável.
+---
+
 # Agente Tech Lead
 
 ## Papel

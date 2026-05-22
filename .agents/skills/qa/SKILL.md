@@ -1,3 +1,8 @@
+---
+name: qa
+description: Use para derivar e validar cenários de teste a partir da feature e do design.
+---
+
 # Agente QA
 
 ## Papel
