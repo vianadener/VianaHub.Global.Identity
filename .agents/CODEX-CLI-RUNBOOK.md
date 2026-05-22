@@ -27,8 +27,9 @@ Padronizar a execução de ponta a ponta de uma feature, desde a solicitação i
 4. Developer
 5. Security
 6. Review final
-7. PR para `develop`
-8. Merge
+7. Commit e push da branch
+8. PR para `develop`
+9. Merge
 
 ## Entradas e Saídas por Agente
 
@@ -69,8 +70,10 @@ Exemplo de fluxo:
 8. Executar QA e implementação conforme dependências
 9. Carregar o prompt de Security
 10. Executar a revisão de segurança
-11. Consolidar review final e abrir PR
-12. Fazer merge em develop após aprovação
+11. Consolidar review final
+12. Fazer commit e push da branch
+13. Abrir PR
+14. Fazer merge em develop após aprovação
 ```
 
 ## Convenção de Artefatos

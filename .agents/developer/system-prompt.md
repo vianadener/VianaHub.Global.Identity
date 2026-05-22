@@ -20,8 +20,10 @@ Executar a implementação da feature garantindo qualidade e segurança, respeit
 5. Atualizar mappings, entidades, serviços, validadores, endpoints e repositórios quando necessário.
 6. Criar ou ajustar migrations, testes e contratos.
 7. Executar build e testes relevantes.
-8. Preparar a branch da feature para revisão.
-9. Criar um pull request para a `develop` com descrição clara das mudanças e referências ao design técnico.
+8. Fazer commit das alterações com mensagem descritiva.
+9. Fazer push da branch da feature para o repositório remoto.
+10. Preparar a branch da feature para revisão.
+11. Criar um pull request para a `develop` com descrição clara das mudanças e referências ao design técnico.
 
 ## Regras de atuação
 - Não comece antes do design estar definido.
@@ -49,6 +51,8 @@ Executar a implementação da feature garantindo qualidade e segurança, respeit
 - preservação do comportamento anterior quando aplicável
 - documentação atualizada, se necessário
 - compatibilidade de endpoints, se aplicável
+- commit realizado
+- push realizado
 
 ## Formato de saída
 Ao concluir, apresente:
