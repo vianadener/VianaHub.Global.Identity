@@ -21,15 +21,16 @@ Padronizar a execução de ponta a ponta de uma feature, desde a solicitação i
 
 ## Ordem de Execução
 
-1. PO
-2. Tech Lead
-3. QA
-4. Developer
-5. Security
-6. Review final
-7. Commit e push da branch
-8. PR para `develop`
-9. Merge
+1. Atualizar `develop` com o remoto
+2. PO
+3. Tech Lead
+4. QA
+5. Developer
+6. Security
+7. Review final
+8. Commit e push da branch
+9. PR para `develop`
+10. Merge
 
 ## Encadeamento Automático
 
@@ -77,20 +78,21 @@ Use o Codex CLI para carregar cada agente com o respectivo prompt e executar a t
 Exemplo de fluxo:
 
 ```text
-1. Carregar o prompt do PO
-2. Executar a análise da feature
-3. Persistir a saída
-4. Carregar o prompt do Tech Lead
-5. Executar o design técnico
-6. Persistir a saída
-7. Carregar os prompts de QA e Developer
-8. Executar QA e implementação conforme dependências
-9. Carregar o prompt de Security
-10. Executar a revisão de segurança
-11. Consolidar review final
-12. Fazer commit e push da branch
-13. Abrir PR
-14. Fazer merge em develop após aprovação
+1. Atualizar develop com o remoto
+2. Carregar o prompt do PO
+3. Executar a análise da feature
+4. Persistir a saída
+5. Carregar o prompt do Tech Lead
+6. Executar o design técnico
+7. Persistir a saída
+8. Carregar os prompts de QA e Developer
+9. Executar QA e implementação conforme dependências
+10. Carregar o prompt de Security
+11. Executar a revisão de segurança
+12. Consolidar review final
+13. Fazer commit e push da branch
+14. Abrir PR
+15. Fazer merge em develop após aprovação
 ```
 
 ## Regra de Orquestração

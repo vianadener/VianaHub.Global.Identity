@@ -8,6 +8,7 @@ Use este template para organizar uma execução completa de feature com o Codex 
 - Branch: `feature/{{FeatureName}}`
 - Data de início: `{{StartDate}}`
 - Responsável pela execução: `Codex CLI`
+- Base obrigatória: `develop` atualizada com o remoto antes da criação da branch
 
 ## Etapas
 

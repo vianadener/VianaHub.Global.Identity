@@ -155,17 +155,18 @@ O Codex CLI deve executar os agentes em sequência e preservar os artefatos gera
 
 Ordem recomendada:
 
-1. Executar o PO com o prompt da feature.
-2. Persistir a saída do PO como artefato da feature.
-3. Executar o Tech Lead com a feature criada.
-4. Persistir o documento de design técnico.
-5. Executar QA e Developer em paralelo quando as dependências permitirem.
-6. Consolidar a implementação no branch da feature.
-7. Fazer commit das alterações e push da branch para o remoto.
-8. Executar Security após a implementação.
-9. Fazer review final cruzado entre Tech Lead, QA, Developer e Security.
-10. Abrir PR para `develop`.
-11. Após aprovação, fazer merge para `develop`.
+1. Atualizar `develop` com o remoto antes de iniciar qualquer feature.
+2. Executar o PO com o prompt da feature.
+3. Persistir a saída do PO como artefato da feature.
+4. Executar o Tech Lead com a feature criada.
+5. Persistir o documento de design técnico.
+6. Executar QA e Developer em paralelo quando as dependências permitirem.
+7. Consolidar a implementação no branch da feature.
+8. Fazer commit das alterações e push da branch para o remoto.
+9. Executar Security após a implementação.
+10. Fazer review final cruzado entre Tech Lead, QA, Developer e Security.
+11. Abrir PR para `develop`.
+12. Após aprovação, fazer merge para `develop`.
 
 Para o passo a passo operacional de execução, consulte [CODEX-CLI-RUNBOOK.md](./CODEX-CLI-RUNBOOK.md).
 Para comandos por agente e template de sessão, consulte [CODEX-CLI-COMMANDS.md](./CODEX-CLI-COMMANDS.md) e [FEATURE-SESSION-TEMPLATE.md](./FEATURE-SESSION-TEMPLATE.md).
