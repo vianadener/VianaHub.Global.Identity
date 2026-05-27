@@ -20,7 +20,7 @@
 
   <!-- Outros ajustes opcionais -->
   <RunConfiguration>
-    <TargetFrameworkVersion>net6.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>net8.0</TargetFrameworkVersion>
     <ResultsDirectory>TestResults</ResultsDirectory>
   </RunConfiguration>
 </RunSettings>
