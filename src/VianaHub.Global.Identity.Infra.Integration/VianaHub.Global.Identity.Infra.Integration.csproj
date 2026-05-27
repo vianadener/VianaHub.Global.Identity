@@ -7,14 +7,20 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.8" />
-    <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.8" />
+    <Compile Remove="Interfaces\**" />
+    <Compile Remove="Services\**" />
+    <Compile Remove="Tools\**" />
+    <EmbeddedResource Remove="Interfaces\**" />
+    <EmbeddedResource Remove="Services\**" />
+    <EmbeddedResource Remove="Tools\**" />
+    <None Remove="Interfaces\**" />
+    <None Remove="Services\**" />
+    <None Remove="Tools\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Interfaces\" />
-    <Folder Include="Services\" />
-    <Folder Include="Tools\" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.8" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.8" />
   </ItemGroup>
 
   <ItemGroup>

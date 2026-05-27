@@ -11,13 +11,13 @@ public static class DatabaseTelemetry
 {
     // Activity Source para distributed tracing
     public static readonly ActivitySource ActivitySource = new(
-        "VianaHub.Global.Gerit.Database",
+        "VianaHub.Global.Identity.Database",
         "1.0.0"
     );
 
     // Meter para métricas customizadas
     private static readonly Meter Meter = new(
-        "VianaHub.Global.Gerit.Database",
+        "VianaHub.Global.Identity.Database",
         "1.0.0"
     );
 
