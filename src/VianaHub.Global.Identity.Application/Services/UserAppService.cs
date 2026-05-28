@@ -213,12 +213,15 @@ public class UserAppService : IUserAppService
             {
                 try
                 {
-                    var record = csv.GetRecord<BulkUploadUserItem>();
-                    if (record != null)
+                    var raw = csv.GetRecord<BulkUploadUserItem>();
+                    if (raw != null)
                     {
                         // Sanitiza e normaliza campos
-                        record.Name = record.Name?.SanitizeCsvInput().NormalizeUtf8();
-                        record.Secret = record.Secret?.SanitizeCsvInput().NormalizeUtf8();
+                        var record = raw with
+                        {
+                            Name = raw.Name?.SanitizeCsvInput().NormalizeUtf8(),
+                            Secret = raw.Secret?.SanitizeCsvInput().NormalizeUtf8()
+                        };
 
                         // Valida se os campos não contêm conteúdo perigoso
                         if (!string.IsNullOrEmpty(record.Name) && !record.Name.IsSafeCsvValue())

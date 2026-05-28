@@ -189,12 +189,15 @@ public class RoleAppService : IRoleAppService
             {
                 try
                 {
-                    var record = csv.GetRecord<BulkUploadRoleItem>();
-                    if (record != null)
+                    var raw = csv.GetRecord<BulkUploadRoleItem>();
+                    if (raw != null)
                     {
                         // Sanitiza e normaliza campos
-                        record.Name = record.Name?.SanitizeCsvInput().NormalizeUtf8();
-                        record.Description = record.Description?.SanitizeCsvInput().NormalizeUtf8();
+                        var record = raw with
+                        {
+                            Name = raw.Name?.SanitizeCsvInput().NormalizeUtf8(),
+                            Description = raw.Description?.SanitizeCsvInput().NormalizeUtf8()
+                        };
 
                         // Valida se os campos não contêm conteúdo perigoso
                         if (record.AppId <= 0)

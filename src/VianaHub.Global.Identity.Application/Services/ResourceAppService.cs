@@ -192,12 +192,15 @@ public class ResourceAppService : IResourceAppService
             {
                 try
                 {
-                    var record = csv.GetRecord<BulkUploadResourceItem>();
-                    if (record != null)
+                    var raw = csv.GetRecord<BulkUploadResourceItem>();
+                    if (raw != null)
                     {
                         // Sanitiza e normaliza campos
-                        record.Name = record.Name?.SanitizeCsvInput().NormalizeUtf8();
-                        record.Description = record.Description?.SanitizeCsvInput().NormalizeUtf8();
+                        var record = raw with
+                        {
+                            Name = raw.Name?.SanitizeCsvInput().NormalizeUtf8(),
+                            Description = raw.Description?.SanitizeCsvInput().NormalizeUtf8()
+                        };
 
                         // Valida AppId
                         if (record.AppId <= 0)

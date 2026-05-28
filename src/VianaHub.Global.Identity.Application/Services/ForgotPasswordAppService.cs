@@ -55,10 +55,9 @@ public class ForgotPasswordAppService : IForgotPasswordAppService
 
     public async Task<ForgotPasswordResponse> ForgotPasswordAsync(ForgotPasswordRequest request, CancellationToken ct)
     {
-        var genericResponse = new ForgotPasswordResponse
-        {
-            Message = _localization.GetMessage("Application.Service.Auth.ForgotPassword.GenericSuccess")
-        };
+        var genericResponse = new ForgotPasswordResponse(
+            Message: _localization.GetMessage("Application.Service.Auth.ForgotPassword.GenericSuccess")
+        );
 
         // Resolve o tenant a partir do LoginIdentifier — sem expor TenantId ao cliente
         var tenant = await _tenantRepo.GetByLoginIdentifierAsync(request.LoginIdentifier, ct);
@@ -125,7 +124,7 @@ public class ForgotPasswordAppService : IForgotPasswordAppService
         if (entity is null || !entity.IsValid())
         {
             _notify.Add(_localization.GetMessage("Application.Service.Auth.ValidateResetToken.InvalidOrExpired"), 400);
-            return new ValidateResetTokenResponse { IsValid = false };
+            return new ValidateResetTokenResponse(IsValid: false);
         }
 
         _requestTenantContext.SetTenantId(entity.TenantId);
@@ -134,10 +133,10 @@ public class ForgotPasswordAppService : IForgotPasswordAppService
         if (user is null || !user.IsActive)
         {
             _notify.Add(_localization.GetMessage("Application.Service.Auth.ValidateResetToken.InvalidOrExpired"), 400);
-            return new ValidateResetTokenResponse { IsValid = false };
+            return new ValidateResetTokenResponse(IsValid: false);
         }
 
-        return new ValidateResetTokenResponse { IsValid = true };
+        return new ValidateResetTokenResponse(IsValid: true);
     }
 
     public async Task<ResetPasswordResponse> ResetPasswordAsync(ResetPasswordRequest request, string ipAddress, string userAgent, CancellationToken ct)
@@ -149,19 +148,19 @@ public class ForgotPasswordAppService : IForgotPasswordAppService
         if (tokenEntity is null)
         {
             _notify.Add(_localization.GetMessage("Application.Service.Auth.ResetPassword.InvalidToken"), 409);
-            return new ResetPasswordResponse();
+            return new ResetPasswordResponse(Message: string.Empty);
         }
 
         if (tokenEntity.Used)
         {
             _notify.Add(_localization.GetMessage("Application.Service.Auth.ResetPassword.TokenAlreadyUsed"), 410);
-            return new ResetPasswordResponse();
+            return new ResetPasswordResponse(Message: string.Empty);
         }
 
         if (DateTime.UtcNow >= tokenEntity.ExpiresAt)
         {
             _notify.Add(_localization.GetMessage("Application.Service.Auth.ResetPassword.TokenExpired"), 410);
-            return new ResetPasswordResponse();
+            return new ResetPasswordResponse(Message: string.Empty);
         }
 
         _requestTenantContext.SetTenantId(tokenEntity.TenantId);
@@ -170,7 +169,7 @@ public class ForgotPasswordAppService : IForgotPasswordAppService
         if (user is null || !user.IsActive)
         {
             _notify.Add(_localization.GetMessage("Application.Service.Auth.ResetPassword.InvalidToken"), 409);
-            return new ResetPasswordResponse();
+            return new ResetPasswordResponse(Message: string.Empty);
         }
 
         var newPasswordHash = DomainExtensions.HashClientSecret(request.NewPassword);
@@ -181,7 +180,7 @@ public class ForgotPasswordAppService : IForgotPasswordAppService
         {
             _logger.LogError("ResetPassword: falha ao atualizar senha do userId={UserId}", user.Id);
             _notify.Add(_localization.GetMessage("Application.Service.Auth.ResetPassword.UpdateFailed"), 500);
-            return new ResetPasswordResponse();
+            return new ResetPasswordResponse(Message: string.Empty);
         }
 
         tokenEntity.MarkAsUsed(user.Id);
@@ -202,9 +201,8 @@ public class ForgotPasswordAppService : IForgotPasswordAppService
             _logger.LogError(ex, "ResetPassword: falha ao enviar email de confirmação para userId={UserId}", user.Id);
         }
 
-        return new ResetPasswordResponse
-        {
-            Message = _localization.GetMessage("Application.Service.Auth.ResetPassword.Success")
-        };
+        return new ResetPasswordResponse(
+            Message: _localization.GetMessage("Application.Service.Auth.ResetPassword.Success")
+        );
     }
 }
