@@ -1,7 +1,6 @@
 ﻿namespace VianaHub.Global.Identity.Application.Dto.Request.User;
 
-public class UpdateUserRequest
-{
-    public string Name { get; set; }
-    public string UrlImage { get; set; }
-}
+public record UpdateUserRequest(
+    string Name,
+    string UrlImage
+);

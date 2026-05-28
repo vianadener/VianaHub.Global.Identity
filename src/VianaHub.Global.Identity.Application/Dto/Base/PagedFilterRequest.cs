@@ -2,8 +2,8 @@
 
 namespace VianaHub.Global.Identity.Application.Dto.Base;
 
-public class PagedFilterRequest : Paging
+public record PagedFilterRequest : Paging
 {
-    public string Search { get; set; }
+    public string? Search { get; set; }
     public bool? IsActive { get; set; } = true;
 }

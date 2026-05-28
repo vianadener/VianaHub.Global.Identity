@@ -4,7 +4,7 @@
 /// Configurações do JWT (JSON Web Token) para autenticação e autorização.
 /// Esta classe é compartilhada entre as camadas Application e API.
 /// </summary>
-public class JwtSettings
+public record JwtSettings
 {
     /// <summary>
     /// Emissor do token (issuer).

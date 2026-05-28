@@ -1,8 +1,8 @@
 ﻿namespace VianaHub.Global.Identity.Application.Dto.Base;
 
-public class ListPageResponse<T>
+public record ListPageResponse<T>
 {
-    public IEnumerable<T> Items { get; set; } = [];
+    public IEnumerable<T> Items { get; set; } = Array.Empty<T>();
     public int PageNumber { get; set; }
     public int PageSize { get; set; }
     public int TotalItems { get; set; }

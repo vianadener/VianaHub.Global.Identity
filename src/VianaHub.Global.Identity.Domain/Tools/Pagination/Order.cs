@@ -1,9 +1,9 @@
 ﻿namespace VianaHub.Global.Identity.Domain.Tools.Pagination;
 
-public class Order
+public record Order
 {
-    private string sortBy;
-    private string sortDirection;
+    private string? sortBy;
+    private string? sortDirection;
 
     public string SortBy
     {

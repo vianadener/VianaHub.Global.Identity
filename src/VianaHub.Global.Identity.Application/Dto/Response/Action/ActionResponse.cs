@@ -1,8 +1,7 @@
 ﻿namespace VianaHub.Global.Identity.Application.Dto.Response.Action;
 
-public class ActionResponse
-{
-    public int Id { get; set; }
-    public string Name { get; set; }
-    public bool IsActive { get; set; }
-}
+public record ActionResponse(
+    int Id,
+    string Name,
+    bool IsActive
+);

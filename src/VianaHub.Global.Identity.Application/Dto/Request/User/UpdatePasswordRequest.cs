@@ -1,7 +1,6 @@
 ﻿namespace VianaHub.Global.Identity.Application.Dto.Request.User;
 
-public class UpdatePasswordRequest
-{
-    public string CurrentPassword { get; set; }
-    public string NewPassword { get; set; }
-}
+public record UpdatePasswordRequest(
+    string CurrentPassword,
+    string NewPassword
+);

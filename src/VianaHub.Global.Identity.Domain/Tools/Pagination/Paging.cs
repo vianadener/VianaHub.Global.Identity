@@ -1,6 +1,6 @@
 ﻿namespace VianaHub.Global.Identity.Domain.Tools.Pagination;
 
-public class Paging : Order
+public record Paging : Order
 {
     private const int _maxPageSize = 1000;
     private const int _minPageSize = 10;

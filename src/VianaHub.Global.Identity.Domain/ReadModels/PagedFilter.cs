@@ -2,7 +2,7 @@
 
 namespace VianaHub.Global.Identity.Domain.ReadModels;
 
-public class PagedFilter : Paging
+public record PagedFilter : Paging
 {
     public string Search { get; set; }
     public bool? IsActive { get; set; } = true;

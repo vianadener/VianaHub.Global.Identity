@@ -1,6 +1,6 @@
 ﻿namespace VianaHub.Global.Identity.Domain.ReadModels;
 
-public class JobPagedFilter : PagedFilter
+public record JobPagedFilter : PagedFilter
 {
     public string Category { get; set; }
     public bool? IsActive { get; set; } = true;

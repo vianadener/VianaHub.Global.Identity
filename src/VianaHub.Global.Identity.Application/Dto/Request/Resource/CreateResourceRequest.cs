@@ -1,8 +1,3 @@
 ﻿namespace VianaHub.Global.Identity.Application.Dto.Request.Resource;
 
-public class CreateResourceRequest
-{
-    public int AppId { get; set; }
-    public string Name { get; set; }
-    public string Description { get; set; }
-}
+public record CreateResourceRequest(int AppId, string Name, string Description);
