@@ -75,12 +75,7 @@ public class RefreshTokenService : IRefreshTokenService
         var newEntity = new RefreshTokenEntity(tenantId, existing.AppId, existing.UserId, newHash, expiresAt, existing.UserId);
         await _refreshRepo.CreateAsync(newEntity, ct);
 
-        return new RefreshTokenRotateResult
-        {
-            OldEntity = existing,
-            NewToken = newRawToken,
-            NewEntity = newEntity
-        };
+        return new RefreshTokenRotateResult(existing, newRawToken, newEntity);
     }
 
     private static string GenerateRawToken()

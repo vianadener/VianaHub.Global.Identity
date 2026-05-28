@@ -60,7 +60,7 @@ public class TenantAppServiceTests
     public async Task GetAllAsync_Sucesso_DeveRetornarLista()
     {
         var entities = new List<TenantEntity> { BuildTenant(1), BuildTenant(2) };
-        var mapped = new List<TenantResponse> { new() { Id = 1 }, new() { Id = 2 } };
+        var mapped = new List<TenantResponse> { new(1, "", "", true), new(2, "", "", true) };
         _repoMock.Setup(x => x.GetAllAsync(default)).ReturnsAsync(entities);
         _mapperMock.Setup(x => x.Map<IEnumerable<TenantResponse>>(entities)).Returns(mapped);
 
@@ -94,7 +94,7 @@ public class TenantAppServiceTests
     public async Task GetByIdAsync_Sucesso_DeveRetornarTenant()
     {
         var entity = BuildTenant(1);
-        var mapped = new TenantDetailResponse { Id = 1 };
+        var mapped = new TenantDetailResponse(1, "", "", "", "", "", "", true);
         _repoMock.Setup(x => x.GetByIdAsync(1, default)).ReturnsAsync(entity);
         _mapperMock.Setup(x => x.Map<TenantDetailResponse>(entity)).Returns(mapped);
 
@@ -128,7 +128,7 @@ public class TenantAppServiceTests
     {
         var entities = new List<TenantEntity> { BuildTenant(1) };
         var listPage = new ListPage<TenantEntity> { Items = entities, TotalItems = 1, TotalPages = 1, PageNumber = 1, PageSize = 10 };
-        var mappedPage = new ListPageResponse<TenantResponse>(new List<TenantResponse> { new() { Id = 1 } }, 1, 10, 1, 1);
+        var mappedPage = new ListPageResponse<TenantResponse>(new List<TenantResponse> { new(1, "", "", true) }, 1, 10, 1, 1);
         _repoMock.Setup(x => x.GetPagedAsync(It.IsAny<PagedFilter>(), default)).ReturnsAsync(listPage);
         _mapperMock.Setup(x => x.Map<ListPageResponse<TenantResponse>>(listPage)).Returns(mappedPage);
 
@@ -167,8 +167,8 @@ public class TenantAppServiceTests
     [Trait("Application", "")]
     public async Task CreateAsync_Sucesso_DeveRetornarTrue()
     {
-        var request = new CreateTenantRequest { Name = "Novo Tenant", Description = "Desc", Alias = "alias" };
-        _repoMock.Setup(x => x.ExistsByNameAsync(request.Name, default)).ReturnsAsync(false);
+        var request = new CreateTenantRequest("Novo Tenant", "Desc", "alias", null, null, null);
+        _domainMock.Setup(x => x.ExistsByNameAsync(request.Name, default)).ReturnsAsync(false);
         _domainMock.Setup(x => x.CreateAsync(It.IsAny<TenantEntity>(), default)).ReturnsAsync(true);
 
         var sut = CreateSut();
@@ -182,8 +182,8 @@ public class TenantAppServiceTests
     [Trait("Application", "")]
     public async Task CreateAsync_NomeJaExiste_DeveRetornarFalseENotificar()
     {
-        var request = new CreateTenantRequest { Name = "Tenant Existente" };
-        _repoMock.Setup(x => x.ExistsByNameAsync(request.Name, default)).ReturnsAsync(true);
+        var request = new CreateTenantRequest("Tenant Existente", "Desc", "alias", null, null, null);
+        _domainMock.Setup(x => x.ExistsByNameAsync(request.Name, default)).ReturnsAsync(true);
 
         var sut = CreateSut();
         var result = await sut.CreateAsync(request, default);
@@ -197,8 +197,8 @@ public class TenantAppServiceTests
     [Trait("Application", "")]
     public async Task CreateAsync_DominioFalha_DeveRetornarFalse()
     {
-        var request = new CreateTenantRequest { Name = "Novo Tenant", Description = "Desc", Alias = "alias" };
-        _repoMock.Setup(x => x.ExistsByNameAsync(request.Name, default)).ReturnsAsync(false);
+        var request = new CreateTenantRequest("Novo Tenant", "Desc", "alias", null, null, null);
+        _domainMock.Setup(x => x.ExistsByNameAsync(request.Name, default)).ReturnsAsync(false);
         _domainMock.Setup(x => x.CreateAsync(It.IsAny<TenantEntity>(), default)).ReturnsAsync(false);
 
         var sut = CreateSut();
@@ -216,7 +216,7 @@ public class TenantAppServiceTests
     public async Task UpdateAsync_Sucesso_DeveRetornarTrue()
     {
         var entity = BuildTenant(1);
-        var request = new UpdateTenantRequest { Name = "Tenant Atualizado", Description = "Nova Desc", Alias = "novo-alias" };
+        var request = new UpdateTenantRequest("Tenant Atualizado", "Nova Desc", "novo-alias", null, null, null);
         _repoMock.Setup(x => x.GetByIdAsync(1, default)).ReturnsAsync(entity);
         _domainMock.Setup(x => x.UpdateAsync(entity, default)).ReturnsAsync(true);
 
@@ -232,7 +232,7 @@ public class TenantAppServiceTests
     public async Task UpdateAsync_NaoEncontrado_DeveRetornarFalseENotificar()
     {
         _repoMock.Setup(x => x.GetByIdAsync(99, default)).ReturnsAsync((TenantEntity)null);
-        var request = new UpdateTenantRequest { Name = "Tenant", Description = "Desc", Alias = "alias" };
+        var request = new UpdateTenantRequest("Tenant", "Desc", "alias", null, null, null);
 
         var sut = CreateSut();
         var result = await sut.UpdateAsync(99, request, default);
@@ -396,7 +396,7 @@ public class TenantAppServiceTests
         var csvContent = "Name;Description;Alias;UrlImage;Settings;Remarks\r\nTenant Existente;Desc;alias;;;\r\n";
         var fileMock = BuildFileMock(System.Text.Encoding.UTF8.GetBytes(csvContent));
         _fileValidationMock.Setup(x => x.ValidateFile(fileMock.Object)).Returns(true);
-        _repoMock.Setup(x => x.ExistsByNameAsync(It.IsAny<string>(), default)).ReturnsAsync(true);
+        _domainMock.Setup(x => x.ExistsByNameAsync(It.IsAny<string>(), default)).ReturnsAsync(true);
 
         var sut = CreateSut();
         var result = await sut.BulkUploadAsync(fileMock.Object, default);
@@ -413,7 +413,7 @@ public class TenantAppServiceTests
         var csvContent = "Name;Description;Alias;UrlImage;Settings;Remarks\r\nNovo Tenant;Descrição;alias;;;\r\n";
         var fileMock = BuildFileMock(System.Text.Encoding.UTF8.GetBytes(csvContent));
         _fileValidationMock.Setup(x => x.ValidateFile(fileMock.Object)).Returns(true);
-        _repoMock.Setup(x => x.ExistsByNameAsync(It.IsAny<string>(), default)).ReturnsAsync(false);
+        _domainMock.Setup(x => x.ExistsByNameAsync(It.IsAny<string>(), default)).ReturnsAsync(false);
         _domainMock.Setup(x => x.CreateAsync(It.IsAny<TenantEntity>(), default)).ReturnsAsync(true);
 
         var sut = CreateSut();
@@ -430,7 +430,7 @@ public class TenantAppServiceTests
         var csvContent = "Name;Description;Alias;UrlImage;Settings;Remarks\r\nNovo Tenant;Descrição;alias;;;\r\n";
         var fileMock = BuildFileMock(System.Text.Encoding.UTF8.GetBytes(csvContent));
         _fileValidationMock.Setup(x => x.ValidateFile(fileMock.Object)).Returns(true);
-        _repoMock.Setup(x => x.ExistsByNameAsync(It.IsAny<string>(), default)).ReturnsAsync(false);
+        _domainMock.Setup(x => x.ExistsByNameAsync(It.IsAny<string>(), default)).ReturnsAsync(false);
         _domainMock.Setup(x => x.CreateAsync(It.IsAny<TenantEntity>(), default)).ReturnsAsync(false);
 
         var sut = CreateSut();
