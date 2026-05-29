@@ -54,7 +54,7 @@ public class JwtKeyAppServiceTests
     public async Task GetByTenantAsync_Sucesso_DeveRetornarLista()
     {
         var entities = new List<JwtKeyEntity> { BuildKey(1), BuildKey(2) };
-        var mapped = new List<JwtKeyResponse> { new() { Id = 1 }, new() { Id = 2 } };
+        var mapped = new List<JwtKeyResponse> { new(1, TenantId, Guid.NewGuid(), "public-key", true), new(2, TenantId, Guid.NewGuid(), "public-key", true) };
         _repoMock.Setup(x => x.GetByTenantAsync(TenantId, default)).ReturnsAsync(entities);
         _mapperMock.Setup(x => x.Map<IEnumerable<JwtKeyResponse>>(entities)).Returns(mapped);
 
@@ -88,7 +88,7 @@ public class JwtKeyAppServiceTests
     public async Task GetActiveKeyAsync_Sucesso_DeveRetornarChaveAtiva()
     {
         var entity = BuildKey(1);
-        var mapped = new JwtKeyResponse { Id = 1 };
+        var mapped = new JwtKeyResponse(1, TenantId, Guid.NewGuid(), "public-key", true);
         _repoMock.Setup(x => x.GetActiveKeyAsync(TenantId, default)).ReturnsAsync(entity);
         _mapperMock.Setup(x => x.Map<JwtKeyResponse>(entity)).Returns(mapped);
 

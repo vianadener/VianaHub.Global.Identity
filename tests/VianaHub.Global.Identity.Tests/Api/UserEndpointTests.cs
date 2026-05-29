@@ -43,10 +43,8 @@ public class UserEndpointTests : IClassFixture<UserEndpointTests.UserWebApplicat
     [Trait("Api", "")]
     public async Task GetAll_Sucesso_DeveRetornar200()
     {
-        var users = Builder<UserResponse>.CreateListOfSize(3)
-            .All()
-            .With(x => x.IsActive = true)
-            .Build()
+        var users = Enumerable.Range(1, 3)
+            .Select(i => new UserResponse(i, $"User{i}", null, null, true))
             .ToList();
 
         _factory.UserAppServiceMock
@@ -92,10 +90,7 @@ public class UserEndpointTests : IClassFixture<UserEndpointTests.UserWebApplicat
     [Trait("Api", "")]
     public async Task GetById_Sucesso_DeveRetornar200()
     {
-        var user = Builder<UserResponse>.CreateNew()
-            .With(x => x.Id = 1)
-            .With(x => x.IsActive = true)
-            .Build();
+        var user = new UserResponse(1, "User Test", null, null, true);
 
         _factory.UserAppServiceMock
             .Setup(x => x.GetByIdAsync(1, It.IsAny<CancellationToken>()))
@@ -146,10 +141,8 @@ public class UserEndpointTests : IClassFixture<UserEndpointTests.UserWebApplicat
     [Trait("Api", "")]
     public async Task GetPaged_Sucesso_DeveRetornar200()
     {
-        var items = Builder<UserResponse>.CreateListOfSize(2)
-            .All()
-            .With(x => x.IsActive = true)
-            .Build()
+        var items = Enumerable.Range(1, 2)
+            .Select(i => new UserResponse(i, $"User{i}", null, null, true))
             .ToList();
 
         var paged = new ListPageResponse<UserResponse>(items, 1, 10, 2, 1);
@@ -199,11 +192,7 @@ public class UserEndpointTests : IClassFixture<UserEndpointTests.UserWebApplicat
     [Trait("Api", "")]
     public async Task Create_Sucesso_DeveRetornar201()
     {
-        var request = Builder<CreateUserRequest>.CreateNew()
-            .With(x => x.Name = "Usuário Teste")
-            .With(x => x.Secret = "Senha@123")
-            .With(x => x.ConfirmSecret = "Senha@123")
-            .Build();
+        var request = new CreateUserRequest("Usuário Teste", "Senha@123", "Senha@123", null);
 
         _factory.UserAppServiceMock
             .Setup(x => x.CreateAsync(It.IsAny<CreateUserRequest>(), It.IsAny<CancellationToken>()))
@@ -218,11 +207,7 @@ public class UserEndpointTests : IClassFixture<UserEndpointTests.UserWebApplicat
     [Trait("Api", "")]
     public async Task Create_DadosInvalidos_DeveRetornar400()
     {
-        var request = Builder<CreateUserRequest>.CreateNew()
-            .With(x => x.Name = string.Empty)
-            .With(x => x.Secret = string.Empty)
-            .With(x => x.ConfirmSecret = string.Empty)
-            .Build();
+        var request = new CreateUserRequest(string.Empty, string.Empty, string.Empty, null);
 
         _factory.UserAppServiceMock
             .Setup(x => x.CreateAsync(It.IsAny<CreateUserRequest>(), It.IsAny<CancellationToken>()))
@@ -243,11 +228,7 @@ public class UserEndpointTests : IClassFixture<UserEndpointTests.UserWebApplicat
     [Trait("Api", "")]
     public async Task Create_Erro_DeveRetornar500()
     {
-        var request = Builder<CreateUserRequest>.CreateNew()
-            .With(x => x.Name = "Usuário Teste")
-            .With(x => x.Secret = "Senha@123")
-            .With(x => x.ConfirmSecret = "Senha@123")
-            .Build();
+        var request = new CreateUserRequest("Usuário Teste", "Senha@123", "Senha@123", null);
 
         _factory.UserAppServiceMock
             .Setup(x => x.CreateAsync(It.IsAny<CreateUserRequest>(), It.IsAny<CancellationToken>()))
@@ -266,9 +247,7 @@ public class UserEndpointTests : IClassFixture<UserEndpointTests.UserWebApplicat
     [Trait("Api", "")]
     public async Task Update_Sucesso_DeveRetornar200()
     {
-        var request = Builder<UpdateUserRequest>.CreateNew()
-            .With(x => x.Name = "Usuário Atualizado")
-            .Build();
+        var request = new UpdateUserRequest("Usuário Atualizado", null);
 
         _factory.UserAppServiceMock
             .Setup(x => x.UpdateAsync(1, It.IsAny<UpdateUserRequest>(), It.IsAny<CancellationToken>()))
@@ -283,9 +262,7 @@ public class UserEndpointTests : IClassFixture<UserEndpointTests.UserWebApplicat
     [Trait("Api", "")]
     public async Task Update_NaoEncontrado_DeveRetornar410()
     {
-        var request = Builder<UpdateUserRequest>.CreateNew()
-            .With(x => x.Name = "Usuário")
-            .Build();
+        var request = new UpdateUserRequest("Usuário", null);
 
         _factory.UserAppServiceMock
             .Setup(x => x.UpdateAsync(99, It.IsAny<UpdateUserRequest>(), It.IsAny<CancellationToken>()))
@@ -306,9 +283,7 @@ public class UserEndpointTests : IClassFixture<UserEndpointTests.UserWebApplicat
     [Trait("Api", "")]
     public async Task Update_Duplicado_DeveRetornar409()
     {
-        var request = Builder<UpdateUserRequest>.CreateNew()
-            .With(x => x.Name = "Usuário Duplicado")
-            .Build();
+        var request = new UpdateUserRequest("Usuário Duplicado", null);
 
         _factory.UserAppServiceMock
             .Setup(x => x.UpdateAsync(1, It.IsAny<UpdateUserRequest>(), It.IsAny<CancellationToken>()))
@@ -329,9 +304,7 @@ public class UserEndpointTests : IClassFixture<UserEndpointTests.UserWebApplicat
     [Trait("Api", "")]
     public async Task Update_Erro_DeveRetornar500()
     {
-        var request = Builder<UpdateUserRequest>.CreateNew()
-            .With(x => x.Name = "Usuário")
-            .Build();
+        var request = new UpdateUserRequest("Usuário", null);
 
         _factory.UserAppServiceMock
             .Setup(x => x.UpdateAsync(It.IsAny<int>(), It.IsAny<UpdateUserRequest>(), It.IsAny<CancellationToken>()))
@@ -350,10 +323,7 @@ public class UserEndpointTests : IClassFixture<UserEndpointTests.UserWebApplicat
     [Trait("Api", "")]
     public async Task UpdatePassword_Sucesso_DeveRetornar200()
     {
-        var request = Builder<UpdateSecretRequest>.CreateNew()
-            .With(x => x.CurrentSecret = "SenhaAtual@123")
-            .With(x => x.NewSecret = "SenhaNova@123")
-            .Build();
+        var request = new UpdateSecretRequest("SenhaAtual@123", "SenhaNova@123");
 
         _factory.UserAppServiceMock
             .Setup(x => x.UpdatePasswordAsync(1, It.IsAny<UpdateSecretRequest>(), It.IsAny<CancellationToken>()))
@@ -368,10 +338,7 @@ public class UserEndpointTests : IClassFixture<UserEndpointTests.UserWebApplicat
     [Trait("Api", "")]
     public async Task UpdatePassword_NaoEncontrado_DeveRetornar410()
     {
-        var request = Builder<UpdateSecretRequest>.CreateNew()
-            .With(x => x.CurrentSecret = "SenhaAtual@123")
-            .With(x => x.NewSecret = "SenhaNova@123")
-            .Build();
+        var request = new UpdateSecretRequest("SenhaAtual@123", "SenhaNova@123");
 
         _factory.UserAppServiceMock
             .Setup(x => x.UpdatePasswordAsync(99, It.IsAny<UpdateSecretRequest>(), It.IsAny<CancellationToken>()))
@@ -392,10 +359,7 @@ public class UserEndpointTests : IClassFixture<UserEndpointTests.UserWebApplicat
     [Trait("Api", "")]
     public async Task UpdatePassword_SenhaIncorreta_DeveRetornar400()
     {
-        var request = Builder<UpdateSecretRequest>.CreateNew()
-            .With(x => x.CurrentSecret = "SenhaErrada@123")
-            .With(x => x.NewSecret = "SenhaNova@123")
-            .Build();
+        var request = new UpdateSecretRequest("SenhaErrada@123", "SenhaNova@123");
 
         _factory.UserAppServiceMock
             .Setup(x => x.UpdatePasswordAsync(1, It.IsAny<UpdateSecretRequest>(), It.IsAny<CancellationToken>()))
@@ -416,10 +380,7 @@ public class UserEndpointTests : IClassFixture<UserEndpointTests.UserWebApplicat
     [Trait("Api", "")]
     public async Task UpdatePassword_Erro_DeveRetornar500()
     {
-        var request = Builder<UpdateSecretRequest>.CreateNew()
-            .With(x => x.CurrentSecret = "SenhaAtual@123")
-            .With(x => x.NewSecret = "SenhaNova@123")
-            .Build();
+        var request = new UpdateSecretRequest("SenhaAtual@123", "SenhaNova@123");
 
         _factory.UserAppServiceMock
             .Setup(x => x.UpdatePasswordAsync(It.IsAny<int>(), It.IsAny<UpdateSecretRequest>(), It.IsAny<CancellationToken>()))

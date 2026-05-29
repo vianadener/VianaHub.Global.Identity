@@ -63,7 +63,7 @@ public class UserRoleAppServiceTests
     public async Task GetAllAsync_Sucesso_DeveRetornarLista()
     {
         var entities = new List<UserRoleEntity> { BuildEntity(1), BuildEntity(2) };
-        var mapped = new List<UserRoleResponse> { new() { Id = 1 }, new() { Id = 2 } };
+        var mapped = new List<UserRoleResponse> { new(1, "User", "Role"), new(2, "User", "Role") };
         _repoMock.Setup(x => x.GetAllAsync(TenantId, AppId, default)).ReturnsAsync(entities);
         _mapperMock.Setup(x => x.Map<IList<UserRoleResponse>>(entities)).Returns(mapped);
 
@@ -97,7 +97,7 @@ public class UserRoleAppServiceTests
     public async Task GetByIdAsync_Sucesso_DeveRetornarUserRole()
     {
         var entity = BuildEntity(1);
-        var mapped = new UserRoleResponse { Id = 1 };
+        var mapped = new UserRoleResponse(1, "User", "Role");
         _repoMock.Setup(x => x.GetByIdAsync(1, default)).ReturnsAsync(entity);
         _mapperMock.Setup(x => x.Map<UserRoleResponse>(entity)).Returns(mapped);
 
@@ -164,9 +164,9 @@ public class UserRoleAppServiceTests
     [Trait("Application", "")]
     public async Task CreateAsync_Sucesso_DeveRetornarResponse()
     {
-        var request = new CreateUserRoleRequest { AppId = AppId, UserId = UserId, RoleId = 1 };
+        var request = new CreateUserRoleRequest(AppId, UserId, 1);
         var entity = BuildEntity(1);
-        var mapped = new UserRoleResponse { Id = 1 };
+        var mapped = new UserRoleResponse(1, "User", "Role");
         _repoMock.Setup(x => x.ExistsAsync(TenantId, request.AppId, request.UserId, request.RoleId, default)).ReturnsAsync(false);
         _domainMock.Setup(x => x.CreateAsync(It.IsAny<UserRoleEntity>(), default)).ReturnsAsync(true);
         _mapperMock.Setup(x => x.Map<UserRoleResponse>(It.IsAny<object>())).Returns(mapped);
@@ -182,7 +182,7 @@ public class UserRoleAppServiceTests
     [Trait("Application", "")]
     public async Task CreateAsync_UserRoleJaExiste_DeveRetornarNullENotificar()
     {
-        var request = new CreateUserRoleRequest { AppId = AppId, UserId = UserId, RoleId = 1 };
+        var request = new CreateUserRoleRequest(AppId, UserId, 1);
         _repoMock.Setup(x => x.ExistsAsync(TenantId, request.AppId, request.UserId, request.RoleId, default)).ReturnsAsync(true);
 
         var sut = CreateSut();

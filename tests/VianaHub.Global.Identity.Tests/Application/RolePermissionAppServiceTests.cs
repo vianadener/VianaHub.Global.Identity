@@ -62,7 +62,7 @@ public class RolePermissionAppServiceTests
     public async Task GetAllAsync_Sucesso_DeveRetornarLista()
     {
         var entities = new List<RolePermissionEntity> { BuildEntity(1), BuildEntity(2) };
-        var mapped = new List<RolePermissionResponse> { new() { Id = 1 }, new() { Id = 2 } };
+        var mapped = new List<RolePermissionResponse> { new(1, "Role", "Resource", "Action"), new(2, "Role", "Resource", "Action") };
         _repoMock.Setup(x => x.GetAllAsync(TenantId, AppId, default)).ReturnsAsync(entities);
         _mapperMock.Setup(x => x.Map<IList<RolePermissionResponse>>(entities)).Returns(mapped);
 
@@ -96,7 +96,7 @@ public class RolePermissionAppServiceTests
     public async Task GetByIdAsync_Sucesso_DeveRetornarPermissao()
     {
         var entity = BuildEntity(1);
-        var mapped = new RolePermissionDetailResponse { Id = 1 };
+        var mapped = new RolePermissionDetailResponse(1, 1, "Role", 1, "Resource", 1, "Action");
         _repoMock.Setup(x => x.GetByIdAsync(1, default)).ReturnsAsync(entity);
         _mapperMock.Setup(x => x.Map<RolePermissionDetailResponse>(entity)).Returns(mapped);
 
@@ -130,7 +130,7 @@ public class RolePermissionAppServiceTests
     {
         var entities = new List<RolePermissionEntity> { BuildEntity(1) };
         var listPage = new ListPage<RolePermissionEntity> { Items = entities, TotalItems = 1, TotalPages = 1, PageNumber = 1, PageSize = 10 };
-        var mappedPage = new ListPage<RolePermissionResponse> { Items = [new() { Id = 1 }], TotalItems = 1, TotalPages = 1, PageNumber = 1, PageSize = 10 };
+        var mappedPage = new ListPage<RolePermissionResponse> { Items = [new(1, "Role", "Resource", "Action")], TotalItems = 1, TotalPages = 1, PageNumber = 1, PageSize = 10 };
         var filter = new PagedFilter("", null, 1, 10, "Id", "asc");
         _repoMock.Setup(x => x.GetPagedAsync(TenantId, AppId, filter, default)).ReturnsAsync(listPage);
         _mapperMock.Setup(x => x.Map<ListPage<RolePermissionResponse>>(listPage)).Returns(mappedPage);
@@ -167,9 +167,9 @@ public class RolePermissionAppServiceTests
     [Trait("Application", "")]
     public async Task CreateAsync_Sucesso_DeveRetornarResponse()
     {
-        var request = new CreateRolePermissionRequest { RoleId = 1, ResourceId = 2, ActionId = 3 };
+        var request = new CreateRolePermissionRequest(1, 2, 3);
         var entity = BuildEntity(1);
-        var mapped = new RolePermissionResponse { Id = 1 };
+        var mapped = new RolePermissionResponse(1, "Role", "Resource", "Action");
         _repoMock.Setup(x => x.ExistsAsync(TenantId, AppId, request.RoleId, request.ResourceId, request.ActionId, default)).ReturnsAsync(false);
         _domainMock.Setup(x => x.CreateAsync(It.IsAny<RolePermissionEntity>(), default)).ReturnsAsync(true);
         _mapperMock.Setup(x => x.Map<RolePermissionResponse>(It.IsAny<object>())).Returns(mapped);
@@ -185,7 +185,7 @@ public class RolePermissionAppServiceTests
     [Trait("Application", "")]
     public async Task CreateAsync_PermissaoJaExiste_DeveRetornarNullENotificar()
     {
-        var request = new CreateRolePermissionRequest { RoleId = 1, ResourceId = 2, ActionId = 3 };
+        var request = new CreateRolePermissionRequest(1, 2, 3);
         _repoMock.Setup(x => x.ExistsAsync(TenantId, AppId, request.RoleId, request.ResourceId, request.ActionId, default)).ReturnsAsync(true);
 
         var sut = CreateSut();

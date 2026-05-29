@@ -44,10 +44,8 @@ public class JobEndpointTests : IClassFixture<JobEndpointTests.JobWebApplication
     [Trait("Api", "")]
     public async Task GetAll_Sucesso_DeveRetornar200()
     {
-        var jobs = Builder<JobResponse>.CreateListOfSize(3)
-            .All()
-            .With(x => x.IsActive = true)
-            .Build()
+        var jobs = Enumerable.Range(1, 3)
+            .Select(i => new JobResponse(i, "Cat", $"Job{i}", "* * * * *", 5, true))
             .ToList();
 
         _factory.JobAppServiceMock
@@ -93,10 +91,7 @@ public class JobEndpointTests : IClassFixture<JobEndpointTests.JobWebApplication
     [Trait("Api", "")]
     public async Task GetById_Sucesso_DeveRetornar200()
     {
-        var job = Builder<JobDetailResponse>.CreateNew()
-            .With(x => x.Id = 1)
-            .With(x => x.IsActive = true)
-            .Build();
+        var job = new JobDetailResponse(1, 1, "Tenant", "Cat", "Job Test", "Desc", "Purpose", "Type", "Execute", "* * * * *", "GMT Standard Time", false, 5, 5, "default", 3, "Config", false, null, null, null, null, "OK", 1, true);
 
         _factory.JobAppServiceMock
             .Setup(x => x.GetByIdAsync(1, It.IsAny<CancellationToken>()))
@@ -147,10 +142,8 @@ public class JobEndpointTests : IClassFixture<JobEndpointTests.JobWebApplication
     [Trait("Api", "")]
     public async Task GetPaged_Sucesso_DeveRetornar200()
     {
-        var items = Builder<JobResponse>.CreateListOfSize(2)
-            .All()
-            .With(x => x.IsActive = true)
-            .Build()
+        var items = Enumerable.Range(1, 2)
+            .Select(i => new JobResponse(i, "Cat", $"Job{i}", "* * * * *", 5, true))
             .ToList();
 
         var paged = new ListPageResponse<JobResponse>(items, 1, 10, 2, 1);
@@ -200,18 +193,7 @@ public class JobEndpointTests : IClassFixture<JobEndpointTests.JobWebApplication
     [Trait("Api", "")]
     public async Task Create_Sucesso_DeveRetornar201()
     {
-        var request = Builder<CreateJobRequest>.CreateNew()
-            .With(x => x.JobCategory = "Categoria")
-            .With(x => x.JobName = "MeuJob")
-            .With(x => x.Description = "Descrição")
-            .With(x => x.JobPurpose = "Propósito")
-            .With(x => x.JobType = "Tipo")
-            .With(x => x.CronExpression = "0 * * * *")
-            .Build();
-
-        _factory.JobAppServiceMock
-            .Setup(x => x.CreateAsync(It.IsAny<CreateJobRequest>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(true);
+        var request = new CreateJobRequest("Categoria", "MeuJob", "Descrição", "Propósito", "Tipo", "", "0 * * * *");
 
         var response = await _client.PostAsJsonAsync("/v1/job-definitions/", request);
 
@@ -222,10 +204,7 @@ public class JobEndpointTests : IClassFixture<JobEndpointTests.JobWebApplication
     [Trait("Api", "")]
     public async Task Create_DadosInvalidos_DeveRetornar400()
     {
-        var request = Builder<CreateJobRequest>.CreateNew()
-            .With(x => x.JobName = string.Empty)
-            .With(x => x.Description = string.Empty)
-            .Build();
+        var request = new CreateJobRequest("", string.Empty, string.Empty, "", "", "", "");
 
         _factory.JobAppServiceMock
             .Setup(x => x.CreateAsync(It.IsAny<CreateJobRequest>(), It.IsAny<CancellationToken>()))
@@ -246,14 +225,7 @@ public class JobEndpointTests : IClassFixture<JobEndpointTests.JobWebApplication
     [Trait("Api", "")]
     public async Task Create_Erro_DeveRetornar500()
     {
-        var request = Builder<CreateJobRequest>.CreateNew()
-            .With(x => x.JobCategory = "Categoria")
-            .With(x => x.JobName = "MeuJob")
-            .With(x => x.Description = "Descrição")
-            .With(x => x.JobPurpose = "Propósito")
-            .With(x => x.JobType = "Tipo")
-            .With(x => x.CronExpression = "0 * * * *")
-            .Build();
+        var request = new CreateJobRequest("Categoria", "MeuJob", "Descrição", "Propósito", "Tipo", "", "0 * * * *");
 
         _factory.JobAppServiceMock
             .Setup(x => x.CreateAsync(It.IsAny<CreateJobRequest>(), It.IsAny<CancellationToken>()))
@@ -340,11 +312,7 @@ public class JobEndpointTests : IClassFixture<JobEndpointTests.JobWebApplication
     [Trait("Api", "")]
     public async Task Update_Sucesso_DeveRetornar200()
     {
-        var request = Builder<UpdateJobRequest>.CreateNew()
-            .With(x => x.Description = "Descrição atualizada")
-            .With(x => x.CronExpression = "0 0 * * *")
-            .With(x => x.Priority = 3)
-            .Build();
+        var request = new UpdateJobRequest("Descrição atualizada", "", "0 0 * * *", "GMT Standard Time", 5, 3, "default", 3, "", true);
 
         _factory.JobAppServiceMock
             .Setup(x => x.UpdateAsync(1, It.IsAny<UpdateJobRequest>(), It.IsAny<CancellationToken>()))
@@ -359,9 +327,7 @@ public class JobEndpointTests : IClassFixture<JobEndpointTests.JobWebApplication
     [Trait("Api", "")]
     public async Task Update_NaoEncontrado_DeveRetornar410()
     {
-        var request = Builder<UpdateJobRequest>.CreateNew()
-            .With(x => x.Description = "Descrição")
-            .Build();
+        var request = new UpdateJobRequest("Descrição", "", "", "GMT Standard Time", 5, 5, "default", 3, "", true);
 
         _factory.JobAppServiceMock
             .Setup(x => x.UpdateAsync(99, It.IsAny<UpdateJobRequest>(), It.IsAny<CancellationToken>()))
@@ -382,9 +348,7 @@ public class JobEndpointTests : IClassFixture<JobEndpointTests.JobWebApplication
     [Trait("Api", "")]
     public async Task Update_Erro_DeveRetornar500()
     {
-        var request = Builder<UpdateJobRequest>.CreateNew()
-            .With(x => x.Description = "Descrição")
-            .Build();
+        var request = new UpdateJobRequest("Descrição", "", "", "GMT Standard Time", 5, 5, "default", 3, "", true);
 
         _factory.JobAppServiceMock
             .Setup(x => x.UpdateAsync(It.IsAny<int>(), It.IsAny<UpdateJobRequest>(), It.IsAny<CancellationToken>()))

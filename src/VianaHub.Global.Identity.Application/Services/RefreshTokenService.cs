@@ -45,12 +45,7 @@ public class RefreshTokenService : IRefreshTokenService
         var entity = new RefreshTokenEntity(tenantId, appId, userId, tokenHash, expiresAt, userId);
         await _refreshRepo.CreateAsync(entity, ct);
 
-        return new RefreshTokenIssueResult
-        {
-            Token = rawToken,
-            ExpiresAt = expiresAt,
-            Entity = entity
-        };
+        return new RefreshTokenIssueResult(rawToken, expiresAt, entity);
     }
 
     public async Task<RefreshTokenRotateResult> RotateAsync(string rawRefreshToken, int tenantId, CancellationToken ct)

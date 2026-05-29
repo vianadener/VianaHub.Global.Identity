@@ -66,7 +66,7 @@ public class ResourceAppServiceTests
     public async Task GetAllAsync_Sucesso_DeveRetornarLista()
     {
         var entities = new List<ResourceEntity> { BuildResource(1), BuildResource(2) };
-        var mapped = new List<ResourceResponse> { new() { Id = 1 }, new() { Id = 2 } };
+        var mapped = new List<ResourceResponse> { new(1, AppId, "Resource1", true), new(2, AppId, "Resource2", true) };
         _repoMock.Setup(x => x.GetAllAsync(TenantId, AppId, default)).ReturnsAsync(entities);
         _mapperMock.Setup(x => x.Map<IEnumerable<ResourceResponse>>(entities)).Returns(mapped);
 
@@ -100,7 +100,7 @@ public class ResourceAppServiceTests
     public async Task GetByIdAsync_Sucesso_DeveRetornarResource()
     {
         var entity = BuildResource(1);
-        var mapped = new ResourceResponse { Id = 1 };
+        var mapped = new ResourceResponse(1, AppId, "Resource1", true);
         _repoMock.Setup(x => x.GetByIdAsync(TenantId, AppId, 1, default)).ReturnsAsync(entity);
         _mapperMock.Setup(x => x.Map<ResourceResponse>(entity)).Returns(mapped);
 
@@ -134,7 +134,7 @@ public class ResourceAppServiceTests
     {
         var entities = new List<ResourceEntity> { BuildResource(1) };
         var listPage = new ListPage<ResourceEntity> { Items = entities, TotalItems = 1, TotalPages = 1, PageNumber = 1, PageSize = 10 };
-        var mappedPage = new ListPageResponse<ResourceResponse>(new List<ResourceResponse> { new() { Id = 1 } }, 1, 10, 1, 1);
+        var mappedPage = new ListPageResponse<ResourceResponse>(new List<ResourceResponse> { new(1, AppId, "Resource1", true) }, 1, 10, 1, 1);
         _repoMock.Setup(x => x.GetPagedAsync(TenantId, AppId, It.IsAny<PagedFilter>(), default)).ReturnsAsync(listPage);
         _mapperMock.Setup(x => x.Map<ListPageResponse<ResourceResponse>>(listPage)).Returns(mappedPage);
 
@@ -173,7 +173,7 @@ public class ResourceAppServiceTests
     [Trait("Application", "")]
     public async Task CreateAsync_Sucesso_DeveRetornarTrue()
     {
-        var request = new CreateResourceRequest { AppId = AppId, Name = "Novo Resource", Description = "Descrição" };
+        var request = new CreateResourceRequest(AppId, "Novo Resource", "Descrição");
         _repoMock.Setup(x => x.ExistsByNameAsync(TenantId, request.AppId, request.Name, default)).ReturnsAsync(false);
         _domainMock.Setup(x => x.CreateAsync(It.IsAny<ResourceEntity>(), default)).ReturnsAsync(true);
 
@@ -188,7 +188,7 @@ public class ResourceAppServiceTests
     [Trait("Application", "")]
     public async Task CreateAsync_NomeJaExiste_DeveRetornarFalseENotificar()
     {
-        var request = new CreateResourceRequest { AppId = AppId, Name = "Resource Existente", Description = "Descrição" };
+        var request = new CreateResourceRequest(AppId, "Resource Existente", "Descrição");
         _repoMock.Setup(x => x.ExistsByNameAsync(TenantId, request.AppId, request.Name, default)).ReturnsAsync(true);
 
         var sut = CreateSut();
@@ -203,7 +203,7 @@ public class ResourceAppServiceTests
     [Trait("Application", "")]
     public async Task CreateAsync_DominioFalha_DeveRetornarFalse()
     {
-        var request = new CreateResourceRequest { AppId = AppId, Name = "Novo Resource", Description = "Descrição" };
+        var request = new CreateResourceRequest(AppId, "Novo Resource", "Descrição");
         _repoMock.Setup(x => x.ExistsByNameAsync(TenantId, request.AppId, request.Name, default)).ReturnsAsync(false);
         _domainMock.Setup(x => x.CreateAsync(It.IsAny<ResourceEntity>(), default)).ReturnsAsync(false);
 
@@ -222,7 +222,7 @@ public class ResourceAppServiceTests
     public async Task UpdateAsync_Sucesso_DeveRetornarTrue()
     {
         var entity = BuildResource(1);
-        var request = new UpdateResourceRequest { Name = "Resource Atualizado", Description = "Nova Descrição" };
+        var request = new UpdateResourceRequest("Resource Atualizado", "Nova Descrição");
         _repoMock.Setup(x => x.GetByIdAsync(TenantId, AppId, 1, default)).ReturnsAsync(entity);
         _domainMock.Setup(x => x.UpdateAsync(entity, default)).ReturnsAsync(true);
 
@@ -238,7 +238,7 @@ public class ResourceAppServiceTests
     public async Task UpdateAsync_NaoEncontrado_DeveRetornarFalseENotificar()
     {
         _repoMock.Setup(x => x.GetByIdAsync(TenantId, AppId, 99, default)).ReturnsAsync((ResourceEntity)null);
-        var request = new UpdateResourceRequest { Name = "Resource", Description = "Desc" };
+        var request = new UpdateResourceRequest("Resource", "Desc");
 
         var sut = CreateSut();
         var result = await sut.UpdateAsync(99, request, default);

@@ -140,7 +140,7 @@ public class AuthAppServiceTests
     [Trait("Application", "")]
     public async Task RegisterAsync_TenantIdInvalido_DeveNotificar400ERetornarNull()
     {
-        var request = new RegisterRequest { TenantId = 0, Name = "user", Secret = "Senha@123" };
+        var request = new RegisterRequest(0, "user", "Senha@123", null);
         var sut = CreateSut();
 
         var result = await sut.RegisterAsync(request, default);
@@ -153,8 +153,10 @@ public class AuthAppServiceTests
     [Trait("Application", "")]
     public async Task RegisterAsync_NomeJaExiste_DeveNotificar409ERetornarNull()
     {
-        var request = new RegisterRequest { TenantId = TenantId, Name = "user existente", Secret = "Senha@123" };
-        _userRepoMock.Setup(x => x.ExistsByNameAsync(TenantId, request.Name, default)).ReturnsAsync(true);
+        var request = new RegisterRequest(TenantId, "user existente", "Senha@123", null);
+        _tenantRepoMock.Setup(x => x.ExistsByIdAsync(It.IsAny<int>(), It.IsAny<CancellationToken>())).ReturnsAsync(true);
+        _tenantRepoMock.Setup(x => x.GetByIdAsync(It.IsAny<int>(), It.IsAny<CancellationToken>())).ReturnsAsync(BuildTenant());
+        _userRepoMock.Setup(x => x.ExistsByNameAsync(TenantId, request.Name, It.IsAny<CancellationToken>())).ReturnsAsync(true);
 
         var sut = CreateSut();
         var result = await sut.RegisterAsync(request, default);
@@ -167,9 +169,11 @@ public class AuthAppServiceTests
     [Trait("Application", "")]
     public async Task RegisterAsync_FalhaNaCriacao_DeveNotificar500ERetornarNull()
     {
-        var request = new RegisterRequest { TenantId = TenantId, Name = "novo user", Secret = "Senha@123" };
-        _userRepoMock.Setup(x => x.ExistsByNameAsync(TenantId, request.Name, default)).ReturnsAsync(false);
-        _userRepoMock.Setup(x => x.CreateAsync(It.IsAny<UserEntity>(), default)).ReturnsAsync(false);
+        var request = new RegisterRequest(TenantId, "novo user", "Senha@123", null);
+        _tenantRepoMock.Setup(x => x.ExistsByIdAsync(It.IsAny<int>(), It.IsAny<CancellationToken>())).ReturnsAsync(true);
+        _tenantRepoMock.Setup(x => x.GetByIdAsync(It.IsAny<int>(), It.IsAny<CancellationToken>())).ReturnsAsync(BuildTenant());
+        _userRepoMock.Setup(x => x.ExistsByNameAsync(TenantId, request.Name, It.IsAny<CancellationToken>())).ReturnsAsync(false);
+        _userRepoMock.Setup(x => x.CreateAsync(It.IsAny<UserEntity>(), It.IsAny<CancellationToken>())).ReturnsAsync(false);
 
         var sut = CreateSut();
         var result = await sut.RegisterAsync(request, default);
@@ -182,9 +186,11 @@ public class AuthAppServiceTests
     [Trait("Application", "")]
     public async Task RegisterAsync_Sucesso_DeveRetornarAuthDetailResponse()
     {
-        var request = new RegisterRequest { TenantId = TenantId, Name = "novo user", Secret = "Senha@123" };
-        _userRepoMock.Setup(x => x.ExistsByNameAsync(TenantId, request.Name, default)).ReturnsAsync(false);
-        _userRepoMock.Setup(x => x.CreateAsync(It.IsAny<UserEntity>(), default)).ReturnsAsync(true);
+        var request = new RegisterRequest(TenantId, "novo user", "Senha@123", null);
+        _tenantRepoMock.Setup(x => x.ExistsByIdAsync(It.IsAny<int>(), It.IsAny<CancellationToken>())).ReturnsAsync(true);
+        _tenantRepoMock.Setup(x => x.GetByIdAsync(It.IsAny<int>(), It.IsAny<CancellationToken>())).ReturnsAsync(BuildTenant());
+        _userRepoMock.Setup(x => x.ExistsByNameAsync(TenantId, request.Name, It.IsAny<CancellationToken>())).ReturnsAsync(false);
+        _userRepoMock.Setup(x => x.CreateAsync(It.IsAny<UserEntity>(), It.IsAny<CancellationToken>())).ReturnsAsync(true);
 
         var sut = CreateSut();
         var result = await sut.RegisterAsync(request, default);
@@ -205,7 +211,7 @@ public class AuthAppServiceTests
                        .ReturnsAsync((TenantEntity)null);
 
         var sut = CreateSut();
-        var result = await sut.LoginAsync(new LoginRequest { LoginIdentifier = "nao@existe.com", Password = "Senha@123" }, default);
+        var result = await sut.LoginAsync(new LoginRequest("nao@existe.com", "Senha@123"), default);
 
         Assert.Null(result);
         _notifyMock.Verify(x => x.Add(It.IsAny<string>(), 401), Times.Once);
@@ -221,7 +227,7 @@ public class AuthAppServiceTests
                      .ReturnsAsync((UserEntity)null);
 
         var sut = CreateSut();
-        var result = await sut.LoginAsync(new LoginRequest { LoginIdentifier = "user@example.com", Password = "Senha@123" }, default);
+        var result = await sut.LoginAsync(new LoginRequest("user@example.com", "Senha@123"), default);
 
         Assert.Null(result);
         _notifyMock.Verify(x => x.Add(It.IsAny<string>(), 401), Times.Once);
@@ -238,7 +244,7 @@ public class AuthAppServiceTests
                      .ReturnsAsync(user);
 
         var sut = CreateSut();
-        var result = await sut.LoginAsync(new LoginRequest { LoginIdentifier = "user@example.com", Password = "SenhaErrada" }, default);
+        var result = await sut.LoginAsync(new LoginRequest("user@example.com", "SenhaErrada"), default);
 
         Assert.Null(result);
         _notifyMock.Verify(x => x.Add(It.IsAny<string>(), 401), Times.Once);
@@ -255,7 +261,7 @@ public class AuthAppServiceTests
                      .ReturnsAsync(user);
 
         var sut = CreateSut();
-        var result = await sut.LoginAsync(new LoginRequest { LoginIdentifier = "user@example.com", Password = "Senha@123" }, default);
+        var result = await sut.LoginAsync(new LoginRequest("user@example.com", "Senha@123"), default);
 
         Assert.Null(result);
         _notifyMock.Verify(x => x.Add(It.IsAny<string>(), 403), Times.Once);
@@ -275,7 +281,7 @@ public class AuthAppServiceTests
                             .ReturnsAsync(((string)null, DateTime.UtcNow.AddHours(1)));
 
         var sut = CreateSut();
-        var result = await sut.LoginAsync(new LoginRequest { LoginIdentifier = "user@example.com", Password = "Senha@123" }, default);
+        var result = await sut.LoginAsync(new LoginRequest("user@example.com", "Senha@123"), default);
 
         Assert.Null(result);
     }
@@ -295,15 +301,10 @@ public class AuthAppServiceTests
         _jwtTokenServiceMock.Setup(x => x.GenerateAccessTokenAsync(user, default))
                             .ReturnsAsync(("access.token.jwt", DateTime.UtcNow.AddHours(1)));
         _refreshTokenServiceMock.Setup(x => x.IssueAsync(TenantId, AppId, UserId, default))
-                                .ReturnsAsync(new RefreshTokenIssueResult
-                                {
-                                    Token = "refresh-token",
-                                    ExpiresAt = DateTime.UtcNow.AddDays(7),
-                                    Entity = refreshEntity
-                                });
+                                .ReturnsAsync(new RefreshTokenIssueResult("refresh-token", DateTime.UtcNow.AddDays(7), refreshEntity));
 
         var sut = CreateSut();
-        var result = await sut.LoginAsync(new LoginRequest { LoginIdentifier = "user@example.com", Password = "Senha@123" }, default);
+        var result = await sut.LoginAsync(new LoginRequest("user@example.com", "Senha@123"), default);
 
         Assert.NotNull(result);
         Assert.Equal("access.token.jwt", result.AccessToken);
@@ -321,7 +322,7 @@ public class AuthAppServiceTests
     public async Task RefreshAsync_TenantIdInvalido_DeveNotificar400ERetornarNull()
     {
         var sut = CreateSut();
-        var result = await sut.RefreshAsync(new RefreshRequest { TenantId = 0, RefreshToken = "token" }, default);
+        var result = await sut.RefreshAsync(new RefreshRequest(0, "token"), default);
 
         Assert.Null(result);
         _notifyMock.Verify(x => x.Add(It.IsAny<string>(), 400), Times.Once);
@@ -335,7 +336,7 @@ public class AuthAppServiceTests
                                 .ReturnsAsync((RefreshTokenRotateResult)null);
 
         var sut = CreateSut();
-        var result = await sut.RefreshAsync(new RefreshRequest { TenantId = TenantId, RefreshToken = "token-invalido" }, default);
+        var result = await sut.RefreshAsync(new RefreshRequest(TenantId, "token-invalido"), default);
 
         Assert.Null(result);
     }
@@ -346,7 +347,7 @@ public class AuthAppServiceTests
     {
         var oldEntity = BuildRefreshTokenEntity();
         var newEntity = BuildRefreshTokenEntity();
-        var rotateResult = new RefreshTokenRotateResult { OldEntity = oldEntity, NewToken = "new-token", NewEntity = newEntity };
+        var rotateResult = new RefreshTokenRotateResult(oldEntity, "new-token", newEntity);
 
         _refreshTokenServiceMock.Setup(x => x.RotateAsync(It.IsAny<string>(), TenantId, default))
                                 .ReturnsAsync(rotateResult);
@@ -354,7 +355,7 @@ public class AuthAppServiceTests
                      .ReturnsAsync((UserEntity)null);
 
         var sut = CreateSut();
-        var result = await sut.RefreshAsync(new RefreshRequest { TenantId = TenantId, RefreshToken = "token" }, default);
+        var result = await sut.RefreshAsync(new RefreshRequest(TenantId, "token"), default);
 
         Assert.Null(result);
         _notifyMock.Verify(x => x.Add(It.IsAny<string>(), 410), Times.Once);
@@ -367,7 +368,7 @@ public class AuthAppServiceTests
         var user = BuildUserWithRole();
         var oldEntity = BuildRefreshTokenEntity();
         var newEntity = BuildRefreshTokenEntity();
-        var rotateResult = new RefreshTokenRotateResult { OldEntity = oldEntity, NewToken = "new-refresh-token", NewEntity = newEntity };
+        var rotateResult = new RefreshTokenRotateResult(oldEntity, "new-refresh-token", newEntity);
 
         _refreshTokenServiceMock.Setup(x => x.RotateAsync(It.IsAny<string>(), TenantId, default))
                                 .ReturnsAsync(rotateResult);
@@ -377,7 +378,7 @@ public class AuthAppServiceTests
                             .ReturnsAsync(("new.access.token", DateTime.UtcNow.AddHours(1)));
 
         var sut = CreateSut();
-        var result = await sut.RefreshAsync(new RefreshRequest { TenantId = TenantId, RefreshToken = "old-token" }, default);
+        var result = await sut.RefreshAsync(new RefreshRequest(TenantId, "old-token"), default);
 
         Assert.NotNull(result);
         Assert.Equal("new.access.token", result.AccessToken);
@@ -395,7 +396,7 @@ public class AuthAppServiceTests
         _currentUserMock.Setup(x => x.GetUserId()).Returns(0);
 
         var sut = CreateSut();
-        await sut.LogoutAsync(new RevokeRequest { Reason = "manual" }, default);
+        await sut.LogoutAsync(new RevokeRequest("manual"), default);
 
         _notifyMock.Verify(x => x.Add(It.IsAny<string>(), 401), Times.Once);
         _refreshTokenServiceMock.Verify(x => x.RevokeAllAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>(), default), Times.Never);
@@ -409,7 +410,7 @@ public class AuthAppServiceTests
                                 .ReturnsAsync(2);
 
         var sut = CreateSut();
-        await sut.LogoutAsync(new RevokeRequest { Reason = "manual" }, default);
+        await sut.LogoutAsync(new RevokeRequest("manual"), default);
 
         _notifyMock.Verify(x => x.Add(It.IsAny<string>(), It.IsAny<int>()), Times.Never);
         _refreshTokenServiceMock.Verify(x => x.RevokeAllAsync(UserId, TenantId, UserId, default), Times.Once);

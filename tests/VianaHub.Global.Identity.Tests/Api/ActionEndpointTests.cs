@@ -44,10 +44,8 @@ public class ActionEndpointTests : IClassFixture<ActionEndpointTests.ActionWebAp
     [Trait("Api", "")]
     public async Task GetAll_Sucesso_DeveRetornar200()
     {
-        var actions = Builder<ActionResponse>.CreateListOfSize(3)
-            .All()
-            .With(x => x.IsActive = true)
-            .Build()
+        var actions = Enumerable.Range(1, 3)
+            .Select(i => new ActionResponse(i, $"Action{i}", true))
             .ToList();
 
         _factory.ActionAppServiceMock
@@ -93,10 +91,7 @@ public class ActionEndpointTests : IClassFixture<ActionEndpointTests.ActionWebAp
     [Trait("Api", "")]
     public async Task GetById_Sucesso_DeveRetornar200()
     {
-        var action = Builder<ActionResponse>.CreateNew()
-            .With(x => x.Id = 1)
-            .With(x => x.IsActive = true)
-            .Build();
+        var action = new ActionResponse(1, "Action Test", true);
 
         _factory.ActionAppServiceMock
             .Setup(x => x.GetByIdAsync(1, It.IsAny<CancellationToken>()))
@@ -147,10 +142,8 @@ public class ActionEndpointTests : IClassFixture<ActionEndpointTests.ActionWebAp
     [Trait("Api", "")]
     public async Task GetPaged_Sucesso_DeveRetornar200()
     {
-        var items = Builder<ActionResponse>.CreateListOfSize(2)
-            .All()
-            .With(x => x.IsActive = true)
-            .Build()
+        var items = Enumerable.Range(1, 2)
+            .Select(i => new ActionResponse(i, $"Action{i}", true))
             .ToList();
 
         var paged = new ListPageResponse<ActionResponse>(items, 1, 10, 2, 1);
@@ -200,11 +193,7 @@ public class ActionEndpointTests : IClassFixture<ActionEndpointTests.ActionWebAp
     [Trait("Api", "")]
     public async Task Create_Sucesso_DeveRetornar201()
     {
-        var request = Builder<CreateActionRequest>.CreateNew()
-            .With(x => x.AppId = 1)
-            .With(x => x.Name = "Action Test")
-            .With(x => x.Description = "Descrição")
-            .Build();
+        var request = new CreateActionRequest(1, "Action Test", "Descrição");
 
         _factory.ActionAppServiceMock
             .Setup(x => x.CreateAsync(It.IsAny<CreateActionRequest>(), It.IsAny<CancellationToken>()))
@@ -219,11 +208,7 @@ public class ActionEndpointTests : IClassFixture<ActionEndpointTests.ActionWebAp
     [Trait("Api", "")]
     public async Task Create_DadosInvalidos_DeveRetornar400()
     {
-        var request = Builder<CreateActionRequest>.CreateNew()
-            .With(x => x.AppId = 0)
-            .With(x => x.Name = string.Empty)
-            .With(x => x.Description = string.Empty)
-            .Build();
+        var request = new CreateActionRequest(0, string.Empty, string.Empty);
 
         _factory.ActionAppServiceMock
             .Setup(x => x.CreateAsync(It.IsAny<CreateActionRequest>(), It.IsAny<CancellationToken>()))
@@ -244,11 +229,7 @@ public class ActionEndpointTests : IClassFixture<ActionEndpointTests.ActionWebAp
     [Trait("Api", "")]
     public async Task Create_Duplicado_DeveRetornar409()
     {
-        var request = Builder<CreateActionRequest>.CreateNew()
-            .With(x => x.AppId = 1)
-            .With(x => x.Name = "Action Duplicada")
-            .With(x => x.Description = "Descrição")
-            .Build();
+        var request = new CreateActionRequest(1, "Action Duplicada", "Descrição");
 
         _factory.ActionAppServiceMock
             .Setup(x => x.CreateAsync(It.IsAny<CreateActionRequest>(), It.IsAny<CancellationToken>()))
@@ -269,11 +250,7 @@ public class ActionEndpointTests : IClassFixture<ActionEndpointTests.ActionWebAp
     [Trait("Api", "")]
     public async Task Create_Erro_DeveRetornar500()
     {
-        var request = Builder<CreateActionRequest>.CreateNew()
-            .With(x => x.AppId = 1)
-            .With(x => x.Name = "Action Test")
-            .With(x => x.Description = "Descrição")
-            .Build();
+        var request = new CreateActionRequest(1, "Action Test", "Descrição");
 
         _factory.ActionAppServiceMock
             .Setup(x => x.CreateAsync(It.IsAny<CreateActionRequest>(), It.IsAny<CancellationToken>()))
@@ -292,10 +269,7 @@ public class ActionEndpointTests : IClassFixture<ActionEndpointTests.ActionWebAp
     [Trait("Api", "")]
     public async Task Update_Sucesso_DeveRetornar200()
     {
-        var request = Builder<UpdateActionRequest>.CreateNew()
-            .With(x => x.Name = "Action Atualizada")
-            .With(x => x.Description = "Descrição atualizada")
-            .Build();
+        var request = new UpdateActionRequest("Action Atualizada", "Descrição atualizada");
 
         _factory.ActionAppServiceMock
             .Setup(x => x.UpdateAsync(1, It.IsAny<UpdateActionRequest>(), It.IsAny<CancellationToken>()))
@@ -310,10 +284,7 @@ public class ActionEndpointTests : IClassFixture<ActionEndpointTests.ActionWebAp
     [Trait("Api", "")]
     public async Task Update_NaoEncontrado_DeveRetornar404()
     {
-        var request = Builder<UpdateActionRequest>.CreateNew()
-            .With(x => x.Name = "Action")
-            .With(x => x.Description = "Desc")
-            .Build();
+        var request = new UpdateActionRequest("Action", "Desc");
 
         _factory.ActionAppServiceMock
             .Setup(x => x.UpdateAsync(99, It.IsAny<UpdateActionRequest>(), It.IsAny<CancellationToken>()))
@@ -334,10 +305,7 @@ public class ActionEndpointTests : IClassFixture<ActionEndpointTests.ActionWebAp
     [Trait("Api", "")]
     public async Task Update_Duplicado_DeveRetornar409()
     {
-        var request = Builder<UpdateActionRequest>.CreateNew()
-            .With(x => x.Name = "Action Duplicada")
-            .With(x => x.Description = "Desc")
-            .Build();
+        var request = new UpdateActionRequest("Action Duplicada", "Desc");
 
         _factory.ActionAppServiceMock
             .Setup(x => x.UpdateAsync(1, It.IsAny<UpdateActionRequest>(), It.IsAny<CancellationToken>()))
@@ -358,10 +326,7 @@ public class ActionEndpointTests : IClassFixture<ActionEndpointTests.ActionWebAp
     [Trait("Api", "")]
     public async Task Update_Erro_DeveRetornar500()
     {
-        var request = Builder<UpdateActionRequest>.CreateNew()
-            .With(x => x.Name = "Action")
-            .With(x => x.Description = "Desc")
-            .Build();
+        var request = new UpdateActionRequest("Action", "Desc");
 
         _factory.ActionAppServiceMock
             .Setup(x => x.UpdateAsync(It.IsAny<int>(), It.IsAny<UpdateActionRequest>(), It.IsAny<CancellationToken>()))

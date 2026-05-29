@@ -18,19 +18,8 @@ public class CreateJobRouteValidatorTests
         _validator = new CreateJobRouteValidator(locMock.Object);
     }
 
-    private static CreateJobRequest RequestValido() => new()
-    {
-        JobCategory = "Categoria",
-        JobName = "NomeDoJob",
-        JobType = "TipoDoJob",
-        JobMethod = "Execute",
-        CronExpression = "0 * * * *",
-        TimeZoneId = "GMT Standard Time",
-        TimeoutMinutes = 5,
-        Priority = 5,
-        Queue = "default",
-        MaxRetries = 3
-    };
+    private static CreateJobRequest RequestValido() => new(
+        "Categoria", "NomeDoJob", null, null, "TipoDoJob", null, "0 * * * *", "Execute", "GMT Standard Time", false, 5, 5, "default", 3, false);
 
     #region Sucesso
 
@@ -49,7 +38,7 @@ public class CreateJobRouteValidatorTests
     public void Validate_Sucesso_DescriptionNulo()
     {
         var request = RequestValido();
-        request.Description = null;
+        request = request with { Description = null };
 
         var result = _validator.Validate(request);
 
@@ -61,7 +50,7 @@ public class CreateJobRouteValidatorTests
     public void Validate_Sucesso_JobPurposeNulo()
     {
         var request = RequestValido();
-        request.JobPurpose = null;
+        request = request with { JobPurpose = null };
 
         var result = _validator.Validate(request);
 
@@ -73,7 +62,7 @@ public class CreateJobRouteValidatorTests
     public void Validate_Sucesso_DescriptionComMaximo500Caracteres()
     {
         var request = RequestValido();
-        request.Description = new string('a', 500);
+        request = request with { Description = new string('a', 500) };
 
         var result = _validator.Validate(request);
 
@@ -85,7 +74,7 @@ public class CreateJobRouteValidatorTests
     public void Validate_Sucesso_JobPurposeComMaximo500Caracteres()
     {
         var request = RequestValido();
-        request.JobPurpose = new string('a', 500);
+        request = request with { JobPurpose = new string('a', 500) };
 
         var result = _validator.Validate(request);
 
@@ -97,7 +86,7 @@ public class CreateJobRouteValidatorTests
     public void Validate_Sucesso_TimeoutMinutesZero()
     {
         var request = RequestValido();
-        request.TimeoutMinutes = 0;
+        request = request with { TimeoutMinutes = 0 };
 
         var result = _validator.Validate(request);
 
@@ -109,7 +98,7 @@ public class CreateJobRouteValidatorTests
     public void Validate_Sucesso_PriorityZero()
     {
         var request = RequestValido();
-        request.Priority = 0;
+        request = request with { Priority = 0 };
 
         var result = _validator.Validate(request);
 
@@ -121,7 +110,7 @@ public class CreateJobRouteValidatorTests
     public void Validate_Sucesso_MaxRetriesZero()
     {
         var request = RequestValido();
-        request.MaxRetries = 0;
+        request = request with { MaxRetries = 0 };
 
         var result = _validator.Validate(request);
 
@@ -137,7 +126,7 @@ public class CreateJobRouteValidatorTests
     public void Validate_Insucesso_JobCategoryVazio()
     {
         var request = RequestValido();
-        request.JobCategory = string.Empty;
+        request = request with { JobCategory = string.Empty };
 
         var result = _validator.Validate(request);
 
@@ -150,7 +139,7 @@ public class CreateJobRouteValidatorTests
     public void Validate_Insucesso_JobCategoryNulo()
     {
         var request = RequestValido();
-        request.JobCategory = null;
+        request = request with { JobCategory = null };
 
         var result = _validator.Validate(request);
 
@@ -163,7 +152,7 @@ public class CreateJobRouteValidatorTests
     public void Validate_Insucesso_JobCategoryMaiorQueMaximo()
     {
         var request = RequestValido();
-        request.JobCategory = new string('a', 101);
+        request = request with { JobCategory = new string('a', 101) };
 
         var result = _validator.Validate(request);
 
@@ -180,7 +169,7 @@ public class CreateJobRouteValidatorTests
     public void Validate_Insucesso_JobNameVazio()
     {
         var request = RequestValido();
-        request.JobName = string.Empty;
+        request = request with { JobName = string.Empty };
 
         var result = _validator.Validate(request);
 
@@ -193,7 +182,7 @@ public class CreateJobRouteValidatorTests
     public void Validate_Insucesso_JobNameNulo()
     {
         var request = RequestValido();
-        request.JobName = null;
+        request = request with { JobName = null };
 
         var result = _validator.Validate(request);
 
@@ -206,7 +195,7 @@ public class CreateJobRouteValidatorTests
     public void Validate_Insucesso_JobNameMaiorQueMaximo()
     {
         var request = RequestValido();
-        request.JobName = new string('a', 151);
+        request = request with { JobName = new string('a', 151) };
 
         var result = _validator.Validate(request);
 
@@ -223,7 +212,7 @@ public class CreateJobRouteValidatorTests
     public void Validate_Insucesso_DescriptionMaiorQueMaximo()
     {
         var request = RequestValido();
-        request.Description = new string('a', 501);
+        request = request with { Description = new string('a', 501) };
 
         var result = _validator.Validate(request);
 
@@ -240,7 +229,7 @@ public class CreateJobRouteValidatorTests
     public void Validate_Insucesso_JobPurposeMaiorQueMaximo()
     {
         var request = RequestValido();
-        request.JobPurpose = new string('a', 501);
+        request = request with { JobPurpose = new string('a', 501) };
 
         var result = _validator.Validate(request);
 
@@ -257,7 +246,7 @@ public class CreateJobRouteValidatorTests
     public void Validate_Insucesso_JobTypeVazio()
     {
         var request = RequestValido();
-        request.JobType = string.Empty;
+        request = request with { JobType = string.Empty };
 
         var result = _validator.Validate(request);
 
@@ -270,7 +259,7 @@ public class CreateJobRouteValidatorTests
     public void Validate_Insucesso_JobTypeNulo()
     {
         var request = RequestValido();
-        request.JobType = null;
+        request = request with { JobType = null };
 
         var result = _validator.Validate(request);
 
@@ -283,7 +272,7 @@ public class CreateJobRouteValidatorTests
     public void Validate_Insucesso_JobTypeMaiorQueMaximo()
     {
         var request = RequestValido();
-        request.JobType = new string('a', 101);
+        request = request with { JobType = new string('a', 101) };
 
         var result = _validator.Validate(request);
 
@@ -300,7 +289,7 @@ public class CreateJobRouteValidatorTests
     public void Validate_Insucesso_JobMethodVazio()
     {
         var request = RequestValido();
-        request.JobMethod = string.Empty;
+        request = request with { JobMethod = string.Empty };
 
         var result = _validator.Validate(request);
 
@@ -313,7 +302,7 @@ public class CreateJobRouteValidatorTests
     public void Validate_Insucesso_JobMethodNulo()
     {
         var request = RequestValido();
-        request.JobMethod = null;
+        request = request with { JobMethod = null };
 
         var result = _validator.Validate(request);
 
@@ -326,7 +315,7 @@ public class CreateJobRouteValidatorTests
     public void Validate_Insucesso_JobMethodMaiorQueMaximo()
     {
         var request = RequestValido();
-        request.JobMethod = new string('a', 101);
+        request = request with { JobMethod = new string('a', 101) };
 
         var result = _validator.Validate(request);
 
@@ -343,7 +332,7 @@ public class CreateJobRouteValidatorTests
     public void Validate_Insucesso_CronExpressionVazio()
     {
         var request = RequestValido();
-        request.CronExpression = string.Empty;
+        request = request with { CronExpression = string.Empty };
 
         var result = _validator.Validate(request);
 
@@ -356,7 +345,7 @@ public class CreateJobRouteValidatorTests
     public void Validate_Insucesso_CronExpressionNulo()
     {
         var request = RequestValido();
-        request.CronExpression = null;
+        request = request with { CronExpression = null };
 
         var result = _validator.Validate(request);
 
@@ -369,7 +358,7 @@ public class CreateJobRouteValidatorTests
     public void Validate_Insucesso_CronExpressionMaiorQueMaximo()
     {
         var request = RequestValido();
-        request.CronExpression = new string('a', 101);
+        request = request with { CronExpression = new string('a', 101) };
 
         var result = _validator.Validate(request);
 
@@ -386,7 +375,7 @@ public class CreateJobRouteValidatorTests
     public void Validate_Insucesso_TimeZoneIdVazio()
     {
         var request = RequestValido();
-        request.TimeZoneId = string.Empty;
+        request = request with { TimeZoneId = string.Empty };
 
         var result = _validator.Validate(request);
 
@@ -399,7 +388,7 @@ public class CreateJobRouteValidatorTests
     public void Validate_Insucesso_TimeZoneIdNulo()
     {
         var request = RequestValido();
-        request.TimeZoneId = null;
+        request = request with { TimeZoneId = null };
 
         var result = _validator.Validate(request);
 
@@ -412,7 +401,7 @@ public class CreateJobRouteValidatorTests
     public void Validate_Insucesso_TimeZoneIdMaiorQueMaximo()
     {
         var request = RequestValido();
-        request.TimeZoneId = new string('a', 101);
+        request = request with { TimeZoneId = new string('a', 101) };
 
         var result = _validator.Validate(request);
 
@@ -429,7 +418,7 @@ public class CreateJobRouteValidatorTests
     public void Validate_Insucesso_TimeoutMinutesNegativo()
     {
         var request = RequestValido();
-        request.TimeoutMinutes = -1;
+        request = request with { TimeoutMinutes = -1 };
 
         var result = _validator.Validate(request);
 
@@ -446,7 +435,7 @@ public class CreateJobRouteValidatorTests
     public void Validate_Insucesso_PriorityNegativo()
     {
         var request = RequestValido();
-        request.Priority = -1;
+        request = request with { Priority = -1 };
 
         var result = _validator.Validate(request);
 
@@ -463,7 +452,7 @@ public class CreateJobRouteValidatorTests
     public void Validate_Insucesso_QueueVazio()
     {
         var request = RequestValido();
-        request.Queue = string.Empty;
+        request = request with { Queue = string.Empty };
 
         var result = _validator.Validate(request);
 
@@ -476,7 +465,7 @@ public class CreateJobRouteValidatorTests
     public void Validate_Insucesso_QueueNulo()
     {
         var request = RequestValido();
-        request.Queue = null;
+        request = request with { Queue = null };
 
         var result = _validator.Validate(request);
 
@@ -489,7 +478,7 @@ public class CreateJobRouteValidatorTests
     public void Validate_Insucesso_QueueMaiorQueMaximo()
     {
         var request = RequestValido();
-        request.Queue = new string('a', 101);
+        request = request with { Queue = new string('a', 101) };
 
         var result = _validator.Validate(request);
 
@@ -506,7 +495,7 @@ public class CreateJobRouteValidatorTests
     public void Validate_Insucesso_MaxRetriesNegativo()
     {
         var request = RequestValido();
-        request.MaxRetries = -1;
+        request = request with { MaxRetries = -1 };
 
         var result = _validator.Validate(request);
 
@@ -522,19 +511,9 @@ public class CreateJobRouteValidatorTests
     [Trait("Api", "")]
     public void Validate_Insucesso_TodosOsCamposObrigatoriosInvalidos()
     {
-        var request = new CreateJobRequest
-        {
-            JobCategory = string.Empty,
-            JobName = string.Empty,
-            JobType = string.Empty,
-            JobMethod = string.Empty,
-            CronExpression = string.Empty,
-            TimeZoneId = string.Empty,
-            Queue = string.Empty,
-            TimeoutMinutes = -1,
-            Priority = -1,
-            MaxRetries = -1
-        };
+        var request = new CreateJobRequest(
+            string.Empty, string.Empty, null, null, string.Empty, null, string.Empty,
+            string.Empty, string.Empty, false, -1, -1, string.Empty, -1, false);
 
         var result = _validator.Validate(request);
 

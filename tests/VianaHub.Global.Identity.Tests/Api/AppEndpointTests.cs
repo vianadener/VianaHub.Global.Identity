@@ -44,10 +44,8 @@ public class AppEndpointTests : IClassFixture<AppEndpointTests.AppWebApplication
     [Trait("Api", "")]
     public async Task GetAll_Sucesso_DeveRetornar200()
     {
-        var apps = Builder<AppResponse>.CreateListOfSize(3)
-            .All()
-            .With(x => x.IsActive = true)
-            .Build()
+        var apps = Enumerable.Range(1, 3)
+            .Select(i => new AppResponse(i, 1, $"App{i}", true))
             .ToList();
 
         _factory.AppAppServiceMock
@@ -93,10 +91,7 @@ public class AppEndpointTests : IClassFixture<AppEndpointTests.AppWebApplication
     [Trait("Api", "")]
     public async Task GetById_Sucesso_DeveRetornar200()
     {
-        var app = Builder<AppResponse>.CreateNew()
-            .With(x => x.Id = 1)
-            .With(x => x.IsActive = true)
-            .Build();
+        var app = new AppResponse(1, 1, "App Test", true);
 
         _factory.AppAppServiceMock
             .Setup(x => x.GetByIdAsync(1, It.IsAny<CancellationToken>()))
@@ -147,10 +142,8 @@ public class AppEndpointTests : IClassFixture<AppEndpointTests.AppWebApplication
     [Trait("Api", "")]
     public async Task GetPaged_Sucesso_DeveRetornar200()
     {
-        var items = Builder<AppResponse>.CreateListOfSize(2)
-            .All()
-            .With(x => x.IsActive = true)
-            .Build()
+        var items = Enumerable.Range(1, 2)
+            .Select(i => new AppResponse(i, 1, $"App{i}", true))
             .ToList();
 
         var paged = new ListPageResponse<AppResponse>(items, 1, 10, 2, 1);
@@ -200,10 +193,7 @@ public class AppEndpointTests : IClassFixture<AppEndpointTests.AppWebApplication
     [Trait("Api", "")]
     public async Task Create_Sucesso_DeveRetornar201()
     {
-        var request = Builder<CreateAppRequest>.CreateNew()
-            .With(x => x.Name = "App Test")
-            .With(x => x.Description = "Descrição")
-            .Build();
+        var request = new CreateAppRequest("App Test", "Descrição");
 
         _factory.AppAppServiceMock
             .Setup(x => x.CreateAsync(It.IsAny<CreateAppRequest>(), It.IsAny<CancellationToken>()))
@@ -218,10 +208,7 @@ public class AppEndpointTests : IClassFixture<AppEndpointTests.AppWebApplication
     [Trait("Api", "")]
     public async Task Create_DadosInvalidos_DeveRetornar200()
     {
-        var request = Builder<CreateAppRequest>.CreateNew()
-            .With(x => x.Name = string.Empty)
-            .With(x => x.Description = string.Empty)
-            .Build();
+        var request = new CreateAppRequest(string.Empty, string.Empty);
 
         _factory.AppAppServiceMock
             .Setup(x => x.CreateAsync(It.IsAny<CreateAppRequest>(), It.IsAny<CancellationToken>()))
@@ -242,10 +229,7 @@ public class AppEndpointTests : IClassFixture<AppEndpointTests.AppWebApplication
     [Trait("Api", "")]
     public async Task Create_Erro_DeveRetornar500()
     {
-        var request = Builder<CreateAppRequest>.CreateNew()
-            .With(x => x.Name = "App Test")
-            .With(x => x.Description = "Descrição")
-            .Build();
+        var request = new CreateAppRequest("App Test", "Descrição");
 
         _factory.AppAppServiceMock
             .Setup(x => x.CreateAsync(It.IsAny<CreateAppRequest>(), It.IsAny<CancellationToken>()))
@@ -264,10 +248,7 @@ public class AppEndpointTests : IClassFixture<AppEndpointTests.AppWebApplication
     [Trait("Api", "")]
     public async Task Update_Sucesso_DeveRetornar200()
     {
-        var request = Builder<UpdateAppRequest>.CreateNew()
-            .With(x => x.Name = "App Atualizada")
-            .With(x => x.Description = "Descrição atualizada")
-            .Build();
+        var request = new UpdateAppRequest("App Atualizada", "Descrição atualizada");
 
         _factory.AppAppServiceMock
             .Setup(x => x.UpdateAsync(1, It.IsAny<UpdateAppRequest>(), It.IsAny<CancellationToken>()))
@@ -282,10 +263,7 @@ public class AppEndpointTests : IClassFixture<AppEndpointTests.AppWebApplication
     [Trait("Api", "")]
     public async Task Update_NaoEncontrado_DeveRetornar410()
     {
-        var request = Builder<UpdateAppRequest>.CreateNew()
-            .With(x => x.Name = "App")
-            .With(x => x.Description = "Desc")
-            .Build();
+        var request = new UpdateAppRequest("App", "Desc");
 
         _factory.AppAppServiceMock
             .Setup(x => x.UpdateAsync(99, It.IsAny<UpdateAppRequest>(), It.IsAny<CancellationToken>()))
@@ -306,10 +284,7 @@ public class AppEndpointTests : IClassFixture<AppEndpointTests.AppWebApplication
     [Trait("Api", "")]
     public async Task Update_Duplicado_DeveRetornar409()
     {
-        var request = Builder<UpdateAppRequest>.CreateNew()
-            .With(x => x.Name = "App Duplicada")
-            .With(x => x.Description = "Desc")
-            .Build();
+        var request = new UpdateAppRequest("App Duplicada", "Desc");
 
         _factory.AppAppServiceMock
             .Setup(x => x.UpdateAsync(1, It.IsAny<UpdateAppRequest>(), It.IsAny<CancellationToken>()))
@@ -330,10 +305,7 @@ public class AppEndpointTests : IClassFixture<AppEndpointTests.AppWebApplication
     [Trait("Api", "")]
     public async Task Update_Erro_DeveRetornar500()
     {
-        var request = Builder<UpdateAppRequest>.CreateNew()
-            .With(x => x.Name = "App")
-            .With(x => x.Description = "Desc")
-            .Build();
+        var request = new UpdateAppRequest("App", "Desc");
 
         _factory.AppAppServiceMock
             .Setup(x => x.UpdateAsync(It.IsAny<int>(), It.IsAny<UpdateAppRequest>(), It.IsAny<CancellationToken>()))

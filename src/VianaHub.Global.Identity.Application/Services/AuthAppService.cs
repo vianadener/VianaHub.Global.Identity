@@ -72,6 +72,22 @@ public class AuthAppService : IAuthAppService
             return null;
         }
 
+        // Validar existência do tenant
+        var tenantExists = await _tenantRepo.ExistsByIdAsync(request.TenantId, ct);
+        if (!tenantExists)
+        {
+            _notify.Add(_localization.GetMessage("Application.Service.Auth.Register.TenantNotFound"), 404);
+            return null;
+        }
+
+        // Validar se o tenant está ativo
+        var tenant = await _tenantRepo.GetByIdAsync(request.TenantId, ct);
+        if (tenant is null || !tenant.IsActive)
+        {
+            _notify.Add(_localization.GetMessage("Application.Service.Auth.Register.TenantInactive"), 400);
+            return null;
+        }
+
         _requestTenantContext.SetTenantId(request.TenantId);
 
         var exists = await _userRepo.ExistsByNameAsync(request.TenantId, request.Name, ct);

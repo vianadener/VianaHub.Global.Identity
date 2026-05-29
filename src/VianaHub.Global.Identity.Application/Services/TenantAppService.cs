@@ -184,20 +184,25 @@ public class TenantAppService : ITenantAppService
             {
                 try
                 {
-                    var record = csv.GetRecord<BulkUploadTenantItem>();
-                    if (record != null)
+                    var csvRecord = csv.GetRecord<BulkUploadTenantItem>();
+                    if (csvRecord != null)
                     {
                         // Sanitiza e normaliza campos
-                        record.Name = record.Name?.SanitizeCsvInput().NormalizeUtf8();
+                        var sanitizedName = csvRecord.Name?.SanitizeCsvInput().NormalizeUtf8();
+                        var sanitizedDescription = csvRecord.Description?.SanitizeCsvInput().NormalizeUtf8();
+                        var sanitizedAlias = csvRecord.Alias?.SanitizeCsvInput().NormalizeUtf8();
+                        var sanitizedUrlImage = csvRecord.UrlImage?.SanitizeCsvInput().NormalizeUtf8();
+                        var sanitizedSettings = csvRecord.Settings?.SanitizeCsvInput().NormalizeUtf8();
+                        var sanitizedRemarks = csvRecord.Remarks?.SanitizeCsvInput().NormalizeUtf8();
 
                         // Valida se os campos não contêm conteúdo perigoso
-                        if (!string.IsNullOrEmpty(record.Name) && !record.Name.IsSafeCsvValue())
+                        if (!string.IsNullOrEmpty(sanitizedName) && !sanitizedName.IsSafeCsvValue())
                         {
                             _notify.Add(_localization.GetMessage("Application.Service.Tenant.ReadCsvFile.Name.IsSafeCsvValue", rowCount + 2), 400);
                             continue;
                         }
 
-                        records.Add(record);
+                        records.Add(new BulkUploadTenantItem(sanitizedName, sanitizedDescription, sanitizedAlias, sanitizedUrlImage, sanitizedSettings, sanitizedRemarks));
                     }
                     rowCount++;
                 }

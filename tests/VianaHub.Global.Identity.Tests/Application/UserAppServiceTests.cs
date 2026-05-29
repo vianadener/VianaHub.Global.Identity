@@ -64,7 +64,7 @@ public class UserAppServiceTests
     public async Task GetAllAsync_Sucesso_DeveRetornarLista()
     {
         var entities = new List<UserEntity> { BuildUser(1), BuildUser(2) };
-        var mapped = new List<UserResponse> { new() { Id = 1 }, new() { Id = 2 } };
+        var mapped = new List<UserResponse> { new(1, "User1", "123", null, true), new(2, "User2", "456", null, true) };
         _repoMock.Setup(x => x.GetAllAsync(TenantId, default)).ReturnsAsync(entities);
         _mapperMock.Setup(x => x.Map<IEnumerable<UserResponse>>(entities)).Returns(mapped);
 
@@ -98,7 +98,7 @@ public class UserAppServiceTests
     public async Task GetByIdAsync_Sucesso_DeveRetornarUsuario()
     {
         var entity = BuildUser(1);
-        var mapped = new UserResponse { Id = 1 };
+        var mapped = new UserResponse(1, "User1", "123", null, true);
         _repoMock.Setup(x => x.GetByIdAsync(TenantId, 1, default)).ReturnsAsync(entity);
         _mapperMock.Setup(x => x.Map<UserResponse>(entity)).Returns(mapped);
 
@@ -132,7 +132,7 @@ public class UserAppServiceTests
     {
         var entities = new List<UserEntity> { BuildUser(1) };
         var listPage = new ListPage<UserEntity> { Items = entities, TotalItems = 1, TotalPages = 1, PageNumber = 1, PageSize = 10 };
-        var mappedPage = new ListPageResponse<UserResponse>(new List<UserResponse> { new() { Id = 1 } }, 1, 10, 1, 1);
+        var mappedPage = new ListPageResponse<UserResponse>(new List<UserResponse> { new(1, "User1", "123", null, true) }, 1, 10, 1, 1);
         _repoMock.Setup(x => x.GetPagedAsync(TenantId, It.IsAny<PagedFilter>(), default)).ReturnsAsync(listPage);
         _mapperMock.Setup(x => x.Map<ListPageResponse<UserResponse>>(listPage)).Returns(mappedPage);
 
@@ -171,7 +171,7 @@ public class UserAppServiceTests
     [Trait("Application", "")]
     public async Task CreateAsync_Sucesso_DeveRetornarTrue()
     {
-        var request = new CreateUserRequest { Name = "Novo Usuario", Secret = "Senha@123" };
+        var request = new CreateUserRequest("Novo Usuario", "Senha@123", "Senha@123", null);
         _repoMock.Setup(x => x.ExistsByNameAsync(TenantId, request.Name, default)).ReturnsAsync(false);
         _domainMock.Setup(x => x.CreateAsync(It.IsAny<UserEntity>(), default)).ReturnsAsync(true);
 
@@ -186,7 +186,7 @@ public class UserAppServiceTests
     [Trait("Application", "")]
     public async Task CreateAsync_NomeJaExiste_DeveRetornarFalseENotificar()
     {
-        var request = new CreateUserRequest { Name = "Usuario Existente", Secret = "Senha@123" };
+        var request = new CreateUserRequest("Usuario Existente", "Senha@123", "Senha@123", null);
         _repoMock.Setup(x => x.ExistsByNameAsync(TenantId, request.Name, default)).ReturnsAsync(true);
 
         var sut = CreateSut();
@@ -201,7 +201,7 @@ public class UserAppServiceTests
     [Trait("Application", "")]
     public async Task CreateAsync_DominioFalha_DeveRetornarFalse()
     {
-        var request = new CreateUserRequest { Name = "Novo Usuario", Secret = "Senha@123" };
+        var request = new CreateUserRequest("Novo Usuario", "Senha@123", "Senha@123", null);
         _repoMock.Setup(x => x.ExistsByNameAsync(TenantId, request.Name, default)).ReturnsAsync(false);
         _domainMock.Setup(x => x.CreateAsync(It.IsAny<UserEntity>(), default)).ReturnsAsync(false);
 
@@ -220,7 +220,7 @@ public class UserAppServiceTests
     public async Task UpdateAsync_Sucesso_DeveRetornarTrue()
     {
         var entity = BuildUser(1);
-        var request = new UpdateUserRequest { Name = "Usuario Atualizado" };
+        var request = new UpdateUserRequest("Usuario Atualizado", null);
         _repoMock.Setup(x => x.GetByIdAsync(TenantId, 1, default)).ReturnsAsync(entity);
         _domainMock.Setup(x => x.UpdateAsync(entity, default)).ReturnsAsync(true);
 
@@ -236,7 +236,7 @@ public class UserAppServiceTests
     public async Task UpdateAsync_NaoEncontrado_DeveRetornarFalseENotificar()
     {
         _repoMock.Setup(x => x.GetByIdAsync(TenantId, 99, default)).ReturnsAsync((UserEntity)null);
-        var request = new UpdateUserRequest { Name = "Usuario" };
+        var request = new UpdateUserRequest("Usuario", null);
 
         var sut = CreateSut();
         var result = await sut.UpdateAsync(99, request, default);
@@ -256,7 +256,7 @@ public class UserAppServiceTests
     {
         const string currentSecret = "Senha@123";
         var entity = BuildUser(1);
-        var request = new UpdateSecretRequest { CurrentSecret = currentSecret, NewSecret = "NovaSenha@456" };
+        var request = new UpdateSecretRequest(currentSecret, "NovaSenha@456");
         _repoMock.Setup(x => x.GetByIdAsync(TenantId, 1, default)).ReturnsAsync(entity);
         _domainMock.Setup(x => x.UpdateAsync(entity, default)).ReturnsAsync(true);
 
@@ -272,7 +272,7 @@ public class UserAppServiceTests
     public async Task UpdatePasswordAsync_NaoEncontrado_DeveRetornarFalseENotificar()
     {
         _repoMock.Setup(x => x.GetByIdAsync(TenantId, 99, default)).ReturnsAsync((UserEntity)null);
-        var request = new UpdateSecretRequest { CurrentSecret = "Senha@123", NewSecret = "NovaSenha@456" };
+        var request = new UpdateSecretRequest("Senha@123", "NovaSenha@456");
 
         var sut = CreateSut();
         var result = await sut.UpdatePasswordAsync(99, request, default);
@@ -287,7 +287,7 @@ public class UserAppServiceTests
     public async Task UpdatePasswordAsync_SenhaAtualIncorreta_DeveRetornarFalseENotificar()
     {
         var entity = BuildUser(1);
-        var request = new UpdateSecretRequest { CurrentSecret = "SenhaErrada@999", NewSecret = "NovaSenha@456" };
+        var request = new UpdateSecretRequest("SenhaErrada@999", "NovaSenha@456");
         _repoMock.Setup(x => x.GetByIdAsync(TenantId, 1, default)).ReturnsAsync(entity);
 
         var sut = CreateSut();

@@ -13,6 +13,8 @@
   "Application.Service.Auth.Login.UserWithoutRole": "User does not have an associated role. Contact the administrator.",
   "Application.Service.Auth.Login.InvalidCredentials": "Invalid credentials.",
   "Application.Service.Auth.Register.InvalidTenantId": "Invalid tenant ID.",
+  "Application.Service.Auth.Register.TenantNotFound": "Tenant not found.",
+  "Application.Service.Auth.Register.TenantInactive": "Tenant is inactive.",
   "Application.Service.Auth.Register.NameRequired": "The user name is required.",
   "Application.Service.Auth.Register.NameAlreadyExists": "A user with this name already exists.",
   "Application.Service.Auth.Register.SecretRequired": "The password is required.",

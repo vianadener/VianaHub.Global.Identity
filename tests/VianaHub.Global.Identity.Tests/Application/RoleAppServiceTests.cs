@@ -66,7 +66,7 @@ public class RoleAppServiceTests
     public async Task GetAllAsync_Sucesso_DeveRetornarLista()
     {
         var entities = new List<RoleEntity> { BuildRole(1), BuildRole(2) };
-        var mapped = new List<RoleResponse> { new() { Id = 1 }, new() { Id = 2 } };
+        var mapped = new List<RoleResponse> { new(1, AppId, "Role1", true), new(2, AppId, "Role2", true) };
         _repoMock.Setup(x => x.GetAllAsync(TenantId, AppId, default)).ReturnsAsync(entities);
         _mapperMock.Setup(x => x.Map<IEnumerable<RoleResponse>>(entities)).Returns(mapped);
 
@@ -100,7 +100,7 @@ public class RoleAppServiceTests
     public async Task GetByIdAsync_Sucesso_DeveRetornarRole()
     {
         var entity = BuildRole(1);
-        var mapped = new RoleResponse { Id = 1 };
+        var mapped = new RoleResponse(1, AppId, "Role1", true);
         _repoMock.Setup(x => x.GetByIdAsync(TenantId, AppId, 1, default)).ReturnsAsync(entity);
         _mapperMock.Setup(x => x.Map<RoleResponse>(entity)).Returns(mapped);
 
@@ -134,7 +134,7 @@ public class RoleAppServiceTests
     {
         var entities = new List<RoleEntity> { BuildRole(1) };
         var listPage = new ListPage<RoleEntity> { Items = entities, TotalItems = 1, TotalPages = 1, PageNumber = 1, PageSize = 10 };
-        var mappedPage = new ListPageResponse<RoleResponse>(new List<RoleResponse> { new() { Id = 1 } }, 1, 10, 1, 1);
+        var mappedPage = new ListPageResponse<RoleResponse>(new List<RoleResponse> { new(1, AppId, "Role1", true) }, 1, 10, 1, 1);
         _repoMock.Setup(x => x.GetPagedAsync(TenantId, AppId, It.IsAny<PagedFilter>(), default)).ReturnsAsync(listPage);
         _mapperMock.Setup(x => x.Map<ListPageResponse<RoleResponse>>(listPage)).Returns(mappedPage);
 
@@ -173,7 +173,7 @@ public class RoleAppServiceTests
     [Trait("Application", "")]
     public async Task CreateAsync_Sucesso_DeveRetornarTrue()
     {
-        var request = new CreateRoleRequest { Name = "Nova Role", Description = "Descrição" };
+        var request = new CreateRoleRequest("Nova Role", "Descrição");
         _repoMock.Setup(x => x.ExistsByNameAsync(TenantId, AppId, request.Name, default)).ReturnsAsync(false);
         _domainMock.Setup(x => x.CreateAsync(It.IsAny<RoleEntity>(), default)).ReturnsAsync(true);
 
@@ -188,7 +188,7 @@ public class RoleAppServiceTests
     [Trait("Application", "")]
     public async Task CreateAsync_NomeJaExiste_DeveRetornarFalseENotificar()
     {
-        var request = new CreateRoleRequest { Name = "Role Existente", Description = "Descrição" };
+        var request = new CreateRoleRequest("Role Existente", "Descrição");
         _repoMock.Setup(x => x.ExistsByNameAsync(TenantId, AppId, request.Name, default)).ReturnsAsync(true);
 
         var sut = CreateSut();
@@ -203,7 +203,7 @@ public class RoleAppServiceTests
     [Trait("Application", "")]
     public async Task CreateAsync_DominioFalha_DeveRetornarFalse()
     {
-        var request = new CreateRoleRequest { Name = "Nova Role", Description = "Descrição" };
+        var request = new CreateRoleRequest("Nova Role", "Descrição");
         _repoMock.Setup(x => x.ExistsByNameAsync(TenantId, AppId, request.Name, default)).ReturnsAsync(false);
         _domainMock.Setup(x => x.CreateAsync(It.IsAny<RoleEntity>(), default)).ReturnsAsync(false);
 
@@ -222,7 +222,7 @@ public class RoleAppServiceTests
     public async Task UpdateAsync_Sucesso_DeveRetornarTrue()
     {
         var entity = BuildRole(1);
-        var request = new UpdateRoleRequest { Name = "Role Atualizada", Description = "Nova Descrição" };
+        var request = new UpdateRoleRequest("Role Atualizada", "Nova Descrição");
         _repoMock.Setup(x => x.GetByIdAsync(TenantId, AppId, 1, default)).ReturnsAsync(entity);
         _domainMock.Setup(x => x.UpdateAsync(entity, default)).ReturnsAsync(true);
 
@@ -238,7 +238,7 @@ public class RoleAppServiceTests
     public async Task UpdateAsync_NaoEncontrada_DeveRetornarFalseENotificar()
     {
         _repoMock.Setup(x => x.GetByIdAsync(TenantId, AppId, 99, default)).ReturnsAsync((RoleEntity)null);
-        var request = new UpdateRoleRequest { Name = "Role", Description = "Desc" };
+        var request = new UpdateRoleRequest("Role", "Desc");
 
         var sut = CreateSut();
         var result = await sut.UpdateAsync(99, request, default);

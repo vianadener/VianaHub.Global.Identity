@@ -43,14 +43,21 @@ public class AuthEndpointTests : IClassFixture<AuthEndpointTests.AuthWebApplicat
     [Trait("Api", "")]
     public async Task Register_Sucesso_DeveRetornar200()
     {
-        var request = Builder<RegisterRequest>.CreateNew()
-            .With(x => x.TenantId = 1)
-            .With(x => x.Name = "Usuário Teste")
-            .With(x => x.Secret = "SenhaForte@123")
-            .With(x => x.UrlImage = "https://img.example.com/foto.png")
-            .Build();
+        var request = new RegisterRequest(1, "Usuário Teste", "SenhaForte@123", "https://img.example.com/foto.png");
 
-        var response = Builder<AuthDetailResponse>.CreateNew().Build();
+        var response = new AuthDetailResponse(
+            AccessToken: "access.token.jwt",
+            RefreshToken: "refresh-token",
+            AccessTokenExpiresAt: DateTime.UtcNow.AddHours(1),
+            RefreshTokenExpiresAt: DateTime.UtcNow.AddDays(7),
+            TenantId: 1,
+            TenantName: "Test Tenant",
+            AppId: 2,
+            AppName: "Test App",
+            UserId: 10,
+            UserName: "Test User",
+            RoleId: 3,
+            RoleName: "Admin");
 
         _factory.AuthAppServiceMock
             .Setup(x => x.RegisterAsync(It.IsAny<RegisterRequest>(), It.IsAny<CancellationToken>()))
@@ -65,11 +72,7 @@ public class AuthEndpointTests : IClassFixture<AuthEndpointTests.AuthWebApplicat
     [Trait("Api", "")]
     public async Task Register_DadosInvalidos_DeveRetornar400()
     {
-        var request = Builder<RegisterRequest>.CreateNew()
-            .With(x => x.TenantId = 0)
-            .With(x => x.Name = string.Empty)
-            .With(x => x.Secret = string.Empty)
-            .Build();
+        var request = new RegisterRequest(0, string.Empty, string.Empty, null);
 
         _factory.AuthAppServiceMock
             .Setup(x => x.RegisterAsync(It.IsAny<RegisterRequest>(), It.IsAny<CancellationToken>()))
@@ -90,11 +93,7 @@ public class AuthEndpointTests : IClassFixture<AuthEndpointTests.AuthWebApplicat
     [Trait("Api", "")]
     public async Task Register_UsuarioDuplicado_DeveRetornar409()
     {
-        var request = Builder<RegisterRequest>.CreateNew()
-            .With(x => x.TenantId = 1)
-            .With(x => x.Name = "Usuário Existente")
-            .With(x => x.Secret = "SenhaForte@123")
-            .Build();
+        var request = new RegisterRequest(1, "Usuário Existente", "SenhaForte@123", null);
 
         _factory.AuthAppServiceMock
             .Setup(x => x.RegisterAsync(It.IsAny<RegisterRequest>(), It.IsAny<CancellationToken>()))
@@ -115,11 +114,7 @@ public class AuthEndpointTests : IClassFixture<AuthEndpointTests.AuthWebApplicat
     [Trait("Api", "")]
     public async Task Register_Erro_DeveRetornar500()
     {
-        var request = Builder<RegisterRequest>.CreateNew()
-            .With(x => x.TenantId = 1)
-            .With(x => x.Name = "Usuário Teste")
-            .With(x => x.Secret = "SenhaForte@123")
-            .Build();
+        var request = new RegisterRequest(1, "Usuário Teste", "SenhaForte@123", null);
 
         _factory.AuthAppServiceMock
             .Setup(x => x.RegisterAsync(It.IsAny<RegisterRequest>(), It.IsAny<CancellationToken>()))
@@ -138,12 +133,21 @@ public class AuthEndpointTests : IClassFixture<AuthEndpointTests.AuthWebApplicat
     [Trait("Api", "")]
     public async Task Login_Sucesso_DeveRetornar200()
     {
-        var request = Builder<LoginRequest>.CreateNew()
-            .With(x => x.LoginIdentifier = "usuario@teste.com")
-            .With(x => x.Password = "SenhaForte@123")
-            .Build();
+        var request = new LoginRequest("usuario@teste.com", "SenhaForte@123");
 
-        var response = Builder<AuthDetailResponse>.CreateNew().Build();
+        var response = new AuthDetailResponse(
+            AccessToken: "access.token.jwt",
+            RefreshToken: "refresh-token",
+            AccessTokenExpiresAt: DateTime.UtcNow.AddHours(1),
+            RefreshTokenExpiresAt: DateTime.UtcNow.AddDays(7),
+            TenantId: 1,
+            TenantName: "Test Tenant",
+            AppId: 2,
+            AppName: "Test App",
+            UserId: 10,
+            UserName: "Test User",
+            RoleId: 3,
+            RoleName: "Admin");
 
         _factory.AuthAppServiceMock
             .Setup(x => x.LoginAsync(It.IsAny<LoginRequest>(), It.IsAny<CancellationToken>()))
@@ -158,10 +162,7 @@ public class AuthEndpointTests : IClassFixture<AuthEndpointTests.AuthWebApplicat
     [Trait("Api", "")]
     public async Task Login_DadosInvalidos_DeveRetornar400()
     {
-        var request = Builder<LoginRequest>.CreateNew()
-            .With(x => x.LoginIdentifier = string.Empty)
-            .With(x => x.Password = string.Empty)
-            .Build();
+        var request = new LoginRequest(string.Empty, string.Empty);
 
         _factory.AuthAppServiceMock
             .Setup(x => x.LoginAsync(It.IsAny<LoginRequest>(), It.IsAny<CancellationToken>()))
@@ -182,10 +183,7 @@ public class AuthEndpointTests : IClassFixture<AuthEndpointTests.AuthWebApplicat
     [Trait("Api", "")]
     public async Task Login_CredenciaisInvalidas_DeveRetornar401()
     {
-        var request = Builder<LoginRequest>.CreateNew()
-            .With(x => x.LoginIdentifier = "usuario@teste.com")
-            .With(x => x.Password = "SenhaErrada")
-            .Build();
+        var request = new LoginRequest("usuario@teste.com", "SenhaErrada");
 
         _factory.AuthAppServiceMock
             .Setup(x => x.LoginAsync(It.IsAny<LoginRequest>(), It.IsAny<CancellationToken>()))
@@ -206,10 +204,7 @@ public class AuthEndpointTests : IClassFixture<AuthEndpointTests.AuthWebApplicat
     [Trait("Api", "")]
     public async Task Login_Erro_DeveRetornar500()
     {
-        var request = Builder<LoginRequest>.CreateNew()
-            .With(x => x.LoginIdentifier = "usuario@teste.com")
-            .With(x => x.Password = "SenhaForte@123")
-            .Build();
+        var request = new LoginRequest("usuario@teste.com", "SenhaForte@123");
 
         _factory.AuthAppServiceMock
             .Setup(x => x.LoginAsync(It.IsAny<LoginRequest>(), It.IsAny<CancellationToken>()))
@@ -228,12 +223,21 @@ public class AuthEndpointTests : IClassFixture<AuthEndpointTests.AuthWebApplicat
     [Trait("Api", "")]
     public async Task Refresh_Sucesso_DeveRetornar200()
     {
-        var request = Builder<RefreshRequest>.CreateNew()
-            .With(x => x.TenantId = 1)
-            .With(x => x.RefreshToken = "valid-refresh-token")
-            .Build();
+        var request = new RefreshRequest(1, "valid-refresh-token");
 
-        var response = Builder<AuthDetailResponse>.CreateNew().Build();
+        var response = new AuthDetailResponse(
+            AccessToken: "new.access.token",
+            RefreshToken: "new-refresh-token",
+            AccessTokenExpiresAt: DateTime.UtcNow.AddHours(1),
+            RefreshTokenExpiresAt: DateTime.UtcNow.AddDays(7),
+            TenantId: 1,
+            TenantName: "Test Tenant",
+            AppId: 2,
+            AppName: "Test App",
+            UserId: 10,
+            UserName: "Test User",
+            RoleId: 3,
+            RoleName: "Admin");
 
         _factory.AuthAppServiceMock
             .Setup(x => x.RefreshAsync(It.IsAny<RefreshRequest>(), It.IsAny<CancellationToken>()))
@@ -248,10 +252,7 @@ public class AuthEndpointTests : IClassFixture<AuthEndpointTests.AuthWebApplicat
     [Trait("Api", "")]
     public async Task Refresh_DadosInvalidos_DeveRetornar400()
     {
-        var request = Builder<RefreshRequest>.CreateNew()
-            .With(x => x.TenantId = 0)
-            .With(x => x.RefreshToken = string.Empty)
-            .Build();
+        var request = new RefreshRequest(0, string.Empty);
 
         _factory.AuthAppServiceMock
             .Setup(x => x.RefreshAsync(It.IsAny<RefreshRequest>(), It.IsAny<CancellationToken>()))
@@ -272,10 +273,7 @@ public class AuthEndpointTests : IClassFixture<AuthEndpointTests.AuthWebApplicat
     [Trait("Api", "")]
     public async Task Refresh_TokenInvalido_DeveRetornar401()
     {
-        var request = Builder<RefreshRequest>.CreateNew()
-            .With(x => x.TenantId = 1)
-            .With(x => x.RefreshToken = "expired-token")
-            .Build();
+        var request = new RefreshRequest(1, "expired-token");
 
         _factory.AuthAppServiceMock
             .Setup(x => x.RefreshAsync(It.IsAny<RefreshRequest>(), It.IsAny<CancellationToken>()))
@@ -296,10 +294,7 @@ public class AuthEndpointTests : IClassFixture<AuthEndpointTests.AuthWebApplicat
     [Trait("Api", "")]
     public async Task Refresh_Erro_DeveRetornar500()
     {
-        var request = Builder<RefreshRequest>.CreateNew()
-            .With(x => x.TenantId = 1)
-            .With(x => x.RefreshToken = "valid-refresh-token")
-            .Build();
+        var request = new RefreshRequest(1, "valid-refresh-token");
 
         _factory.AuthAppServiceMock
             .Setup(x => x.RefreshAsync(It.IsAny<RefreshRequest>(), It.IsAny<CancellationToken>()))
@@ -318,9 +313,7 @@ public class AuthEndpointTests : IClassFixture<AuthEndpointTests.AuthWebApplicat
     [Trait("Api", "")]
     public async Task Logout_Sucesso_DeveRetornar200()
     {
-        var request = Builder<RevokeRequest>.CreateNew()
-            .With(x => x.Reason = "Saída voluntária")
-            .Build();
+        var request = new RevokeRequest("Saída voluntária");
 
         _factory.AuthAppServiceMock
             .Setup(x => x.LogoutAsync(It.IsAny<RevokeRequest>(), It.IsAny<CancellationToken>()))
@@ -337,9 +330,7 @@ public class AuthEndpointTests : IClassFixture<AuthEndpointTests.AuthWebApplicat
     {
         var clientSemAuth = _factory.CreateClient(new WebApplicationFactoryClientOptions { AllowAutoRedirect = false });
 
-        var request = Builder<RevokeRequest>.CreateNew()
-            .With(x => x.Reason = "Saída")
-            .Build();
+        var request = new RevokeRequest("Saída");
 
         _factory.NotifyMock
             .Setup(x => x.HasNotify()).Returns(true);
@@ -357,9 +348,7 @@ public class AuthEndpointTests : IClassFixture<AuthEndpointTests.AuthWebApplicat
     [Trait("Api", "")]
     public async Task Logout_Erro_DeveRetornar500()
     {
-        var request = Builder<RevokeRequest>.CreateNew()
-            .With(x => x.Reason = "Saída voluntária")
-            .Build();
+        var request = new RevokeRequest("Saída voluntária");
 
         _factory.AuthAppServiceMock
             .Setup(x => x.LogoutAsync(It.IsAny<RevokeRequest>(), It.IsAny<CancellationToken>()))
@@ -378,11 +367,9 @@ public class AuthEndpointTests : IClassFixture<AuthEndpointTests.AuthWebApplicat
     [Trait("Api", "")]
     public async Task ForgotPassword_Sucesso_DeveRetornar200()
     {
-        var request = Builder<ForgotPasswordRequest>.CreateNew()
-            .With(x => x.LoginIdentifier = "usuario@teste.com")
-            .Build();
+        var request = new ForgotPasswordRequest("usuario@teste.com");
 
-        var response = Builder<ForgotPasswordResponse>.CreateNew().Build();
+        var response = new ForgotPasswordResponse("Email de redefinição enviado");
 
         _factory.ForgotPasswordAppServiceMock
             .Setup(x => x.ForgotPasswordAsync(It.IsAny<ForgotPasswordRequest>(), It.IsAny<CancellationToken>()))
@@ -397,9 +384,7 @@ public class AuthEndpointTests : IClassFixture<AuthEndpointTests.AuthWebApplicat
     [Trait("Api", "")]
     public async Task ForgotPassword_DadosInvalidos_DeveRetornar400()
     {
-        var request = Builder<ForgotPasswordRequest>.CreateNew()
-            .With(x => x.LoginIdentifier = string.Empty)
-            .Build();
+        var request = new ForgotPasswordRequest(string.Empty);
 
         _factory.ForgotPasswordAppServiceMock
             .Setup(x => x.ForgotPasswordAsync(It.IsAny<ForgotPasswordRequest>(), It.IsAny<CancellationToken>()))
@@ -420,9 +405,7 @@ public class AuthEndpointTests : IClassFixture<AuthEndpointTests.AuthWebApplicat
     [Trait("Api", "")]
     public async Task ForgotPassword_Erro_DeveRetornar500()
     {
-        var request = Builder<ForgotPasswordRequest>.CreateNew()
-            .With(x => x.LoginIdentifier = "usuario@teste.com")
-            .Build();
+        var request = new ForgotPasswordRequest("usuario@teste.com");
 
         _factory.ForgotPasswordAppServiceMock
             .Setup(x => x.ForgotPasswordAsync(It.IsAny<ForgotPasswordRequest>(), It.IsAny<CancellationToken>()))
@@ -441,7 +424,7 @@ public class AuthEndpointTests : IClassFixture<AuthEndpointTests.AuthWebApplicat
     [Trait("Api", "")]
     public async Task ValidateResetToken_Sucesso_DeveRetornar200()
     {
-        var response = Builder<ValidateResetTokenResponse>.CreateNew().Build();
+        var response = new ValidateResetTokenResponse(true);
 
         _factory.ForgotPasswordAppServiceMock
             .Setup(x => x.ValidateResetTokenAsync(It.IsAny<ValidateResetTokenRequest>(), It.IsAny<CancellationToken>()))
@@ -492,13 +475,9 @@ public class AuthEndpointTests : IClassFixture<AuthEndpointTests.AuthWebApplicat
     [Trait("Api", "")]
     public async Task ResetPassword_Sucesso_DeveRetornar200()
     {
-        var request = Builder<ResetPasswordRequest>.CreateNew()
-            .With(x => x.Token = "valid-reset-token")
-            .With(x => x.NewPassword = "NovaSenha@123")
-            .With(x => x.ConfirmPassword = "NovaSenha@123")
-            .Build();
+        var request = new ResetPasswordRequest("valid-reset-token", "NovaSenha@123", "NovaSenha@123");
 
-        var response = Builder<ResetPasswordResponse>.CreateNew().Build();
+        var response = new ResetPasswordResponse("Senha redefinida com sucesso");
 
         _factory.ForgotPasswordAppServiceMock
             .Setup(x => x.ResetPasswordAsync(It.IsAny<ResetPasswordRequest>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
@@ -513,11 +492,7 @@ public class AuthEndpointTests : IClassFixture<AuthEndpointTests.AuthWebApplicat
     [Trait("Api", "")]
     public async Task ResetPassword_DadosInvalidos_DeveRetornar400()
     {
-        var request = Builder<ResetPasswordRequest>.CreateNew()
-            .With(x => x.Token = string.Empty)
-            .With(x => x.NewPassword = string.Empty)
-            .With(x => x.ConfirmPassword = string.Empty)
-            .Build();
+        var request = new ResetPasswordRequest(string.Empty, string.Empty, string.Empty);
 
         _factory.ForgotPasswordAppServiceMock
             .Setup(x => x.ResetPasswordAsync(It.IsAny<ResetPasswordRequest>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
@@ -538,11 +513,7 @@ public class AuthEndpointTests : IClassFixture<AuthEndpointTests.AuthWebApplicat
     [Trait("Api", "")]
     public async Task ResetPassword_SenhaIgualAnterior_DeveRetornar409()
     {
-        var request = Builder<ResetPasswordRequest>.CreateNew()
-            .With(x => x.Token = "valid-reset-token")
-            .With(x => x.NewPassword = "SenhaAnterior@123")
-            .With(x => x.ConfirmPassword = "SenhaAnterior@123")
-            .Build();
+        var request = new ResetPasswordRequest("valid-reset-token", "SenhaAnterior@123", "SenhaAnterior@123");
 
         _factory.ForgotPasswordAppServiceMock
             .Setup(x => x.ResetPasswordAsync(It.IsAny<ResetPasswordRequest>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
@@ -563,11 +534,7 @@ public class AuthEndpointTests : IClassFixture<AuthEndpointTests.AuthWebApplicat
     [Trait("Api", "")]
     public async Task ResetPassword_TokenExpirado_DeveRetornar410()
     {
-        var request = Builder<ResetPasswordRequest>.CreateNew()
-            .With(x => x.Token = "expired-reset-token")
-            .With(x => x.NewPassword = "NovaSenha@123")
-            .With(x => x.ConfirmPassword = "NovaSenha@123")
-            .Build();
+        var request = new ResetPasswordRequest("expired-reset-token", "NovaSenha@123", "NovaSenha@123");
 
         _factory.ForgotPasswordAppServiceMock
             .Setup(x => x.ResetPasswordAsync(It.IsAny<ResetPasswordRequest>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
@@ -588,11 +555,7 @@ public class AuthEndpointTests : IClassFixture<AuthEndpointTests.AuthWebApplicat
     [Trait("Api", "")]
     public async Task ResetPassword_Erro_DeveRetornar500()
     {
-        var request = Builder<ResetPasswordRequest>.CreateNew()
-            .With(x => x.Token = "valid-reset-token")
-            .With(x => x.NewPassword = "NovaSenha@123")
-            .With(x => x.ConfirmPassword = "NovaSenha@123")
-            .Build();
+        var request = new ResetPasswordRequest("valid-reset-token", "NovaSenha@123", "NovaSenha@123");
 
         _factory.ForgotPasswordAppServiceMock
             .Setup(x => x.ResetPasswordAsync(It.IsAny<ResetPasswordRequest>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))

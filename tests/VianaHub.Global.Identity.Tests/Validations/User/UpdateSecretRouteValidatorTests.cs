@@ -24,11 +24,7 @@ public class UpdateSecretRouteValidatorTests
     [Trait("Api", "")]
     public void Validate_Sucesso_RequestValida()
     {
-        var request = new UpdateSecretRequest
-        {
-            CurrentSecret = "SecretAtual@1",
-            NewSecret = "NovoSecret@1"
-        };
+        var request = new UpdateSecretRequest("SecretAtual@1", "NovoSecret@1");
 
         var result = _validator.Validate(request);
 
@@ -40,11 +36,7 @@ public class UpdateSecretRouteValidatorTests
     [Trait("Api", "")]
     public void Validate_Insucesso_CurrentSecretVazio()
     {
-        var request = new UpdateSecretRequest
-        {
-            CurrentSecret = string.Empty,
-            NewSecret = "NovoSecret@1"
-        };
+        var request = new UpdateSecretRequest(string.Empty, "NovoSecret@1");
 
         var result = _validator.Validate(request);
 
@@ -56,11 +48,7 @@ public class UpdateSecretRouteValidatorTests
     [Trait("Api", "")]
     public void Validate_Insucesso_CurrentSecretNulo()
     {
-        var request = new UpdateSecretRequest
-        {
-            CurrentSecret = null,
-            NewSecret = "NovoSecret@1"
-        };
+        var request = new UpdateSecretRequest(null, "NovoSecret@1");
 
         var result = _validator.Validate(request);
 
@@ -76,11 +64,7 @@ public class UpdateSecretRouteValidatorTests
     [Trait("Api", "")]
     public void Validate_Insucesso_NewSecretVazio()
     {
-        var request = new UpdateSecretRequest
-        {
-            CurrentSecret = "SecretAtual@1",
-            NewSecret = string.Empty
-        };
+        var request = new UpdateSecretRequest("SecretAtual@1", string.Empty);
 
         var result = _validator.Validate(request);
 
@@ -92,11 +76,7 @@ public class UpdateSecretRouteValidatorTests
     [Trait("Api", "")]
     public void Validate_Insucesso_NewSecretNulo()
     {
-        var request = new UpdateSecretRequest
-        {
-            CurrentSecret = "SecretAtual@1",
-            NewSecret = null
-        };
+        var request = new UpdateSecretRequest("SecretAtual@1", null);
 
         var result = _validator.Validate(request);
 
@@ -112,11 +92,7 @@ public class UpdateSecretRouteValidatorTests
     [Trait("Api", "")]
     public void Validate_Insucesso_NewSecretMenorQueMinimo()
     {
-        var request = new UpdateSecretRequest
-        {
-            CurrentSecret = "SecretAtual@1",
-            NewSecret = "Ab@1"
-        };
+        var request = new UpdateSecretRequest("SecretAtual@1", "Ab@1");
 
         var result = _validator.Validate(request);
 
@@ -128,11 +104,7 @@ public class UpdateSecretRouteValidatorTests
     [Trait("Api", "")]
     public void Validate_Sucesso_NewSecretComMinimo8Caracteres()
     {
-        var request = new UpdateSecretRequest
-        {
-            CurrentSecret = "SecretAtual@1",
-            NewSecret = "Ab@12345"
-        };
+        var request = new UpdateSecretRequest("SecretAtual@1", "Ab@12345");
 
         var result = _validator.Validate(request);
 
@@ -147,11 +119,7 @@ public class UpdateSecretRouteValidatorTests
     [Trait("Api", "")]
     public void Validate_Insucesso_NewSecretMaiorQueMaximo()
     {
-        var request = new UpdateSecretRequest
-        {
-            CurrentSecret = "SecretAtual@1",
-            NewSecret = "Ab@1" + new string('a', 98)
-        };
+        var request = new UpdateSecretRequest("SecretAtual@1", "Ab@1" + new string('a', 98));
 
         var result = _validator.Validate(request);
 
@@ -163,11 +131,7 @@ public class UpdateSecretRouteValidatorTests
     [Trait("Api", "")]
     public void Validate_Sucesso_NewSecretComMaximo100Caracteres()
     {
-        var request = new UpdateSecretRequest
-        {
-            CurrentSecret = "SecretAtual@1",
-            NewSecret = "Ab@1" + new string('a', 96)
-        };
+        var request = new UpdateSecretRequest("SecretAtual@1", "Ab@1" + new string('a', 96));
 
         var result = _validator.Validate(request);
 
@@ -182,11 +146,7 @@ public class UpdateSecretRouteValidatorTests
     [Trait("Api", "")]
     public void Validate_Insucesso_NewSecretSemMaiuscula()
     {
-        var request = new UpdateSecretRequest
-        {
-            CurrentSecret = "SecretAtual@1",
-            NewSecret = "novosecret@1"
-        };
+        var request = new UpdateSecretRequest("SecretAtual@1", "novosecret@1");
 
         var result = _validator.Validate(request);
 
@@ -202,11 +162,7 @@ public class UpdateSecretRouteValidatorTests
     [Trait("Api", "")]
     public void Validate_Insucesso_NewSecretSemMinuscula()
     {
-        var request = new UpdateSecretRequest
-        {
-            CurrentSecret = "SecretAtual@1",
-            NewSecret = "NOVOSECRET@1"
-        };
+        var request = new UpdateSecretRequest("SecretAtual@1", "NOVOSECRET@1");
 
         var result = _validator.Validate(request);
 
@@ -222,11 +178,7 @@ public class UpdateSecretRouteValidatorTests
     [Trait("Api", "")]
     public void Validate_Insucesso_NewSecretSemNumero()
     {
-        var request = new UpdateSecretRequest
-        {
-            CurrentSecret = "SecretAtual@1",
-            NewSecret = "NovoSecret@abc"
-        };
+        var request = new UpdateSecretRequest("SecretAtual@1", "NovoSecret@abc");
 
         var result = _validator.Validate(request);
 
@@ -242,11 +194,7 @@ public class UpdateSecretRouteValidatorTests
     [Trait("Api", "")]
     public void Validate_Insucesso_NewSecretSemCaractereEspecial()
     {
-        var request = new UpdateSecretRequest
-        {
-            CurrentSecret = "SecretAtual@1",
-            NewSecret = "NovoSecret123"
-        };
+        var request = new UpdateSecretRequest("SecretAtual@1", "NovoSecret123");
 
         var result = _validator.Validate(request);
 
@@ -262,11 +210,7 @@ public class UpdateSecretRouteValidatorTests
     [Trait("Api", "")]
     public void Validate_Insucesso_AmbosOsCamposInvalidos()
     {
-        var request = new UpdateSecretRequest
-        {
-            CurrentSecret = string.Empty,
-            NewSecret = string.Empty
-        };
+        var request = new UpdateSecretRequest(string.Empty, string.Empty);
 
         var result = _validator.Validate(request);
 
@@ -279,11 +223,7 @@ public class UpdateSecretRouteValidatorTests
     [Trait("Api", "")]
     public void Validate_Insucesso_NewSecretViolaTodasAsRegras()
     {
-        var request = new UpdateSecretRequest
-        {
-            CurrentSecret = "SecretAtual@1",
-            NewSecret = "abc"
-        };
+        var request = new UpdateSecretRequest("SecretAtual@1", "abc");
 
         var result = _validator.Validate(request);
 

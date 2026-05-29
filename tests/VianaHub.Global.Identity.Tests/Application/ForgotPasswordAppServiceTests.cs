@@ -66,7 +66,7 @@ public class ForgotPasswordAppServiceTests
                        .ReturnsAsync((TenantEntity)null);
 
         var sut = CreateSut();
-        var result = await sut.ForgotPasswordAsync(new ForgotPasswordRequest { LoginIdentifier = "nao@existe.com" }, default);
+        var result = await sut.ForgotPasswordAsync(new ForgotPasswordRequest("nao@existe.com"), default);
 
         Assert.NotNull(result);
         Assert.NotEmpty(result.Message);
@@ -84,7 +84,7 @@ public class ForgotPasswordAppServiceTests
                      .ReturnsAsync((UserEntity)null);
 
         var sut = CreateSut();
-        var result = await sut.ForgotPasswordAsync(new ForgotPasswordRequest { LoginIdentifier = "nao@existe.com" }, default);
+        var result = await sut.ForgotPasswordAsync(new ForgotPasswordRequest("nao@existe.com"), default);
 
         Assert.NotNull(result);
         Assert.NotEmpty(result.Message);
@@ -105,7 +105,7 @@ public class ForgotPasswordAppServiceTests
                            .ReturnsAsync(5);
 
         var sut = CreateSut();
-        var result = await sut.ForgotPasswordAsync(new ForgotPasswordRequest { LoginIdentifier = "user@example.com" }, default);
+        var result = await sut.ForgotPasswordAsync(new ForgotPasswordRequest("user@example.com"), default);
 
         Assert.NotNull(result);
         _resetTokenRepoMock.Verify(x => x.CreateAsync(It.IsAny<PasswordResetTokenEntity>(), default), Times.Never);
@@ -128,7 +128,7 @@ public class ForgotPasswordAppServiceTests
                         .Returns(Task.CompletedTask);
 
         var sut = CreateSut();
-        var result = await sut.ForgotPasswordAsync(new ForgotPasswordRequest { LoginIdentifier = "user@example.com" }, default);
+        var result = await sut.ForgotPasswordAsync(new ForgotPasswordRequest("user@example.com"), default);
 
         Assert.NotNull(result);
         _resetTokenRepoMock.Verify(x => x.CreateAsync(It.IsAny<PasswordResetTokenEntity>(), default), Times.Once);
@@ -143,7 +143,7 @@ public class ForgotPasswordAppServiceTests
                            .ReturnsAsync((PasswordResetTokenEntity)null);
 
         var sut = CreateSut();
-        var result = await sut.ValidateResetTokenAsync(new ValidateResetTokenRequest { Token = "token-invalido" }, default);
+        var result = await sut.ValidateResetTokenAsync(new ValidateResetTokenRequest("token-invalido"), default);
 
         Assert.False(result.IsValid);
         _notifyMock.Verify(x => x.Add(It.IsAny<string>(), 400), Times.Once);
@@ -163,7 +163,7 @@ public class ForgotPasswordAppServiceTests
                      .ReturnsAsync(user);
 
         var sut = CreateSut();
-        var result = await sut.ValidateResetTokenAsync(new ValidateResetTokenRequest { Token = "token-valido" }, default);
+        var result = await sut.ValidateResetTokenAsync(new ValidateResetTokenRequest("token-valido"), default);
 
         Assert.True(result.IsValid);
     }
@@ -181,7 +181,7 @@ public class ForgotPasswordAppServiceTests
                            .ReturnsAsync(tokenEntity);
 
         var sut = CreateSut();
-        var result = await sut.ValidateResetTokenAsync(new ValidateResetTokenRequest { Token = "token-expirado" }, default);
+        var result = await sut.ValidateResetTokenAsync(new ValidateResetTokenRequest("token-expirado"), default);
 
         Assert.False(result.IsValid);
         _notifyMock.Verify(x => x.Add(It.IsAny<string>(), 400), Times.Once);
@@ -206,7 +206,7 @@ public class ForgotPasswordAppServiceTests
                      .ReturnsAsync(inactiveUser);
 
         var sut = CreateSut();
-        var result = await sut.ValidateResetTokenAsync(new ValidateResetTokenRequest { Token = "token-ativo" }, default);
+        var result = await sut.ValidateResetTokenAsync(new ValidateResetTokenRequest("token-ativo"), default);
 
         Assert.False(result.IsValid);
         _notifyMock.Verify(x => x.Add(It.IsAny<string>(), 400), Times.Once);
@@ -222,7 +222,7 @@ public class ForgotPasswordAppServiceTests
                            .ReturnsAsync((PasswordResetTokenEntity)null);
 
         var sut = CreateSut();
-        var result = await sut.ResetPasswordAsync(new ResetPasswordRequest { Token = "token-invalido", NewPassword = "Senha@123" }, "127.0.0.1", "agent", default);
+        var result = await sut.ResetPasswordAsync(new ResetPasswordRequest("token-invalido", "Senha@123", null), "127.0.0.1", "agent", default);
 
         Assert.NotNull(result);
         _notifyMock.Verify(x => x.Add(It.IsAny<string>(), 409), Times.Once);
@@ -241,7 +241,7 @@ public class ForgotPasswordAppServiceTests
                            .ReturnsAsync(tokenEntity);
 
         var sut = CreateSut();
-        var result = await sut.ResetPasswordAsync(new ResetPasswordRequest { Token = "token-usado", NewPassword = "Senha@123" }, "127.0.0.1", "agent", default);
+        var result = await sut.ResetPasswordAsync(new ResetPasswordRequest("token-usado", "Senha@123", null), "127.0.0.1", "agent", default);
 
         Assert.NotNull(result);
         _notifyMock.Verify(x => x.Add(It.IsAny<string>(), 410), Times.Once);
@@ -261,7 +261,7 @@ public class ForgotPasswordAppServiceTests
                      .ReturnsAsync((UserEntity)null);
 
         var sut = CreateSut();
-        var result = await sut.ResetPasswordAsync(new ResetPasswordRequest { Token = "token-valido", NewPassword = "Senha@123" }, "127.0.0.1", "agent", default);
+        var result = await sut.ResetPasswordAsync(new ResetPasswordRequest("token-valido", "Senha@123", null), "127.0.0.1", "agent", default);
 
         Assert.NotNull(result);
         _notifyMock.Verify(x => x.Add(It.IsAny<string>(), 409), Times.Once);
@@ -284,7 +284,7 @@ public class ForgotPasswordAppServiceTests
                      .ReturnsAsync(false);
 
         var sut = CreateSut();
-        var result = await sut.ResetPasswordAsync(new ResetPasswordRequest { Token = "token-valido", NewPassword = "Senha@123" }, "127.0.0.1", "agent", default);
+        var result = await sut.ResetPasswordAsync(new ResetPasswordRequest("token-valido", "Senha@123", null), "127.0.0.1", "agent", default);
 
         Assert.NotNull(result);
         _notifyMock.Verify(x => x.Add(It.IsAny<string>(), 500), Times.Once);
@@ -313,7 +313,7 @@ public class ForgotPasswordAppServiceTests
                         .Returns(Task.CompletedTask);
 
         var sut = CreateSut();
-        var result = await sut.ResetPasswordAsync(new ResetPasswordRequest { Token = "token-valido", NewPassword = "Senha@123" }, "127.0.0.1", "agent", default);
+        var result = await sut.ResetPasswordAsync(new ResetPasswordRequest("token-valido", "Senha@123", null), "127.0.0.1", "agent", default);
 
         Assert.NotNull(result);
         Assert.NotEmpty(result.Message);
@@ -345,7 +345,7 @@ public class ForgotPasswordAppServiceTests
                         .ThrowsAsync(new Exception("SMTP error"));
 
         var sut = CreateSut();
-        var result = await sut.ResetPasswordAsync(new ResetPasswordRequest { Token = "token-valido", NewPassword = "Senha@123" }, "127.0.0.1", "agent", default);
+        var result = await sut.ResetPasswordAsync(new ResetPasswordRequest("token-valido", "Senha@123", null), "127.0.0.1", "agent", default);
 
         Assert.NotNull(result);
         Assert.NotEmpty(result.Message);
@@ -366,7 +366,7 @@ public class ForgotPasswordAppServiceTests
                            .ReturnsAsync(false);
 
         var sut = CreateSut();
-        var result = await sut.ForgotPasswordAsync(new ForgotPasswordRequest { LoginIdentifier = "user@example.com" }, default);
+        var result = await sut.ForgotPasswordAsync(new ForgotPasswordRequest("user@example.com"), default);
 
         Assert.NotNull(result);
         _emailSenderMock.Verify(x => x.SendPasswordResetAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), default), Times.Never);
@@ -389,7 +389,7 @@ public class ForgotPasswordAppServiceTests
                         .ThrowsAsync(new Exception("SMTP error"));
 
         var sut = CreateSut();
-        var result = await sut.ForgotPasswordAsync(new ForgotPasswordRequest { LoginIdentifier = "user@example.com" }, default);
+        var result = await sut.ForgotPasswordAsync(new ForgotPasswordRequest("user@example.com"), default);
 
         Assert.NotNull(result);
         Assert.NotEmpty(result.Message);

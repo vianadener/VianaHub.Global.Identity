@@ -62,7 +62,7 @@ public class AppAppServiceTests
     public async Task GetAllAsync_Sucesso_DeveRetornarLista()
     {
         var entities = new List<AppEntity> { BuildApp(1), BuildApp(2) };
-        var mapped = new List<AppResponse> { new() { Id = 1 }, new() { Id = 2 } };
+        var mapped = new List<AppResponse> { new(1, TenantId, "App1", true), new(2, TenantId, "App2", true) };
         _repoMock.Setup(x => x.GetAllAsync(TenantId, default)).ReturnsAsync(entities);
         _mapperMock.Setup(x => x.Map<IEnumerable<AppResponse>>(entities)).Returns(mapped);
 
@@ -96,7 +96,7 @@ public class AppAppServiceTests
     public async Task GetByIdAsync_Sucesso_DeveRetornarApp()
     {
         var entity = BuildApp(1);
-        var mapped = new AppResponse { Id = 1 };
+        var mapped = new AppResponse(1, TenantId, "App1", true);
         _repoMock.Setup(x => x.GetByIdAsync(TenantId, 1, default)).ReturnsAsync(entity);
         _mapperMock.Setup(x => x.Map<AppResponse>(entity)).Returns(mapped);
 
@@ -130,7 +130,7 @@ public class AppAppServiceTests
     {
         var entities = new List<AppEntity> { BuildApp(1) };
         var listPage = new ListPage<AppEntity> { Items = entities, TotalItems = 1, TotalPages = 1, PageNumber = 1, PageSize = 10 };
-        var mappedPage = new ListPageResponse<AppResponse>(new List<AppResponse> { new() { Id = 1 } }, 1, 10, 1, 1);
+        var mappedPage = new ListPageResponse<AppResponse>(new List<AppResponse> { new(1, TenantId, "App1", true) }, 1, 10, 1, 1);
         _repoMock.Setup(x => x.GetPagedAsync(TenantId, It.IsAny<PagedFilter>(), default)).ReturnsAsync(listPage);
         _mapperMock.Setup(x => x.Map<ListPageResponse<AppResponse>>(listPage)).Returns(mappedPage);
 
@@ -169,7 +169,7 @@ public class AppAppServiceTests
     [Trait("Application", "")]
     public async Task CreateAsync_Sucesso_DeveRetornarTrue()
     {
-        var request = new CreateAppRequest { Name = "Nova App", Description = "Descrição" };
+        var request = new CreateAppRequest("Nova App", "Descrição");
         _repoMock.Setup(x => x.ExistsByNameAsync(TenantId, request.Name, default)).ReturnsAsync(false);
         _domainMock.Setup(x => x.CreateAsync(It.IsAny<AppEntity>(), default)).ReturnsAsync(true);
 
@@ -184,7 +184,7 @@ public class AppAppServiceTests
     [Trait("Application", "")]
     public async Task CreateAsync_NomeJaExiste_DeveRetornarFalseENotificar()
     {
-        var request = new CreateAppRequest { Name = "App Existente", Description = "Descrição" };
+        var request = new CreateAppRequest("App Existente", "Descrição");
         _repoMock.Setup(x => x.ExistsByNameAsync(TenantId, request.Name, default)).ReturnsAsync(true);
 
         var sut = CreateSut();
@@ -199,7 +199,7 @@ public class AppAppServiceTests
     [Trait("Application", "")]
     public async Task CreateAsync_DominioFalha_DeveRetornarFalse()
     {
-        var request = new CreateAppRequest { Name = "Nova App", Description = "Descrição" };
+        var request = new CreateAppRequest("Nova App", "Descrição");
         _repoMock.Setup(x => x.ExistsByNameAsync(TenantId, request.Name, default)).ReturnsAsync(false);
         _domainMock.Setup(x => x.CreateAsync(It.IsAny<AppEntity>(), default)).ReturnsAsync(false);
 
@@ -218,7 +218,7 @@ public class AppAppServiceTests
     public async Task UpdateAsync_Sucesso_DeveRetornarTrue()
     {
         var entity = BuildApp(1);
-        var request = new UpdateAppRequest { Name = "App Atualizada", Description = "Nova Descrição" };
+        var request = new UpdateAppRequest("App Atualizada", "Nova Descrição");
         _repoMock.Setup(x => x.GetByIdAsync(TenantId, 1, default)).ReturnsAsync(entity);
         _domainMock.Setup(x => x.UpdateAsync(entity, default)).ReturnsAsync(true);
 
@@ -234,7 +234,7 @@ public class AppAppServiceTests
     public async Task UpdateAsync_NaoEncontrada_DeveRetornarFalseENotificar()
     {
         _repoMock.Setup(x => x.GetByIdAsync(TenantId, 99, default)).ReturnsAsync((AppEntity)null);
-        var request = new UpdateAppRequest { Name = "App", Description = "Desc" };
+        var request = new UpdateAppRequest("App", "Desc");
 
         var sut = CreateSut();
         var result = await sut.UpdateAsync(99, request, default);
