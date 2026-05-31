@@ -42,11 +42,8 @@ public class UserRoleEndpointTests : IClassFixture<UserRoleEndpointTests.UserRol
     [Trait("Api", "")]
     public async Task GetAll_Sucesso_DeveRetornar200()
     {
-        var userRoles = Builder<UserRoleResponse>.CreateListOfSize(3)
-            .All()
-            .With(x => x.UserName = "User")
-            .With(x => x.RoleName = "Role")
-            .Build()
+        var userRoles = Enumerable.Range(1, 3)
+            .Select(i => new UserRoleResponse(i, "User", "Role"))
             .ToList();
 
         _factory.UserRoleAppServiceMock
@@ -92,11 +89,7 @@ public class UserRoleEndpointTests : IClassFixture<UserRoleEndpointTests.UserRol
     [Trait("Api", "")]
     public async Task GetById_Sucesso_DeveRetornar200()
     {
-        var userRole = Builder<UserRoleResponse>.CreateNew()
-            .With(x => x.Id = 1)
-            .With(x => x.UserName = "User")
-            .With(x => x.RoleName = "Role")
-            .Build();
+        var userRole = new UserRoleResponse(1, "User", "Role");
 
         _factory.UserRoleAppServiceMock
             .Setup(x => x.GetByIdAsync(1, It.IsAny<CancellationToken>()))
@@ -147,17 +140,9 @@ public class UserRoleEndpointTests : IClassFixture<UserRoleEndpointTests.UserRol
     [Trait("Api", "")]
     public async Task Create_Sucesso_DeveRetornar201()
     {
-        var request = Builder<CreateUserRoleRequest>.CreateNew()
-            .With(x => x.AppId = 1)
-            .With(x => x.UserId = 1)
-            .With(x => x.RoleId = 1)
-            .Build();
+        var request = new CreateUserRoleRequest(1, 1, 1);
 
-        var userRole = Builder<UserRoleResponse>.CreateNew()
-            .With(x => x.Id = 1)
-            .With(x => x.UserName = "User")
-            .With(x => x.RoleName = "Role")
-            .Build();
+        var userRole = new UserRoleResponse(1, "User", "Role");
 
         _factory.UserRoleAppServiceMock
             .Setup(x => x.CreateAsync(It.IsAny<CreateUserRoleRequest>(), It.IsAny<CancellationToken>()))
@@ -172,11 +157,7 @@ public class UserRoleEndpointTests : IClassFixture<UserRoleEndpointTests.UserRol
     [Trait("Api", "")]
     public async Task Create_ServicoRetornaNulo_DeveRetornar201()
     {
-        var request = Builder<CreateUserRoleRequest>.CreateNew()
-            .With(x => x.AppId = 1)
-            .With(x => x.UserId = 1)
-            .With(x => x.RoleId = 1)
-            .Build();
+        var request = new CreateUserRoleRequest(1, 1, 1);
 
         _factory.UserRoleAppServiceMock
             .Setup(x => x.CreateAsync(It.IsAny<CreateUserRoleRequest>(), It.IsAny<CancellationToken>()))
@@ -191,11 +172,7 @@ public class UserRoleEndpointTests : IClassFixture<UserRoleEndpointTests.UserRol
     [Trait("Api", "")]
     public async Task Create_Erro_DeveRetornar500()
     {
-        var request = Builder<CreateUserRoleRequest>.CreateNew()
-            .With(x => x.AppId = 1)
-            .With(x => x.UserId = 1)
-            .With(x => x.RoleId = 1)
-            .Build();
+        var request = new CreateUserRoleRequest(1, 1, 1);
 
         _factory.UserRoleAppServiceMock
             .Setup(x => x.CreateAsync(It.IsAny<CreateUserRoleRequest>(), It.IsAny<CancellationToken>()))

@@ -72,6 +72,22 @@ public class AuthAppService : IAuthAppService
             return null;
         }
 
+        // Validar existência do tenant
+        var tenantExists = await _tenantRepo.ExistsByIdAsync(request.TenantId, ct);
+        if (!tenantExists)
+        {
+            _notify.Add(_localization.GetMessage("Application.Service.Auth.Register.TenantNotFound"), 404);
+            return null;
+        }
+
+        // Validar se o tenant está ativo
+        var tenant = await _tenantRepo.GetByIdAsync(request.TenantId, ct);
+        if (tenant is null || !tenant.IsActive)
+        {
+            _notify.Add(_localization.GetMessage("Application.Service.Auth.Register.TenantInactive"), 400);
+            return null;
+        }
+
         _requestTenantContext.SetTenantId(request.TenantId);
 
         var exists = await _userRepo.ExistsByNameAsync(request.TenantId, request.Name, ct);
@@ -96,14 +112,20 @@ public class AuthAppService : IAuthAppService
         }
 
         // Retornar sem tokens (login separado)
-        return new AuthDetailResponse
-        {
-            RoleId = user.UserRoles.FirstOrDefault()?.RoleId ?? 0,
-            RoleName = user.UserRoles.FirstOrDefault()?.Role?.Name,
-            TenantId = user.TenantId,
-            UserId = user.Id,
-            UserName = user.Name
-        };
+        return new AuthDetailResponse(
+            AccessToken: null,
+            RefreshToken: null,
+            AccessTokenExpiresAt: default,
+            RefreshTokenExpiresAt: null,
+            TenantId: user.TenantId,
+            TenantName: null,
+            AppId: 0,
+            AppName: null,
+            UserId: user.Id,
+            UserName: user.Name,
+            RoleId: user.UserRoles.FirstOrDefault()?.RoleId ?? 0,
+            RoleName: user.UserRoles.FirstOrDefault()?.Role?.Name
+        );
     }
 
     public async Task<AuthDetailResponse> LoginAsync(LoginRequest request, CancellationToken ct)
@@ -159,21 +181,20 @@ public class AuthAppService : IAuthAppService
 
         var issueResult = await _refreshTokenService.IssueAsync(user.TenantId, userRole.AppId, user.Id, ct);
 
-        return new AuthDetailResponse
-        {
-            AccessToken = accessToken.Token,
-            RefreshToken = issueResult.Token,
-            AccessTokenExpiresAt = accessToken.ExpiresAt,
-            RefreshTokenExpiresAt = issueResult.Entity.ExpiresAt,
-            TenantId = user.TenantId,
-            TenantName = user.Tenant.Name,
-            AppId = userRole.AppId,
-            AppName = userRole.App?.Name,
-            UserId = user.Id,
-            UserName = user.Name,
-            RoleId = user.UserRoles.FirstOrDefault()?.RoleId ?? 0,
-            RoleName = user.UserRoles.FirstOrDefault()?.Role?.Name
-        };
+        return new AuthDetailResponse(
+            AccessToken: accessToken.Token,
+            RefreshToken: issueResult.Token,
+            AccessTokenExpiresAt: accessToken.ExpiresAt,
+            RefreshTokenExpiresAt: issueResult.Entity.ExpiresAt,
+            TenantId: user.TenantId,
+            TenantName: user.Tenant.Name,
+            AppId: userRole.AppId,
+            AppName: userRole.App?.Name,
+            UserId: user.Id,
+            UserName: user.Name,
+            RoleId: user.UserRoles.FirstOrDefault()?.RoleId ?? 0,
+            RoleName: user.UserRoles.FirstOrDefault()?.Role?.Name
+        );
     }
 
     public async Task<AuthDetailResponse> RefreshAsync(RefreshRequest request, CancellationToken ct)
@@ -199,19 +220,20 @@ public class AuthAppService : IAuthAppService
 
         var accessToken = await _jwtTokenService.GenerateAccessTokenAsync(user, ct);
 
-        return new AuthDetailResponse
-        {
-            AccessToken = accessToken.Token,
-            RefreshToken = rotateResult.NewToken,
-            AccessTokenExpiresAt = accessToken.ExpiresAt,
-            RefreshTokenExpiresAt = rotateResult.NewEntity.ExpiresAt,
-            RoleId = user.UserRoles.FirstOrDefault()?.RoleId ?? 0,
-            RoleName = user.UserRoles.FirstOrDefault()?.Role?.Name,
-            TenantId = user.TenantId,
-            TenantName = user.Tenant.Name,
-            UserId = user.Id,
-            UserName = user.Name
-        };
+        return new AuthDetailResponse(
+            AccessToken: accessToken.Token,
+            RefreshToken: rotateResult.NewToken,
+            AccessTokenExpiresAt: accessToken.ExpiresAt,
+            RefreshTokenExpiresAt: rotateResult.NewEntity.ExpiresAt,
+            TenantId: user.TenantId,
+            TenantName: user.Tenant.Name,
+            AppId: 0,
+            AppName: null,
+            UserId: user.Id,
+            UserName: user.Name,
+            RoleId: user.UserRoles.FirstOrDefault()?.RoleId ?? 0,
+            RoleName: user.UserRoles.FirstOrDefault()?.Role?.Name
+        );
     }
 
     public async Task LogoutAsync(RevokeRequest request, CancellationToken ct)

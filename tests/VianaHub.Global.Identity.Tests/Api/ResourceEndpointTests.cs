@@ -43,10 +43,8 @@ public class ResourceEndpointTests : IClassFixture<ResourceEndpointTests.Resourc
     [Trait("Api", "")]
     public async Task GetAll_Sucesso_DeveRetornar200()
     {
-        var resources = Builder<ResourceResponse>.CreateListOfSize(3)
-            .All()
-            .With(x => x.IsActive = true)
-            .Build()
+        var resources = Enumerable.Range(1, 3)
+            .Select(i => new ResourceResponse(i, 1, $"Resource{i}", true))
             .ToList();
 
         _factory.ResourceAppServiceMock
@@ -92,10 +90,7 @@ public class ResourceEndpointTests : IClassFixture<ResourceEndpointTests.Resourc
     [Trait("Api", "")]
     public async Task GetById_Sucesso_DeveRetornar200()
     {
-        var resource = Builder<ResourceResponse>.CreateNew()
-            .With(x => x.Id = 1)
-            .With(x => x.IsActive = true)
-            .Build();
+        var resource = new ResourceResponse(1, 1, "Resource Test", true);
 
         _factory.ResourceAppServiceMock
             .Setup(x => x.GetByIdAsync(1, It.IsAny<CancellationToken>()))
@@ -146,10 +141,8 @@ public class ResourceEndpointTests : IClassFixture<ResourceEndpointTests.Resourc
     [Trait("Api", "")]
     public async Task GetPaged_Sucesso_DeveRetornar200()
     {
-        var items = Builder<ResourceResponse>.CreateListOfSize(2)
-            .All()
-            .With(x => x.IsActive = true)
-            .Build()
+        var items = Enumerable.Range(1, 2)
+            .Select(i => new ResourceResponse(i, 1, $"Resource{i}", true))
             .ToList();
 
         var paged = new ListPageResponse<ResourceResponse>(items, 1, 10, 2, 1);
@@ -199,11 +192,7 @@ public class ResourceEndpointTests : IClassFixture<ResourceEndpointTests.Resourc
     [Trait("Api", "")]
     public async Task Create_Sucesso_DeveRetornar201()
     {
-        var request = Builder<CreateResourceRequest>.CreateNew()
-            .With(x => x.AppId = 1)
-            .With(x => x.Name = "Resource Test")
-            .With(x => x.Description = "Descrição")
-            .Build();
+        var request = new CreateResourceRequest(1, "Resource Test", "Descrição");
 
         _factory.ResourceAppServiceMock
             .Setup(x => x.CreateAsync(It.IsAny<CreateResourceRequest>(), It.IsAny<CancellationToken>()))
@@ -218,11 +207,7 @@ public class ResourceEndpointTests : IClassFixture<ResourceEndpointTests.Resourc
     [Trait("Api", "")]
     public async Task Create_DadosInvalidos_DeveRetornar400()
     {
-        var request = Builder<CreateResourceRequest>.CreateNew()
-            .With(x => x.AppId = 0)
-            .With(x => x.Name = string.Empty)
-            .With(x => x.Description = string.Empty)
-            .Build();
+        var request = new CreateResourceRequest(0, string.Empty, string.Empty);
 
         _factory.ResourceAppServiceMock
             .Setup(x => x.CreateAsync(It.IsAny<CreateResourceRequest>(), It.IsAny<CancellationToken>()))
@@ -243,11 +228,7 @@ public class ResourceEndpointTests : IClassFixture<ResourceEndpointTests.Resourc
     [Trait("Api", "")]
     public async Task Create_Erro_DeveRetornar500()
     {
-        var request = Builder<CreateResourceRequest>.CreateNew()
-            .With(x => x.AppId = 1)
-            .With(x => x.Name = "Resource Test")
-            .With(x => x.Description = "Descrição")
-            .Build();
+        var request = new CreateResourceRequest(1, "Resource Test", "Descrição");
 
         _factory.ResourceAppServiceMock
             .Setup(x => x.CreateAsync(It.IsAny<CreateResourceRequest>(), It.IsAny<CancellationToken>()))
@@ -266,10 +247,7 @@ public class ResourceEndpointTests : IClassFixture<ResourceEndpointTests.Resourc
     [Trait("Api", "")]
     public async Task Update_Sucesso_DeveRetornar200()
     {
-        var request = Builder<UpdateResourceRequest>.CreateNew()
-            .With(x => x.Name = "Resource Atualizado")
-            .With(x => x.Description = "Descrição atualizada")
-            .Build();
+        var request = new UpdateResourceRequest("Resource Atualizado", "Descrição atualizada");
 
         _factory.ResourceAppServiceMock
             .Setup(x => x.UpdateAsync(1, It.IsAny<UpdateResourceRequest>(), It.IsAny<CancellationToken>()))
@@ -284,10 +262,7 @@ public class ResourceEndpointTests : IClassFixture<ResourceEndpointTests.Resourc
     [Trait("Api", "")]
     public async Task Update_NaoEncontrado_DeveRetornar410()
     {
-        var request = Builder<UpdateResourceRequest>.CreateNew()
-            .With(x => x.Name = "Resource")
-            .With(x => x.Description = "Desc")
-            .Build();
+        var request = new UpdateResourceRequest("Resource", "Desc");
 
         _factory.ResourceAppServiceMock
             .Setup(x => x.UpdateAsync(99, It.IsAny<UpdateResourceRequest>(), It.IsAny<CancellationToken>()))
@@ -308,10 +283,7 @@ public class ResourceEndpointTests : IClassFixture<ResourceEndpointTests.Resourc
     [Trait("Api", "")]
     public async Task Update_Duplicado_DeveRetornar409()
     {
-        var request = Builder<UpdateResourceRequest>.CreateNew()
-            .With(x => x.Name = "Resource Duplicado")
-            .With(x => x.Description = "Desc")
-            .Build();
+        var request = new UpdateResourceRequest("Resource Duplicado", "Desc");
 
         _factory.ResourceAppServiceMock
             .Setup(x => x.UpdateAsync(1, It.IsAny<UpdateResourceRequest>(), It.IsAny<CancellationToken>()))
@@ -332,10 +304,7 @@ public class ResourceEndpointTests : IClassFixture<ResourceEndpointTests.Resourc
     [Trait("Api", "")]
     public async Task Update_Erro_DeveRetornar500()
     {
-        var request = Builder<UpdateResourceRequest>.CreateNew()
-            .With(x => x.Name = "Resource")
-            .With(x => x.Description = "Desc")
-            .Build();
+        var request = new UpdateResourceRequest("Resource", "Desc");
 
         _factory.ResourceAppServiceMock
             .Setup(x => x.UpdateAsync(It.IsAny<int>(), It.IsAny<UpdateResourceRequest>(), It.IsAny<CancellationToken>()))

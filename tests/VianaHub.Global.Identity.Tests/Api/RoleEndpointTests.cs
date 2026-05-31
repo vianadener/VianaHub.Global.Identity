@@ -43,10 +43,8 @@ public class RoleEndpointTests : IClassFixture<RoleEndpointTests.RoleWebApplicat
     [Trait("Api", "")]
     public async Task GetAll_Sucesso_DeveRetornar200()
     {
-        var roles = Builder<RoleResponse>.CreateListOfSize(3)
-            .All()
-            .With(x => x.IsActive = true)
-            .Build()
+        var roles = Enumerable.Range(1, 3)
+            .Select(i => new RoleResponse(i, 1, $"Role{i}", true))
             .ToList();
 
         _factory.RoleAppServiceMock
@@ -92,10 +90,7 @@ public class RoleEndpointTests : IClassFixture<RoleEndpointTests.RoleWebApplicat
     [Trait("Api", "")]
     public async Task GetById_Sucesso_DeveRetornar200()
     {
-        var role = Builder<RoleResponse>.CreateNew()
-            .With(x => x.Id = 1)
-            .With(x => x.IsActive = true)
-            .Build();
+        var role = new RoleResponse(1, 1, "Role Test", true);
 
         _factory.RoleAppServiceMock
             .Setup(x => x.GetByIdAsync(1, It.IsAny<CancellationToken>()))
@@ -146,10 +141,8 @@ public class RoleEndpointTests : IClassFixture<RoleEndpointTests.RoleWebApplicat
     [Trait("Api", "")]
     public async Task GetPaged_Sucesso_DeveRetornar200()
     {
-        var items = Builder<RoleResponse>.CreateListOfSize(2)
-            .All()
-            .With(x => x.IsActive = true)
-            .Build()
+        var items = Enumerable.Range(1, 2)
+            .Select(i => new RoleResponse(i, 1, $"Role{i}", true))
             .ToList();
 
         var paged = new ListPageResponse<RoleResponse>(items, 1, 10, 2, 1);
@@ -199,10 +192,7 @@ public class RoleEndpointTests : IClassFixture<RoleEndpointTests.RoleWebApplicat
     [Trait("Api", "")]
     public async Task Create_Sucesso_DeveRetornar201()
     {
-        var request = Builder<CreateRoleRequest>.CreateNew()
-            .With(x => x.Name = "Role Test")
-            .With(x => x.Description = "Descrição")
-            .Build();
+        var request = new CreateRoleRequest("Role Test", "Descrição");
 
         _factory.RoleAppServiceMock
             .Setup(x => x.CreateAsync(It.IsAny<CreateRoleRequest>(), It.IsAny<CancellationToken>()))
@@ -217,10 +207,7 @@ public class RoleEndpointTests : IClassFixture<RoleEndpointTests.RoleWebApplicat
     [Trait("Api", "")]
     public async Task Create_DadosInvalidos_DeveRetornar400()
     {
-        var request = Builder<CreateRoleRequest>.CreateNew()
-            .With(x => x.Name = string.Empty)
-            .With(x => x.Description = string.Empty)
-            .Build();
+        var request = new CreateRoleRequest(string.Empty, string.Empty);
 
         _factory.RoleAppServiceMock
             .Setup(x => x.CreateAsync(It.IsAny<CreateRoleRequest>(), It.IsAny<CancellationToken>()))
@@ -241,10 +228,7 @@ public class RoleEndpointTests : IClassFixture<RoleEndpointTests.RoleWebApplicat
     [Trait("Api", "")]
     public async Task Create_Erro_DeveRetornar500()
     {
-        var request = Builder<CreateRoleRequest>.CreateNew()
-            .With(x => x.Name = "Role Test")
-            .With(x => x.Description = "Descrição")
-            .Build();
+        var request = new CreateRoleRequest("Role Test", "Descrição");
 
         _factory.RoleAppServiceMock
             .Setup(x => x.CreateAsync(It.IsAny<CreateRoleRequest>(), It.IsAny<CancellationToken>()))
@@ -263,10 +247,7 @@ public class RoleEndpointTests : IClassFixture<RoleEndpointTests.RoleWebApplicat
     [Trait("Api", "")]
     public async Task Update_Sucesso_DeveRetornar200()
     {
-        var request = Builder<UpdateRoleRequest>.CreateNew()
-            .With(x => x.Name = "Role Atualizada")
-            .With(x => x.Description = "Descrição atualizada")
-            .Build();
+        var request = new UpdateRoleRequest("Role Atualizada", "Descrição atualizada");
 
         _factory.RoleAppServiceMock
             .Setup(x => x.UpdateAsync(1, It.IsAny<UpdateRoleRequest>(), It.IsAny<CancellationToken>()))
@@ -281,10 +262,7 @@ public class RoleEndpointTests : IClassFixture<RoleEndpointTests.RoleWebApplicat
     [Trait("Api", "")]
     public async Task Update_NaoEncontrado_DeveRetornar410()
     {
-        var request = Builder<UpdateRoleRequest>.CreateNew()
-            .With(x => x.Name = "Role")
-            .With(x => x.Description = "Desc")
-            .Build();
+        var request = new UpdateRoleRequest("Role", "Desc");
 
         _factory.RoleAppServiceMock
             .Setup(x => x.UpdateAsync(99, It.IsAny<UpdateRoleRequest>(), It.IsAny<CancellationToken>()))
@@ -305,10 +283,7 @@ public class RoleEndpointTests : IClassFixture<RoleEndpointTests.RoleWebApplicat
     [Trait("Api", "")]
     public async Task Update_Duplicado_DeveRetornar409()
     {
-        var request = Builder<UpdateRoleRequest>.CreateNew()
-            .With(x => x.Name = "Role Duplicada")
-            .With(x => x.Description = "Desc")
-            .Build();
+        var request = new UpdateRoleRequest("Role Duplicada", "Desc");
 
         _factory.RoleAppServiceMock
             .Setup(x => x.UpdateAsync(1, It.IsAny<UpdateRoleRequest>(), It.IsAny<CancellationToken>()))
@@ -329,10 +304,7 @@ public class RoleEndpointTests : IClassFixture<RoleEndpointTests.RoleWebApplicat
     [Trait("Api", "")]
     public async Task Update_Erro_DeveRetornar500()
     {
-        var request = Builder<UpdateRoleRequest>.CreateNew()
-            .With(x => x.Name = "Role")
-            .With(x => x.Description = "Desc")
-            .Build();
+        var request = new UpdateRoleRequest("Role", "Desc");
 
         _factory.RoleAppServiceMock
             .Setup(x => x.UpdateAsync(It.IsAny<int>(), It.IsAny<UpdateRoleRequest>(), It.IsAny<CancellationToken>()))

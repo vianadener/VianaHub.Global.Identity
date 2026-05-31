@@ -69,7 +69,7 @@ public class JobAppServiceTests
     public async Task GetAllAsync_Sucesso_DeveRetornarLista()
     {
         var entities = new List<JobDefinitionEntity> { BuildJob(1), BuildJob(2) };
-        var mapped = new List<JobResponse> { new() { Id = 1 }, new() { Id = 2 } };
+        var mapped = new List<JobResponse> { new(1, "Cat", "Job1", "* * * * *", 5, true), new(2, "Cat", "Job2", "* * * * *", 5, true) };
         _repoMock.Setup(x => x.GetAllAsync(default)).ReturnsAsync(entities);
         _mapperMock.Setup(x => x.Map<IEnumerable<JobResponse>>(entities)).Returns(mapped);
 
@@ -103,7 +103,7 @@ public class JobAppServiceTests
     public async Task GetByIdAsync_Sucesso_DeveRetornarJob()
     {
         var entity = BuildJob(1);
-        var mapped = new JobDetailResponse { Id = 1 };
+        var mapped = new JobDetailResponse(1, 1, "Tenant", "Cat", "TestJob", "Desc", "Purpose", "Type", "Execute", "* * * * *", "GMT Standard Time", false, 5, 5, "default", 3, "Config", false, null, null, null, null, "OK", 1, true);
         _repoMock.Setup(x => x.GetByIdAsync(1, default)).ReturnsAsync(entity);
         _mapperMock.Setup(x => x.Map<JobDetailResponse>(entity)).Returns(mapped);
 
@@ -137,7 +137,7 @@ public class JobAppServiceTests
     {
         var entities = new List<JobDefinitionEntity> { BuildJob(1) };
         var listPage = new ListPage<JobDefinitionEntity> { Items = entities, TotalItems = 1, TotalPages = 1, PageNumber = 1, PageSize = 10 };
-        var mappedPage = new ListPageResponse<JobResponse>(new List<JobResponse> { new() { Id = 1 } }, 1, 10, 1, 1);
+        var mappedPage = new ListPageResponse<JobResponse>(new List<JobResponse> { new(1, "Cat", "Job1", "* * * * *", 5, true) }, 1, 10, 1, 1);
         _repoMock.Setup(x => x.GetPagedAsync(It.IsAny<PagedFilter>(), default)).ReturnsAsync(listPage);
         _mapperMock.Setup(x => x.Map<ListPageResponse<JobResponse>>(listPage)).Returns(mappedPage);
 
@@ -176,7 +176,7 @@ public class JobAppServiceTests
     [Trait("Application", "")]
     public async Task CreateAsync_Sucesso_DeveRetornarTrue()
     {
-        var request = new CreateJobRequest { JobCategory = "Cat", JobName = "NovoJob", JobType = "Type" };
+        var request = new CreateJobRequest("Cat", "NovoJob", "", "", "Type", "", "* * * * *");
         _repoMock.Setup(x => x.ExistsByNameAsync(request.JobName, default)).ReturnsAsync(false);
         _validatorMock.Setup(x => x.ValidateForCreateAsync(It.IsAny<JobDefinitionEntity>())).ReturnsAsync(ValidResult());
         _repoMock.Setup(x => x.CreateAsync(It.IsAny<JobDefinitionEntity>(), default)).ReturnsAsync(true);
@@ -192,7 +192,7 @@ public class JobAppServiceTests
     [Trait("Application", "")]
     public async Task CreateAsync_NomeJaExiste_DeveRetornarFalseENotificar()
     {
-        var request = new CreateJobRequest { JobCategory = "Cat", JobName = "JobExistente", JobType = "Type" };
+        var request = new CreateJobRequest("Cat", "JobExistente", "", "", "Type", "", "* * * * *");
         _repoMock.Setup(x => x.ExistsByNameAsync(request.JobName, default)).ReturnsAsync(true);
 
         var sut = CreateSut();
@@ -207,7 +207,7 @@ public class JobAppServiceTests
     [Trait("Application", "")]
     public async Task CreateAsync_ValidacaoDominioFalha_DeveRetornarFalseENotificar()
     {
-        var request = new CreateJobRequest { JobCategory = "Cat", JobName = "NovoJob", JobType = "Type" };
+        var request = new CreateJobRequest("Cat", "NovoJob", "", "", "Type", "", "* * * * *");
         _repoMock.Setup(x => x.ExistsByNameAsync(request.JobName, default)).ReturnsAsync(false);
         _validatorMock.Setup(x => x.ValidateForCreateAsync(It.IsAny<JobDefinitionEntity>())).ReturnsAsync(InvalidResult());
 
@@ -223,7 +223,7 @@ public class JobAppServiceTests
     [Trait("Application", "")]
     public async Task CreateAsync_RepositorioFalha_DeveRetornarFalse()
     {
-        var request = new CreateJobRequest { JobCategory = "Cat", JobName = "NovoJob", JobType = "Type" };
+        var request = new CreateJobRequest("Cat", "NovoJob", "", "", "Type", "", "* * * * *");
         _repoMock.Setup(x => x.ExistsByNameAsync(request.JobName, default)).ReturnsAsync(false);
         _validatorMock.Setup(x => x.ValidateForCreateAsync(It.IsAny<JobDefinitionEntity>())).ReturnsAsync(ValidResult());
         _repoMock.Setup(x => x.CreateAsync(It.IsAny<JobDefinitionEntity>(), default)).ReturnsAsync(false);
@@ -243,7 +243,7 @@ public class JobAppServiceTests
     public async Task UpdateAsync_Sucesso_DeveRetornarTrue()
     {
         var entity = BuildJob(1);
-        var request = new UpdateJobRequest { Description = "Nova Desc", CronExpression = "0 * * * *", IsActive = true };
+        var request = new UpdateJobRequest("Nova Desc", "", "0 * * * *", "GMT Standard Time", 5, 5, "default", 3, "", true);
         _repoMock.Setup(x => x.GetByIdAsync(1, default)).ReturnsAsync(entity);
         _validatorMock.Setup(x => x.ValidateForUpdateAsync(It.IsAny<JobDefinitionEntity>())).ReturnsAsync(ValidResult());
         _schedulerMock.Setup(x => x.RegisterRecurringAsync(It.IsAny<JobDefinitionEntity>())).Returns(Task.CompletedTask);
@@ -261,7 +261,7 @@ public class JobAppServiceTests
     public async Task UpdateAsync_DesativarJob_DeveRemoverDoHangfire()
     {
         var entity = BuildJob(1, hangfireId: "job-1");
-        var request = new UpdateJobRequest { Description = "Desc", IsActive = false };
+        var request = new UpdateJobRequest("Desc", "", "", "GMT Standard Time", 5, 5, "default", 3, "", false);
         _repoMock.Setup(x => x.GetByIdAsync(1, default)).ReturnsAsync(entity);
         _validatorMock.Setup(x => x.ValidateForUpdateAsync(It.IsAny<JobDefinitionEntity>())).ReturnsAsync(ValidResult());
         _schedulerMock.Setup(x => x.RemoveRecurringAsync(It.IsAny<string>())).Returns(Task.CompletedTask);
@@ -279,7 +279,7 @@ public class JobAppServiceTests
     public async Task UpdateAsync_NaoEncontrado_DeveRetornarFalseENotificar()
     {
         _repoMock.Setup(x => x.GetByIdAsync(99, default)).ReturnsAsync((JobDefinitionEntity)null);
-        var request = new UpdateJobRequest { Description = "Desc" };
+        var request = new UpdateJobRequest("Desc", "", "", "GMT Standard Time", 5, 5, "default", 3, "", true);
 
         var sut = CreateSut();
         var result = await sut.UpdateAsync(99, request, default);
@@ -294,9 +294,7 @@ public class JobAppServiceTests
     public async Task UpdateAsync_ValidacaoDominioFalha_DeveRetornarFalseENotificar()
     {
         var entity = BuildJob(1);
-        var request = new UpdateJobRequest { Description = "Desc" };
-        _repoMock.Setup(x => x.GetByIdAsync(1, default)).ReturnsAsync(entity);
-        _validatorMock.Setup(x => x.ValidateForUpdateAsync(It.IsAny<JobDefinitionEntity>())).ReturnsAsync(InvalidResult());
+        var request = new UpdateJobRequest("Desc", "", "", "GMT Standard Time", 5, 5, "default", 3, "", true);
 
         var sut = CreateSut();
         var result = await sut.UpdateAsync(1, request, default);

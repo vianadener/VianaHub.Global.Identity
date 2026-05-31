@@ -13,6 +13,8 @@
   "Application.Service.Auth.Login.UserWithoutRole": "Utilizador não possui role associada. Contacte o administrador.",
   "Application.Service.Auth.Login.InvalidCredentials": "Credenciais inválidas.",
   "Application.Service.Auth.Register.InvalidTenantId": "ID de inquilino inválido.",
+  "Application.Service.Auth.Register.TenantNotFound": "Inquilino não encontrado.",
+  "Application.Service.Auth.Register.TenantInactive": "Inquilino está inativo.",
   "Application.Service.Auth.Register.NameRequired": "O nome do utilizador é obrigatório.",
   "Application.Service.Auth.Register.NameAlreadyExists": "Já existe um utilizador com este nome.",
   "Application.Service.Auth.Register.SecretRequired": "A senha é obrigatória.",

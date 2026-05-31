@@ -43,12 +43,8 @@ public class RolePermissionEndpointTests : IClassFixture<RolePermissionEndpointT
     [Trait("Api", "")]
     public async Task GetAll_Sucesso_DeveRetornar200()
     {
-        var permissions = Builder<RolePermissionResponse>.CreateListOfSize(3)
-            .All()
-            .With(x => x.Role = "Admin")
-            .With(x => x.Resource = "Users")
-            .With(x => x.Action = "Read")
-            .Build()
+        var permissions = Enumerable.Range(1, 3)
+            .Select(i => new RolePermissionResponse(i, "Admin", "Users", "Read"))
             .ToList();
 
         _factory.RolePermissionAppServiceMock
@@ -94,12 +90,7 @@ public class RolePermissionEndpointTests : IClassFixture<RolePermissionEndpointT
     [Trait("Api", "")]
     public async Task GetById_Sucesso_DeveRetornar200()
     {
-        var permission = Builder<RolePermissionDetailResponse>.CreateNew()
-            .With(x => x.Id = 1)
-            .With(x => x.Role = "Admin")
-            .With(x => x.Resource = "Users")
-            .With(x => x.Action = "Read")
-            .Build();
+        var permission = new RolePermissionDetailResponse(1, 1, "Admin", 1, "Users", 1, "Read");
 
         _factory.RolePermissionAppServiceMock
             .Setup(x => x.GetByIdAsync(1, It.IsAny<CancellationToken>()))
@@ -150,15 +141,9 @@ public class RolePermissionEndpointTests : IClassFixture<RolePermissionEndpointT
     [Trait("Api", "")]
     public async Task Create_Sucesso_DeveRetornar201()
     {
-        var request = Builder<CreateRolePermissionRequest>.CreateNew()
-            .With(x => x.RoleId = 1)
-            .With(x => x.ResourceId = 1)
-            .With(x => x.ActionId = 1)
-            .Build();
+        var request = new CreateRolePermissionRequest(1, 1, 1);
 
-        var created = Builder<RolePermissionResponse>.CreateNew()
-            .With(x => x.Id = 1)
-            .Build();
+        var created = new RolePermissionResponse(1, "Admin", "Users", "Read");
 
         _factory.RolePermissionAppServiceMock
             .Setup(x => x.CreateAsync(It.IsAny<CreateRolePermissionRequest>(), It.IsAny<CancellationToken>()))
@@ -173,11 +158,7 @@ public class RolePermissionEndpointTests : IClassFixture<RolePermissionEndpointT
     [Trait("Api", "")]
     public async Task Create_DadosInvalidos_DeveRetornar400()
     {
-        var request = Builder<CreateRolePermissionRequest>.CreateNew()
-            .With(x => x.RoleId = 0)
-            .With(x => x.ResourceId = 0)
-            .With(x => x.ActionId = 0)
-            .Build();
+        var request = new CreateRolePermissionRequest(0, 0, 0);
 
         _factory.RolePermissionAppServiceMock
             .Setup(x => x.CreateAsync(It.IsAny<CreateRolePermissionRequest>(), It.IsAny<CancellationToken>()))
@@ -198,11 +179,7 @@ public class RolePermissionEndpointTests : IClassFixture<RolePermissionEndpointT
     [Trait("Api", "")]
     public async Task Create_Erro_DeveRetornar500()
     {
-        var request = Builder<CreateRolePermissionRequest>.CreateNew()
-            .With(x => x.RoleId = 1)
-            .With(x => x.ResourceId = 1)
-            .With(x => x.ActionId = 1)
-            .Build();
+        var request = new CreateRolePermissionRequest(1, 1, 1);
 
         _factory.RolePermissionAppServiceMock
             .Setup(x => x.CreateAsync(It.IsAny<CreateRolePermissionRequest>(), It.IsAny<CancellationToken>()))

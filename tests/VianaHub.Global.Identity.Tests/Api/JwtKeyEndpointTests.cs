@@ -43,11 +43,8 @@ public class JwtKeyEndpointTests : IClassFixture<JwtKeyEndpointTests.JwtKeyWebAp
     [Trait("Api", "")]
     public async Task GetByTenant_Sucesso_DeveRetornar200()
     {
-        var keys = Builder<JwtKeyResponse>.CreateListOfSize(3)
-            .All()
-            .With(x => x.TenantId = 1)
-            .With(x => x.IsActive = true)
-            .Build()
+        var keys = Enumerable.Range(1, 3)
+            .Select(i => new JwtKeyResponse(i, 1, Guid.NewGuid(), "public-key", true))
             .ToList();
 
         _factory.JwtKeyAppServiceMock
@@ -93,10 +90,7 @@ public class JwtKeyEndpointTests : IClassFixture<JwtKeyEndpointTests.JwtKeyWebAp
     [Trait("Api", "")]
     public async Task GetActiveKey_Sucesso_DeveRetornar200()
     {
-        var key = Builder<JwtKeyResponse>.CreateNew()
-            .With(x => x.TenantId = 1)
-            .With(x => x.IsActive = true)
-            .Build();
+        var key = new JwtKeyResponse(1, 1, Guid.NewGuid(), "public-key", true);
 
         _factory.JwtKeyAppServiceMock
             .Setup(x => x.GetActiveKeyAsync(1, It.IsAny<CancellationToken>()))
@@ -201,9 +195,7 @@ public class JwtKeyEndpointTests : IClassFixture<JwtKeyEndpointTests.JwtKeyWebAp
     [Trait("Api", "")]
     public async Task Revoke_Sucesso_DeveRetornar200()
     {
-        var request = Builder<RevokeRequest>.CreateNew()
-            .With(x => x.Reason = "Chave comprometida")
-            .Build();
+        var request = new RevokeRequest("Chave comprometida");
 
         _factory.JwtKeyAppServiceMock
             .Setup(x => x.RevokeAsync(1, It.IsAny<string>(), It.IsAny<CancellationToken>()))
@@ -218,9 +210,7 @@ public class JwtKeyEndpointTests : IClassFixture<JwtKeyEndpointTests.JwtKeyWebAp
     [Trait("Api", "")]
     public async Task Revoke_NaoEncontrado_DeveRetornar200()
     {
-        var request = Builder<RevokeRequest>.CreateNew()
-            .With(x => x.Reason = "Motivo")
-            .Build();
+        var request = new RevokeRequest("Motivo");
 
         _factory.JwtKeyAppServiceMock
             .Setup(x => x.RevokeAsync(99, It.IsAny<string>(), It.IsAny<CancellationToken>()))
@@ -241,9 +231,7 @@ public class JwtKeyEndpointTests : IClassFixture<JwtKeyEndpointTests.JwtKeyWebAp
     [Trait("Api", "")]
     public async Task Revoke_Erro_DeveRetornar500()
     {
-        var request = Builder<RevokeRequest>.CreateNew()
-            .With(x => x.Reason = "Motivo")
-            .Build();
+        var request = new RevokeRequest("Motivo");
 
         _factory.JwtKeyAppServiceMock
             .Setup(x => x.RevokeAsync(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))

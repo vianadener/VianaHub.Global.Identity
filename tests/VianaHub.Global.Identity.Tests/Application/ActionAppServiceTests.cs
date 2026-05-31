@@ -66,7 +66,7 @@ public class ActionAppServiceTests
     public async Task GetAllAsync_Sucesso_DeveRetornarLista()
     {
         var entities = new List<ActionEntity> { BuildAction(1), BuildAction(2) };
-        var mapped = new List<ActionResponse> { new() { Id = 1 }, new() { Id = 2 } };
+        var mapped = new List<ActionResponse> { new(1, "Action1", true), new(2, "Action2", true) };
         _repoMock.Setup(x => x.GetAllAsync(TenantId, AppId, default)).ReturnsAsync(entities);
         _mapperMock.Setup(x => x.Map<IEnumerable<ActionResponse>>(entities)).Returns(mapped);
 
@@ -100,7 +100,7 @@ public class ActionAppServiceTests
     public async Task GetByIdAsync_Sucesso_DeveRetornarAction()
     {
         var entity = BuildAction(1);
-        var mapped = new ActionResponse { Id = 1 };
+        var mapped = new ActionResponse(1, "Action1", true);
         _repoMock.Setup(x => x.GetByIdAsync(TenantId, AppId, 1, default)).ReturnsAsync(entity);
         _mapperMock.Setup(x => x.Map<ActionResponse>(entity)).Returns(mapped);
 
@@ -134,7 +134,7 @@ public class ActionAppServiceTests
     {
         var entities = new List<ActionEntity> { BuildAction(1) };
         var listPage = new ListPage<ActionEntity> { Items = entities, TotalItems = 1, TotalPages = 1, PageNumber = 1, PageSize = 10 };
-        var mappedPage = new ListPageResponse<ActionResponse>(new List<ActionResponse> { new() { Id = 1 } }, 1, 10, 1, 1);
+        var mappedPage = new ListPageResponse<ActionResponse>(new List<ActionResponse> { new(1, "Action1", true) }, 1, 10, 1, 1);
         _repoMock.Setup(x => x.GetPagedAsync(TenantId, AppId, It.IsAny<PagedFilter>(), default)).ReturnsAsync(listPage);
         _mapperMock.Setup(x => x.Map<ListPageResponse<ActionResponse>>(listPage)).Returns(mappedPage);
 
@@ -173,7 +173,7 @@ public class ActionAppServiceTests
     [Trait("Application", "")]
     public async Task CreateAsync_Sucesso_DeveRetornarTrue()
     {
-        var request = new CreateActionRequest { AppId = AppId, Name = "Nova Action", Description = "Descrição" };
+        var request = new CreateActionRequest(AppId, "Nova Action", "Descrição");
         _repoMock.Setup(x => x.ExistsByNameAsync(TenantId, AppId, request.Name, default)).ReturnsAsync(false);
         _domainMock.Setup(x => x.CreateAsync(It.IsAny<ActionEntity>(), default)).ReturnsAsync(true);
 
@@ -188,7 +188,7 @@ public class ActionAppServiceTests
     [Trait("Application", "")]
     public async Task CreateAsync_NomeJaExiste_DeveRetornarFalseENotificar()
     {
-        var request = new CreateActionRequest { AppId = AppId, Name = "Action Existente", Description = "Descrição" };
+        var request = new CreateActionRequest(AppId, "Action Existente", "Descrição");
         _repoMock.Setup(x => x.ExistsByNameAsync(TenantId, AppId, request.Name, default)).ReturnsAsync(true);
 
         var sut = CreateSut();
@@ -203,7 +203,7 @@ public class ActionAppServiceTests
     [Trait("Application", "")]
     public async Task CreateAsync_DominioFalha_DeveRetornarFalse()
     {
-        var request = new CreateActionRequest { AppId = AppId, Name = "Nova Action", Description = "Descrição" };
+        var request = new CreateActionRequest(AppId, "Nova Action", "Descrição");
         _repoMock.Setup(x => x.ExistsByNameAsync(TenantId, AppId, request.Name, default)).ReturnsAsync(false);
         _domainMock.Setup(x => x.CreateAsync(It.IsAny<ActionEntity>(), default)).ReturnsAsync(false);
 
@@ -222,7 +222,7 @@ public class ActionAppServiceTests
     public async Task UpdateAsync_Sucesso_DeveRetornarTrue()
     {
         var entity = BuildAction(1);
-        var request = new UpdateActionRequest { Name = "Action Atualizada", Description = "Nova Descrição" };
+        var request = new UpdateActionRequest("Action Atualizada", "Nova Descrição");
         _repoMock.Setup(x => x.GetByIdAsync(TenantId, AppId, 1, default)).ReturnsAsync(entity);
         _domainMock.Setup(x => x.UpdateAsync(entity, default)).ReturnsAsync(true);
 
@@ -238,7 +238,7 @@ public class ActionAppServiceTests
     public async Task UpdateAsync_NaoEncontrada_DeveRetornarFalseENotificar()
     {
         _repoMock.Setup(x => x.GetByIdAsync(TenantId, AppId, 99, default)).ReturnsAsync((ActionEntity)null);
-        var request = new UpdateActionRequest { Name = "Action", Description = "Desc" };
+        var request = new UpdateActionRequest("Action", "Desc");
 
         var sut = CreateSut();
         var result = await sut.UpdateAsync(99, request, default);

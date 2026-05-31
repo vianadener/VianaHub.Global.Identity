@@ -44,11 +44,12 @@ public class TenantEndpointTests : IClassFixture<TenantEndpointTests.TenantWebAp
     [Trait("Api", "")]
     public async Task GetAll_Sucesso_DeveRetornar200()
     {
-        var tenants = Builder<TenantResponse>.CreateListOfSize(3)
-            .All()
-            .With(x => x.IsActive = true)
-            .Build()
-            .ToList();
+        var tenants = new List<TenantResponse>
+        {
+            new(1, "Tenant 1", "t1", true),
+            new(2, "Tenant 2", "t2", true),
+            new(3, "Tenant 3", "t3", true)
+        };
 
         _factory.TenantAppServiceMock
             .Setup(x => x.GetAllAsync(It.IsAny<CancellationToken>()))
@@ -93,10 +94,7 @@ public class TenantEndpointTests : IClassFixture<TenantEndpointTests.TenantWebAp
     [Trait("Api", "")]
     public async Task GetById_Sucesso_DeveRetornar200()
     {
-        var tenant = Builder<TenantDetailResponse>.CreateNew()
-            .With(x => x.Id = 1)
-            .With(x => x.IsActive = true)
-            .Build();
+        var tenant = new TenantDetailResponse(1, "", "", "", "", "", "", true);
 
         _factory.TenantAppServiceMock
             .Setup(x => x.GetByIdAsync(1, It.IsAny<CancellationToken>()))
@@ -147,11 +145,11 @@ public class TenantEndpointTests : IClassFixture<TenantEndpointTests.TenantWebAp
     [Trait("Api", "")]
     public async Task GetPaged_Sucesso_DeveRetornar200()
     {
-        var items = Builder<TenantResponse>.CreateListOfSize(2)
-            .All()
-            .With(x => x.IsActive = true)
-            .Build()
-            .ToList();
+        var items = new List<TenantResponse>
+        {
+            new(1, "Tenant 1", "t1", true),
+            new(2, "Tenant 2", "t2", true)
+        };
 
         var paged = new ListPageResponse<TenantResponse>(items, 1, 10, 2, 1);
 
@@ -200,11 +198,7 @@ public class TenantEndpointTests : IClassFixture<TenantEndpointTests.TenantWebAp
     [Trait("Api", "")]
     public async Task Create_Sucesso_DeveRetornar201()
     {
-        var request = Builder<CreateTenantRequest>.CreateNew()
-            .With(x => x.Name = "Tenant Test")
-            .With(x => x.Description = "Descrição")
-            .With(x => x.Alias = "tenant-test")
-            .Build();
+        var request = new CreateTenantRequest("Tenant Test", "Descrição", "tenant-test", null, null, null);
 
         _factory.TenantAppServiceMock
             .Setup(x => x.CreateAsync(It.IsAny<CreateTenantRequest>(), It.IsAny<CancellationToken>()))
@@ -219,11 +213,7 @@ public class TenantEndpointTests : IClassFixture<TenantEndpointTests.TenantWebAp
     [Trait("Api", "")]
     public async Task Create_DadosInvalidos_DeveRetornar400()
     {
-        var request = Builder<CreateTenantRequest>.CreateNew()
-            .With(x => x.Name = string.Empty)
-            .With(x => x.Description = string.Empty)
-            .With(x => x.Alias = string.Empty)
-            .Build();
+        var request = new CreateTenantRequest(string.Empty, string.Empty, string.Empty, null, null, null);
 
         _factory.TenantAppServiceMock
             .Setup(x => x.CreateAsync(It.IsAny<CreateTenantRequest>(), It.IsAny<CancellationToken>()))
@@ -244,11 +234,7 @@ public class TenantEndpointTests : IClassFixture<TenantEndpointTests.TenantWebAp
     [Trait("Api", "")]
     public async Task Create_Erro_DeveRetornar500()
     {
-        var request = Builder<CreateTenantRequest>.CreateNew()
-            .With(x => x.Name = "Tenant Test")
-            .With(x => x.Description = "Descrição")
-            .With(x => x.Alias = "tenant-test")
-            .Build();
+        var request = new CreateTenantRequest("Tenant Test", "Descrição", "tenant-test", null, null, null);
 
         _factory.TenantAppServiceMock
             .Setup(x => x.CreateAsync(It.IsAny<CreateTenantRequest>(), It.IsAny<CancellationToken>()))
@@ -267,11 +253,7 @@ public class TenantEndpointTests : IClassFixture<TenantEndpointTests.TenantWebAp
     [Trait("Api", "")]
     public async Task Update_Sucesso_DeveRetornar200()
     {
-        var request = Builder<UpdateTenantRequest>.CreateNew()
-            .With(x => x.Name = "Tenant Atualizado")
-            .With(x => x.Description = "Descrição atualizada")
-            .With(x => x.Alias = "tenant-atualizado")
-            .Build();
+        var request = new UpdateTenantRequest("Tenant Atualizado", "Descrição atualizada", "tenant-atualizado", null, null, null);
 
         _factory.TenantAppServiceMock
             .Setup(x => x.UpdateAsync(1, It.IsAny<UpdateTenantRequest>(), It.IsAny<CancellationToken>()))
@@ -286,11 +268,7 @@ public class TenantEndpointTests : IClassFixture<TenantEndpointTests.TenantWebAp
     [Trait("Api", "")]
     public async Task Update_NaoEncontrado_DeveRetornar410()
     {
-        var request = Builder<UpdateTenantRequest>.CreateNew()
-            .With(x => x.Name = "Tenant")
-            .With(x => x.Description = "Desc")
-            .With(x => x.Alias = "tenant")
-            .Build();
+        var request = new UpdateTenantRequest("Tenant", "Desc", "tenant", null, null, null);
 
         _factory.TenantAppServiceMock
             .Setup(x => x.UpdateAsync(99, It.IsAny<UpdateTenantRequest>(), It.IsAny<CancellationToken>()))
@@ -311,11 +289,7 @@ public class TenantEndpointTests : IClassFixture<TenantEndpointTests.TenantWebAp
     [Trait("Api", "")]
     public async Task Update_Duplicado_DeveRetornar409()
     {
-        var request = Builder<UpdateTenantRequest>.CreateNew()
-            .With(x => x.Name = "Tenant Duplicado")
-            .With(x => x.Description = "Desc")
-            .With(x => x.Alias = "tenant-duplicado")
-            .Build();
+        var request = new UpdateTenantRequest("Tenant Duplicado", "Desc", "tenant-duplicado", null, null, null);
 
         _factory.TenantAppServiceMock
             .Setup(x => x.UpdateAsync(1, It.IsAny<UpdateTenantRequest>(), It.IsAny<CancellationToken>()))
@@ -336,11 +310,7 @@ public class TenantEndpointTests : IClassFixture<TenantEndpointTests.TenantWebAp
     [Trait("Api", "")]
     public async Task Update_Erro_DeveRetornar500()
     {
-        var request = Builder<UpdateTenantRequest>.CreateNew()
-            .With(x => x.Name = "Tenant")
-            .With(x => x.Description = "Desc")
-            .With(x => x.Alias = "tenant")
-            .Build();
+        var request = new UpdateTenantRequest("Tenant", "Desc", "tenant", null, null, null);
 
         _factory.TenantAppServiceMock
             .Setup(x => x.UpdateAsync(It.IsAny<int>(), It.IsAny<UpdateTenantRequest>(), It.IsAny<CancellationToken>()))

@@ -193,11 +193,14 @@ public class AppAppService : IAppAppService
             {
                 try
                 {
-                    var record = csv.GetRecord<BulkUploadAppItem>();
-                    if (record != null)
+                    var raw = csv.GetRecord<BulkUploadAppItem>();
+                    if (raw != null)
                     {
-                        record.Name = record.Name?.SanitizeCsvInput().NormalizeUtf8();
-                        record.Description = record.Description?.SanitizeCsvInput().NormalizeUtf8();
+                        var record = raw with
+                        {
+                            Name = raw.Name?.SanitizeCsvInput().NormalizeUtf8(),
+                            Description = raw.Description?.SanitizeCsvInput().NormalizeUtf8()
+                        };
 
                         if (!string.IsNullOrEmpty(record.Name) && !record.Name.IsSafeCsvValue())
                         {
